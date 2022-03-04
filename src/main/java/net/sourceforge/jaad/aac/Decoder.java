@@ -16,15 +16,17 @@ import java.util.logging.Level;
  */
 public class Decoder implements Constants {
 
-	static {
-		for(Handler h : LOGGER.getHandlers()) {
-			LOGGER.removeHandler(h);
-		}
-		LOGGER.setLevel(Level.WARNING);
+    static {
+        if (System.getProperty("java.util.logging.config.file", "").isEmpty()) {
+            for(Handler h : LOGGER.getHandlers()) {
+                LOGGER.removeHandler(h);
+            }
+            LOGGER.setLevel(Level.WARNING);
 
-		final ConsoleHandler h = new ConsoleHandler();
-		h.setLevel(Level.ALL);
-		LOGGER.addHandler(h);
+            final ConsoleHandler h = new ConsoleHandler();
+            h.setLevel(Level.ALL);
+            LOGGER.addHandler(h);
+        }
 	}
 	private final DecoderConfig config;
 	private final SyntacticElements syntacticElements;
