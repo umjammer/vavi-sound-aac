@@ -48,15 +48,15 @@ import net.sourceforge.jaad.mp4.boxes.impl.ProgressiveDownloadInformationBox;
 public class MP4Container {
 
 	static {
-		Logger log = Logger.getLogger("MP4 API");
-		for(Handler h : log.getHandlers()) {
-			log.removeHandler(h);
-		}
-		log.setLevel(Level.WARNING);
-
-		final ConsoleHandler h = new ConsoleHandler();
-		h.setLevel(Level.ALL);
-		log.addHandler(h);
+//		Logger log = Logger.getLogger("MP4 API");
+//		for(Handler h : log.getHandlers()) {
+//			log.removeHandler(h);
+//		}
+//		log.setLevel(Level.WARNING);
+//
+//		final ConsoleHandler h = new ConsoleHandler();
+//		h.setLevel(Level.ALL);
+//		log.addHandler(h);
 	}
 	private final MP4InputStream in;
 	private final List<Box> boxes;
