@@ -1,13 +1,13 @@
 package net.sourceforge.jaad.mp4.boxes.impl.meta;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
-import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 /**
@@ -101,7 +101,7 @@ public class ITunesMetadataBox extends FullBox {
 	 */
 	public String getText() {
 		//first four bytes are padding (zero)
-		return new String(data, 0, data.length, Charset.forName("UTF-8"));
+		return new String(data, 0, data.length, StandardCharsets.UTF_8);
 	}
 
 	/**
