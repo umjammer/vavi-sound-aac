@@ -84,9 +84,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>vavi</groupId> <!--  com.github.umjammer -->
+      <groupId>com.github.umjammer</groupId>
       <artifactId>vavi-sound</artifactId>
-      <version>1.0.12-SNAPSHOT</version>
+      <version>1.0.12</version>
       <scope>test</scope>
     </dependency>
 
