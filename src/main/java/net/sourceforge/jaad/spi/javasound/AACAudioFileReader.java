@@ -5,6 +5,7 @@ import net.sourceforge.jaad.aac.syntax.BitStream;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -21,12 +22,46 @@ public class AACAudioFileReader extends AudioFileReader {
 	public static final AudioFileFormat.Type MP4 = new AudioFileFormat.Type("MP4", "mp4");
 	private static final AudioFormat.Encoding AAC_ENCODING = new AudioFormat.Encoding("AAC");
 
+    private static class LimitedInputStream extends FilterInputStream {
+        static final String ERROR_MESSAGE_REACHED_TO_LIMIT = "stop reading, prevent form eof";
+        protected LimitedInputStream(InputStream in) throws IOException {
+            super(in);
+logger.fine("limit: " + in.available());
+        }
+        private void check(int r) throws IOException {
+            if (in.available() < r) {
+logger.fine("reached to limit");
+                throw new IOException(ERROR_MESSAGE_REACHED_TO_LIMIT);
+            }
+        }
+        @Override
+        public int read() throws IOException {
+            check(1);
+            return super.read();
+        }
+        @Override
+        public int read(byte[] b) throws IOException {
+            check(b.length);
+            return super.read(b);
+        }
+        @Override
+        public int read(byte[] b, int off, int len) throws IOException {
+            check(len);
+            return super.read(b, off, len);
+        }
+        @Override
+        public long skip(long n) throws IOException {
+            check((int) n);
+            return super.skip(n);
+        }
+    }
+
 	@Override
 	public AudioFileFormat getAudioFileFormat(InputStream in) throws UnsupportedAudioFileException, IOException {
 		try {
 			if(!in.markSupported()) in = new BufferedInputStream(in);
-			in.mark(4);
-			return getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
+			in.mark(1000);
+			return getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
 		}
 		finally {
 			in.reset();
@@ -50,11 +85,11 @@ public class AACAudioFileReader extends AudioFileReader {
 		try {
 			in = new BufferedInputStream(new FileInputStream(file));
 			in.mark(1000);
-			final AudioFileFormat aff = getAudioFileFormat(in, (int) file.length());
-			in.reset();
+			final AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
 			return aff;
 		}
 		finally {
+            in.reset();
 			if(in!=null) in.close();
 		}
 	}
@@ -114,26 +149,57 @@ public class AACAudioFileReader extends AudioFileReader {
 	//================================================
 	@Override
 	public AudioInputStream getAudioInputStream(InputStream in) throws UnsupportedAudioFileException, IOException {
+        boolean needReset = false;
 		try {
 			if(!in.markSupported()) in = new BufferedInputStream(in);
+			synchronized (this) {
 			in.mark(1000);
-			final AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
+logger.finer("mark: " + in.available());
+			    needReset = true;
+			}
+			final AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
+            synchronized (this) {
+logger.finer("before reset: " + in.available());
 			in.reset();
 			return new MP4AudioInputStream(in, aff.getFormat(), aff.getFrameLength());
+logger.finer("after reset: " + in.available());
+                needReset = false;
+            }
+            synchronized (this) {
+                in.mark(in.available());
+logger.finer("mark2: " + in.available());
+                needReset = true;
+            }
+            // in position should be zero
+logger.fine("format: " + aff.getFormat());
 		}
 		catch(UnsupportedAudioFileException e) {
-			in.reset();
 			throw e;
 		}
 		catch(IOException e) {
-		    if (e.getMessage().equals(MP4AudioInputStream.ERROR_MESSAGE_AAC_TRACK_NOT_FOUND)) {
-		        throw new UnsupportedAudioFileException(MP4AudioInputStream.ERROR_MESSAGE_AAC_TRACK_NOT_FOUND);
+		    if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
+logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
+                throw new UnsupportedAudioFileException(e.getMessage());
 		    } else if (net.sourceforge.jaad.mp4.MP4Exception.class.isInstance(e)) {
+logger.fine(e.toString());
                 throw new UnsupportedAudioFileException(e.getMessage());
 		    } else {
-		        in.reset();
+logger.info(e.toString());
 		        throw e;
 		    }
+		} catch(Exception e) {
+logger.info(e.toString());
+                throw e;
+		} finally {
+logger.fine("reset?: " + needReset + ", available: " + in.available());
+		    try {
+		        if (needReset) {
+		            in.reset();
+		        }
+logger.fine("finally available: " + in.available());
+	        } catch(IOException e) {
+logger.info(e.toString());
+	        }
 		}
 	}
 
@@ -168,4 +234,6 @@ public class AACAudioFileReader extends AudioFileReader {
 			throw e;
 		}
 	}
+
+	
 }
