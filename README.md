@@ -1,5 +1,7 @@
 [![Release](https://jitpack.io/v/umjammer/JAADec.svg)](https://jitpack.io/#umjammer/JAADec)
-[![Actions Status](https://github.com/umjammer/JAADec/workflows/Java%20CI/badge.svg)](https://github.com/umjammer/JAADec/actions)
+[![Java CI with Maven](https://github.com/umjammer/JAADec/actions/workflows/maven.yml/badge.svg)](https://github.com/umjammer/JAADec/actions/workflows/maven.yml)
+[![CodeQL](https://github.com/umjammer/JAADec/actions/workflows/codeql.yml/badge.svg)](https://github.com/umjammer/JAADec/actions/workflows/codeql.yml)
+![Java](https://img.shields.io/badge/Java-8-b07219)
 
 # JAADec
 
@@ -16,4 +18,4 @@ and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).
 
 ## Install
 
- * https://jitpack.io/v/umjammer/JAADec
+ * https://jitpack.io/#/umjammer/JAADec
