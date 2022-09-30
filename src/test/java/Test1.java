@@ -40,7 +40,7 @@ public class Test1 {
     static long time;
 
     static {
-        time = Boolean.valueOf(System.getProperty("vavi.test", "false")) ? 10 * 1000 : 1000 * 1000;
+        time = System.getProperty("vavi.test", "").equals("ide") ? 10 * 1000 : 1000 * 1000;
     }
 
     @Test

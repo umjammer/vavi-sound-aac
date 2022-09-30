@@ -42,15 +42,17 @@ class AacFormatConversionProviderTest {
 
     @BeforeAll
     static void setup() throws Exception {
-        time = Boolean.valueOf(System.getProperty("vavi.test", "false")) ? 10 * 1000 : 1000 * 1000;
+        time = System.getProperty("vavi.test", "").equals("ide") ? 10 * 1000 : 1000 * 1000;
     }
 
     @Test
+    @DisplayName("unsupported exception is able to detect in 3 ways")
     public void test1() throws Exception {
 
         Path path = Paths.get("src/test/resources", inFile);
 
         assertThrows(UnsupportedAudioFileException.class, () -> {
+            // don't replace with Files#newInputStream(Path)
             new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(new FileInputStream(path.toFile())));
         });
 
@@ -85,7 +87,7 @@ class AacFormatConversionProviderTest {
     }
 
     @Test
-    @DisplayName("xxx")
+    @DisplayName("a file consumes input stram all")
     public void test13() throws Exception {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile3).toURI());
