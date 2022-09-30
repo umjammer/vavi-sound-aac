@@ -8,7 +8,7 @@ public class WaveFileWriter {
 
 	private static final int HEADER_LENGTH = 44;
 	private static final int RIFF = 1380533830; //'RIFF'
-	private static final long WAVE_FMT = 6287401410857104416l; //'WAVEfmt '
+	private static final long WAVE_FMT = 6287401410857104416L; //'WAVEfmt '
 	private static final int DATA = 1684108385; //'data'
 	private static final int BYTE_MASK = 0xFF;
 	private final RandomAccessFile out;

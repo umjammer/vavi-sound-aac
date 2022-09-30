@@ -78,7 +78,7 @@ logger.info("same1: " + sourceFormat);
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING && targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
 logger.info("convert1: " + type);
-                        if (type != null && AudioFileFormat.Type.class.cast(type) == AACAudioFileReader.MP4) {
+                        if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {
                             return new AACAudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
@@ -113,7 +113,7 @@ logger.info("same2: " + sourceFormat);
                                targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
 logger.info("convert2: " + type);
-                        if (type != null && AudioFileFormat.Type.class.cast(type) == AACAudioFileReader.MP4) {
+                        if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {
                             return new AACAudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);

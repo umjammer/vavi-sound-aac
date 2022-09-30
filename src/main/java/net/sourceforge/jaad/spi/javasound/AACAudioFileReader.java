@@ -7,6 +7,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Logger;
@@ -75,20 +76,15 @@ logger.fine("reached to limit");
 			if(!in.markSupported()) in = new BufferedInputStream(in);
 			in.mark(1000);
 			return getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
-		}
-		finally {
+		} finally {
 			in.reset();
 		}
 	}
 
 	@Override
 	public AudioFileFormat getAudioFileFormat(URL url) throws UnsupportedAudioFileException, IOException {
-		final InputStream in = url.openStream();
-		try {
+		try (InputStream in = url.openStream()) {
 			return getAudioFileFormat(in);
-		}
-		finally {
-			if(in!=null) in.close();
 		}
 	}
 
@@ -96,12 +92,11 @@ logger.fine("reached to limit");
 	public AudioFileFormat getAudioFileFormat(File file) throws UnsupportedAudioFileException, IOException {
 		InputStream in = null;
 		try {
-			in = new BufferedInputStream(new FileInputStream(file));
+			in = new BufferedInputStream(Files.newInputStream(file.toPath()));
 			in.mark(1000);
 			final AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
 			return aff;
-		}
-		finally {
+		} finally {
             in.reset();
 			if(in!=null) in.close();
 		}
@@ -211,7 +206,7 @@ logger.fine("format: " + aff.getFormat());
 		    if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
 logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
                 throw new UnsupportedAudioFileException(e.getMessage());
-		    } else if (net.sourceforge.jaad.mp4.MP4Exception.class.isInstance(e)) {
+		    } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
 logger.fine(e.toString());
                 throw new UnsupportedAudioFileException(e.getMessage());
 		    } else {
@@ -239,12 +234,7 @@ logger.info(e.toString());
 		final InputStream in = url.openStream();
 		try {
 			return getAudioInputStream(in);
-		}
-		catch(UnsupportedAudioFileException e) {
-			if(in!=null) in.close();
-			throw e;
-		}
-		catch(IOException e) {
+		} catch(UnsupportedAudioFileException | IOException e) {
 			if(in!=null) in.close();
 			throw e;
 		}
@@ -252,15 +242,10 @@ logger.info(e.toString());
 
 	@Override
 	public AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
-		final InputStream in = new FileInputStream(file);
+		final InputStream in = Files.newInputStream(file.toPath());
 		try {
 			return getAudioInputStream(in);
-		}
-		catch(UnsupportedAudioFileException e) {
-			if(in!=null) in.close();
-			throw e;
-		}
-		catch(IOException e) {
+		} catch(UnsupportedAudioFileException | IOException e) {
 			if(in!=null) in.close();
 			throw e;
 		}

@@ -72,7 +72,6 @@ class MP4AudioInputStream extends AsynchronousAudioInputStream {
 		}
 		catch(IOException e) {
 			buffer.close();
-			return;
 		}
 	}
 }

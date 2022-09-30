@@ -57,7 +57,6 @@ logger.info("format: " + audioFormat);
 		}
 		catch(IOException e) {
 			buffer.close();
-			return;
 		}
 	}
 }
