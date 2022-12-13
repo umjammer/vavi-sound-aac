@@ -51,7 +51,7 @@ public class ITunesMetadataBox extends FullBox {
 			null, null, RIAA, UPC, null, BMP
 		};
 
-		private DataType() {
+		DataType() {
 		}
 
 		private static DataType forInt(int i) {
@@ -132,10 +132,10 @@ public class ITunesMetadataBox extends FullBox {
 
 	public Date getDate() {
 		//timestamp lengths: 4,7,9
-		final int i = (int) Math.floor(data.length/3)-1;
-		final Date date;
+		int i = (int) Math.floor(data.length/3f)-1;
+		Date date;
 		if(i>=0&&i<TIMESTAMPS.length) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMPS[i]);
+			SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMPS[i]);
 			date = sdf.parse(new String(data), new ParsePosition(0));
 		}
 		else date = null;

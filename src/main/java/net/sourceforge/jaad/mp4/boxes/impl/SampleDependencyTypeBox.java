@@ -80,7 +80,7 @@ public class SampleDependencyTypeBox extends FullBox {
 	 * 2: this sample does not depend on others (I picture)
 	 * 3: reserved
 	 *
-	 * @return a list of 'sample depends on' values for all samples
+	 * @return an array of 'sample depends on' values for all samples
 	 */
 	public int[] getSampleDependsOn() {
 		return sampleDependsOn;
@@ -93,7 +93,7 @@ public class SampleDependencyTypeBox extends FullBox {
 	 * 2: no other sample depends on this one (disposable)
 	 * 3: reserved
 	 *
-	 * @return a list of 'sample is depended on' values for all samples
+	 * @return an array of 'sample is depended on' values for all samples
 	 */
 	public int[] getSampleIsDependedOn() {
 		return sampleIsDependedOn;

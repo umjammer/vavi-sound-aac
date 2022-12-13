@@ -138,7 +138,7 @@ public class GainControl implements GCConstants {
 			for(j = 0; j<lbLong; j++) {
 				overlap[band][j] = in[band*lbLong*2+lbLong+j];
 			}
-			final int lastBlock = winSeq.equals(WindowSequence.ONLY_LONG_SEQUENCE) ? 1 : 0;
+			int lastBlock = winSeq.equals(WindowSequence.ONLY_LONG_SEQUENCE) ? 1 : 0;
 			locationPrev[band][0] = Arrays.copyOf(location[band][lastBlock], location[band][lastBlock].length);
 			levelPrev[band][0] = Arrays.copyOf(level[band][lastBlock], level[band][lastBlock].length);
 		}
@@ -146,12 +146,12 @@ public class GainControl implements GCConstants {
 
 	//produces gain control function data, stores it in 'function' array
 	private void calculateFunctionData(int samples, int band, WindowSequence winSeq, int blockID) {
-		final int[] locA = new int[10];
-		final float[] levA = new float[10];
-		final float[] modFunc = new float[samples];
-		final float[] buf1 = new float[samples/2];
-		final float[] buf2 = new float[samples/2];
-		final float[] buf3 = new float[samples/2];
+		int[] locA = new int[10];
+		float[] levA = new float[10];
+		float[] modFunc = new float[samples];
+		float[] buf1 = new float[samples/2];
+		float[] buf2 = new float[samples/2];
+		float[] buf3 = new float[samples/2];
 
 		int maxLocGain0 = 0, maxLocGain1 = 0, maxLocGain2 = 0;
 		switch(winSeq) {
@@ -230,10 +230,10 @@ public class GainControl implements GCConstants {
 	 */
 	private float calculateFMD(int bd, int wd, boolean prev, int maxLocGain, int samples,
 			int[] loc, float[] lev, float[] fmd) {
-		final int[] m = new int[samples/2];
-		final int[] lct = prev ? locationPrev[bd][wd] : location[bd][wd];
-		final int[] lvl = prev ? levelPrev[bd][wd] : level[bd][wd];
-		final int length = lct.length;
+		int[] m = new int[samples/2];
+		int[] lct = prev ? locationPrev[bd][wd] : location[bd][wd];
+		int[] lvl = prev ? levelPrev[bd][wd] : level[bd][wd];
+		int length = lct.length;
 
 		int lngain;
 		int i;
@@ -288,8 +288,8 @@ public class GainControl implements GCConstants {
 	 * f(a,b,j) = 2^(((8-j)log2(a)+j*log2(b))/8)
 	 */
 	private float interpolateGain(float alev0, float alev1, int iloc) {
-		final float a0 = (float) (Math.log(alev0)/Math.log(2));
-		final float a1 = (float) (Math.log(alev1)/Math.log(2));
+		float a0 = (float) (Math.log(alev0)/Math.log(2));
+		float a1 = (float) (Math.log(alev1)/Math.log(2));
 		return (float) Math.pow(2.0f, (((8-iloc)*a0+iloc*a1)/8));
 	}
 }

@@ -16,7 +16,7 @@ public class SampleToChunkBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(4);
+		int entryCount = (int) in.readBytes(4);
 		firstChunks = new long[entryCount];
 		samplesPerChunk = new long[entryCount];
 		sampleDescriptionIndex = new long[entryCount];

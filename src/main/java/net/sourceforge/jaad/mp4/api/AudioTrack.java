@@ -24,7 +24,7 @@ public class AudioTrack extends Track {
 		UNKNOWN_AUDIO_CODEC;
 
 		static Codec forType(long type) {
-			final Codec ac;
+			Codec ac;
 			if(type==BoxTypes.MP4A_SAMPLE_ENTRY) ac = AAC;
 			else if(type==BoxTypes.AC3_SAMPLE_ENTRY) ac = AC3;
 			else if(type==BoxTypes.AMR_SAMPLE_ENTRY) ac = AMR;
@@ -44,17 +44,17 @@ public class AudioTrack extends Track {
 	public AudioTrack(Box trak, MP4InputStream in) {
 		super(trak, in);
 
-		final Box mdia = trak.getChild(BoxTypes.MEDIA_BOX);
-		final Box minf = mdia.getChild(BoxTypes.MEDIA_INFORMATION_BOX);
+		Box mdia = trak.getChild(BoxTypes.MEDIA_BOX);
+		Box minf = mdia.getChild(BoxTypes.MEDIA_INFORMATION_BOX);
 		smhd = (SoundMediaHeaderBox) minf.getChild(BoxTypes.SOUND_MEDIA_HEADER_BOX);
 
-		final Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
+		Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
 
 		//sample descriptions: 'mp4a' and 'enca' have an ESDBox, all others have a CodecSpecificBox
-		final SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
+		SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
 		if(stsd.getChildren().get(0) instanceof AudioSampleEntry) {
 			sampleEntry = (AudioSampleEntry) stsd.getChildren().get(0);
-			final long type = sampleEntry.getType();
+			long type = sampleEntry.getType();
 			if(sampleEntry.hasChild(BoxTypes.ESD_BOX)) findDecoderSpecificInfo((ESDBox) sampleEntry.getChild(BoxTypes.ESD_BOX));
 			else decoderInfo = DecoderInfo.parse((CodecSpecificBox) sampleEntry.getChildren().get(0));
 

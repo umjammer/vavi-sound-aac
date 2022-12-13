@@ -25,7 +25,7 @@ public class OMAContentIDBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int len = (int) in.readBytes(2);
+		int len = (int) in.readBytes(2);
 		contentID = in.readString(len);
 	}
 

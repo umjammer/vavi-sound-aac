@@ -27,7 +27,7 @@ public class BitStream {
 
 	public final void setData(byte[] data) {
 		//make the buffer size an integer number of words
-		final int size = WORD_BYTES*((data.length+WORD_BYTES-1)/WORD_BYTES);
+		int size = WORD_BYTES*((data.length+WORD_BYTES-1)/WORD_BYTES);
 		//only reallocate if needed
 		if(buffer==null||buffer.length!=size) buffer = new byte[size];
 		System.arraycopy(data, 0, buffer, 0, data.length);
@@ -35,7 +35,7 @@ public class BitStream {
 	}
 
 	public void byteAlign() throws AACException {
-		final int toFlush = bitsCached&7;
+		int toFlush = bitsCached&7;
 		if(toFlush>0) skipBits(toFlush);
 	}
 
@@ -78,8 +78,8 @@ public class BitStream {
 		}
 		else {
 			position += n;
-			final int c = cache&maskBits(bitsCached);
-			final int left = n-bitsCached;
+			int c = cache&maskBits(bitsCached);
+			int left = n-bitsCached;
 			cache = readCache(false);
 			bitsCached = WORD_BITS-left;
 			result = ((cache>>bitsCached)&maskBits(left))|(c<<left);
@@ -114,7 +114,7 @@ public class BitStream {
 		}
 		else {
 			//old cache
-			final int c = cache&maskBits(bitsCached);
+			int c = cache&maskBits(bitsCached);
 			n -= bitsCached;
 			//read next & combine
 			ret = ((readCache(true)>>WORD_BITS-n)&maskBits(n))|(c<<n);
@@ -128,7 +128,7 @@ public class BitStream {
 			ret = (cache>>(bitsCached-1))&1;
 		}
 		else {
-			final int word = readCache(true);
+			int word = readCache(true);
 			ret = (word>>WORD_BITS-1)&1;
 		}
 		return ret;

@@ -16,13 +16,13 @@ public final class MS implements Constants, HCB {
 	}
 
 	public static void process(CPE cpe, float[] specL, float[] specR) {
-		final ICStream ics = cpe.getLeftChannel();
-		final ICSInfo info = ics.getInfo();
-		final int[] offsets = info.getSWBOffsets();
-		final int windowGroups = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
-		final int[] sfbCBl = ics.getSfbCB();
-		final int[] sfbCBr = cpe.getRightChannel().getSfbCB();
+		ICStream ics = cpe.getLeftChannel();
+		ICSInfo info = ics.getInfo();
+		int[] offsets = info.getSWBOffsets();
+		int windowGroups = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
+		int[] sfbCBl = ics.getSfbCB();
+		int[] sfbCBr = cpe.getRightChannel().getSfbCB();
 		int groupOff = 0;
 		int g, i, w, j, idx = 0;
 
@@ -30,7 +30,7 @@ public final class MS implements Constants, HCB {
 			for(i = 0; i<maxSFB; i++, idx++) {
 				if(cpe.isMSUsed(idx)&&sfbCBl[idx]<NOISE_HCB&&sfbCBr[idx]<NOISE_HCB) {
 					for(w = 0; w<info.getWindowGroupLength(g); w++) {
-						final int off = groupOff+w*128+offsets[i];
+						int off = groupOff+w*128+offsets[i];
 						for(j = 0; j<offsets[i+1]-offsets[i]; j++) {
 							float t = specL[off+j]-specR[off+j];
 							specL[off+j] += specR[off+j];

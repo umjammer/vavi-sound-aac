@@ -22,22 +22,22 @@ public class CPE extends Element implements Constants {
 	}
 
 	void decode(BitStream in, DecoderConfig conf) throws AACException {
-		final Profile profile = conf.getProfile();
-		final SampleFrequency sf = conf.getSampleFrequency();
+		Profile profile = conf.getProfile();
+		SampleFrequency sf = conf.getSampleFrequency();
 		if(sf.equals(SampleFrequency.SAMPLE_FREQUENCY_NONE)) throw new AACException("invalid sample frequency");
 
 		readElementInstanceTag(in);
 
 		commonWindow = in.readBool();
-		final ICSInfo info = icsL.getInfo();
+		ICSInfo info = icsL.getInfo();
 		if(commonWindow) {
 			info.decode(in, conf, commonWindow);
 			icsR.getInfo().setData(info);
 
 			msMask = MSMask.forInt(in.readBits(2));
 			if(msMask.equals(MSMask.TYPE_USED)) {
-				final int maxSFB = info.getMaxSFB();
-				final int windowGroupCount = info.getWindowGroupCount();
+				int maxSFB = info.getMaxSFB();
+				int windowGroupCount = info.getWindowGroupCount();
 
 				for(int idx = 0; idx<windowGroupCount*maxSFB; idx++) {
 					msUsed[idx] = in.readBool();

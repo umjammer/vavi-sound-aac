@@ -115,7 +115,7 @@ class CircularBuffer {
 		}
 	}
 
-	static interface Trigger {
+	interface Trigger {
 
 		void execute();
 	}

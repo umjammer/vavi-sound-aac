@@ -10,7 +10,7 @@ import net.sourceforge.jaad.aac.huffman.HCB;
 import net.sourceforge.jaad.aac.huffman.Huffman;
 import net.sourceforge.jaad.aac.tools.TNS;
 import java.util.logging.Level;
-import net.sourceforge.jaad.aac.Decoder;
+
 
 //TODO: apply pulse data
 public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
@@ -50,7 +50,7 @@ public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
 	/* ========= decoding ========== */
 	public void decode(BitStream in, boolean commonWindow, DecoderConfig conf) throws AACException {
 		if(conf.isScalefactorResilienceUsed()&&rvlc==null) rvlc = new RVLC();
-		final boolean er = conf.getProfile().isErrorResilientProfile();
+		boolean er = conf.getProfile().isErrorResilientProfile();
 
 		globalGain = in.readBits(8);
 
@@ -96,11 +96,11 @@ public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
 	public void decodeSectionData(BitStream in, boolean sectionDataResilienceUsed) throws AACException {
 		Arrays.fill(sfbCB, 0);
 		Arrays.fill(sectEnd, 0);
-		final int bits = info.isEightShortFrame() ? 3 : 5;
-		final int escVal = (1<<bits)-1;
+		int bits = info.isEightShortFrame() ? 3 : 5;
+		int escVal = (1<<bits)-1;
 
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
 
 		int end, cb, incr;
 		int idx = 0;
@@ -146,10 +146,10 @@ public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
 	}
 
 	public void decodeScaleFactors(BitStream in) throws AACException {
-		final int windowGroups = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
+		int windowGroups = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
 		//0: spectrum, 1: noise, 2: intensity
-		final int[] offset = {globalGain, globalGain-90, 0};
+		int[] offset = {globalGain, globalGain-90, 0};
 
 		int tmp;
 		boolean noiseFlag = true;
@@ -197,10 +197,10 @@ public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
 
 	private void decodeSpectralData(BitStream in) throws AACException {
 		Arrays.fill(data, 0);
-		final int maxSFB = info.getMaxSFB();
-		final int windowGroups = info.getWindowGroupCount();
-		final int[] offsets = info.getSWBOffsets();
-		final int[] buf = new int[4];
+		int maxSFB = info.getMaxSFB();
+		int windowGroups = info.getWindowGroupCount();
+		int[] offsets = info.getSWBOffsets();
+		int[] buf = new int[4];
 
 		int sfb, j, k, w, hcb, off, width, num;
 		int groupOff = 0, idx = 0;
@@ -227,7 +227,7 @@ public class ICStream implements Constants, HCB, ScaleFactorTable, IQTable {
 							energy += data[off+k]*data[off+k];
 						}
 
-						final float scale = (float) (scaleFactors[idx]/Math.sqrt(energy));
+						float scale = (float) (scaleFactors[idx]/Math.sqrt(energy));
 						for(k = 0; k<width; k++) {
 							data[off+k] *= scale;
 						}

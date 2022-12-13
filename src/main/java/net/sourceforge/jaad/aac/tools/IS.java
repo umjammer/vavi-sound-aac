@@ -16,14 +16,14 @@ public final class IS implements Constants, ISScaleTable, HCB {
 	}
 
 	public static void process(CPE cpe, float[] specL, float[] specR) {
-		final ICStream ics = cpe.getRightChannel();
-		final ICSInfo info = ics.getInfo();
-		final int[] offsets = info.getSWBOffsets();
-		final int windowGroups = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
-		final int[] sfbCB = ics.getSfbCB();
-		final int[] sectEnd = ics.getSectEnd();
-		final float[] scaleFactors = ics.getScaleFactors();
+		ICStream ics = cpe.getRightChannel();
+		ICSInfo info = ics.getInfo();
+		int[] offsets = info.getSWBOffsets();
+		int windowGroups = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
+		int[] sfbCB = ics.getSfbCB();
+		int[] sectEnd = ics.getSectEnd();
+		float[] scaleFactors = ics.getScaleFactors();
 
 		int w, i, j, c, end, off;
 		int idx = 0, groupOff = 0;

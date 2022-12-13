@@ -16,7 +16,7 @@ public class OMAContentObjectBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int len = (int) in.readBytes(4);
+		int len = (int) in.readBytes(4);
 		data = new byte[len];
 		in.readBytes(data);
 	}

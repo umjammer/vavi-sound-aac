@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes;
 
 public final class Utils {
 
-	private static final long UNDETERMINED = 4294967295l;
+	private static final long UNDETERMINED = 4294967295L;
 
 	public static String getLanguageCode(long l) {
 		//1 bit padding, 5*3 bits language code (ISO-639-2/T)
@@ -14,7 +14,7 @@ public final class Utils {
 	}
 
 	public static long detectUndetermined(long l) {
-		final long x;
+		long x;
 		if(l==UNDETERMINED) x = -1;
 		else x = l;
 		return x;

@@ -1,6 +1,8 @@
 package net.sourceforge.jaad.mp4.boxes.impl.meta;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
@@ -20,8 +22,8 @@ public class GenreBox extends FullBox {
 		if(parent.getType()==BoxTypes.USER_DATA_BOX) {
 			super.decode(in);
 			languageCode = Utils.getLanguageCode(in.readBytes(2));
-			final byte[] b = in.readTerminated((int) getLeft(in), 0);
-			genre = new String(b, MP4InputStream.UTF8);
+			byte[] b = in.readTerminated((int) getLeft(in), 0);
+			genre = new String(b, StandardCharsets.UTF_8);
 		}
 		else readChildren(in);
 	}

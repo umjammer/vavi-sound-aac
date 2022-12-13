@@ -53,7 +53,7 @@ class AacFormatConversionProviderTest {
 
         assertThrows(UnsupportedAudioFileException.class, () -> {
             // don't replace with Files#newInputStream(Path)
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(new FileInputStream(path.toFile())));
+            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path.toFile().toPath())));
         });
 
         assertThrows(UnsupportedAudioFileException.class, () -> {

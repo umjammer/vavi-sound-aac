@@ -62,11 +62,11 @@ public class ItemLocationBox extends FullBox {
 		4 bits reserved
 		 */
 		long l = in.readBytes(2);
-		final int offsetSize = (int) (l>>12)&0xF;
-		final int lengthSize = (int) (l>>8)&0xF;
-		final int baseOffsetSize = (int) (l>>4)&0xF;
+		int offsetSize = (int) (l>>12)&0xF;
+		int lengthSize = (int) (l>>8)&0xF;
+		int baseOffsetSize = (int) (l>>4)&0xF;
 
-		final int itemCount = (int) in.readBytes(2);
+		int itemCount = (int) in.readBytes(2);
 		dataReferenceIndex = new int[itemCount];
 		baseOffset = new long[itemCount];
 		extentOffset = new long[itemCount][];

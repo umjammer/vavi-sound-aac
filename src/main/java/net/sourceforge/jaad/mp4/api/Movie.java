@@ -36,7 +36,7 @@ public class Movie {
 		metaData = new MetaData();
 		if(moov.hasChild(BoxTypes.META_BOX)) metaData.parse(null, moov.getChild(BoxTypes.META_BOX));
 		else if(moov.hasChild(BoxTypes.USER_DATA_BOX)) {
-			final Box udta = moov.getChild(BoxTypes.USER_DATA_BOX);
+			Box udta = moov.getChild(BoxTypes.USER_DATA_BOX);
 			if(udta.hasChild(BoxTypes.META_BOX)) metaData.parse(udta, udta.getChild(BoxTypes.META_BOX));
 		}
 
@@ -52,8 +52,8 @@ public class Movie {
 
 	//TODO: support hint and meta
 	private Track createTrack(Box trak) {
-		final HandlerBox hdlr = (HandlerBox) trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.HANDLER_BOX);
-		final Track track;
+		HandlerBox hdlr = (HandlerBox) trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.HANDLER_BOX);
+		Track track;
 		switch((int) hdlr.getHandlerType()) {
 			case HandlerBox.TYPE_VIDEO:
 				track = new VideoTrack(trak, in);
@@ -85,7 +85,7 @@ public class Movie {
 	 * @return the tracks contained by this movie with the passed type
 	 */
 	public List<Track> getTracks(Type type) {
-		final List<Track> l = new ArrayList<Track>();
+		List<Track> l = new ArrayList<Track>();
 		for(Track t : tracks) {
 			if(t.getType().equals(type)) l.add(t);
 		}
@@ -100,7 +100,7 @@ public class Movie {
 	 * @return the tracks contained by this movie with the passed type
 	 */
 	public List<Track> getTracks(Track.Codec codec) {
-		final List<Track> l = new ArrayList<Track>();
+		List<Track> l = new ArrayList<Track>();
 		for(Track t : tracks) {
 			if(t.getCodec().equals(codec)) l.add(t);
 		}

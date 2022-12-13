@@ -72,7 +72,7 @@ class Base64Decoder {
 		}
 		while(i=='\n'||i=='\r');
 
-		final byte[] buf = new byte[4];
+		byte[] buf = new byte[4];
 		buf[0] = (byte) i;
 
 		i = readFully(in, buf, 1, rem-1);
@@ -107,7 +107,6 @@ class Base64Decoder {
 				out.write((byte) (((c<<6)&0xc0)|(d&0x3f)));
 				break;
 		}
-		return;
 	}
 
 	private static int readFully(InputStream in, byte[] b, int off, int len) throws IOException {

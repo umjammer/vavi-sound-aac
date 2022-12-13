@@ -27,7 +27,7 @@ public abstract class Descriptor {
 
 	public static Descriptor createDescriptor(MP4InputStream in) throws IOException {
 		//read tag and size
-		final int type = in.read();
+		int type = in.read();
 		int read = 1;
 		int size = 0;
 		int b = 0;
@@ -40,7 +40,7 @@ public abstract class Descriptor {
 		while((b&0x80)==0x80);
 
 		//create descriptor
-		final Descriptor desc = forTag(type);
+		Descriptor desc = forTag(type);
 		desc.type = type;
 		desc.size = size;
 		desc.start = in.getOffset();
@@ -48,7 +48,7 @@ public abstract class Descriptor {
 		//decode
 		desc.decode(in);
 		//skip remaining bytes
-		final long remaining = size-(in.getOffset()-desc.start);
+		long remaining = size-(in.getOffset()-desc.start);
 		if(remaining>0) {
 			Logger.getLogger("MP4 Boxes").log(Level.INFO, "Descriptor: bytes left: {0}, offset: {1}", new Long[]{remaining, in.getOffset()});
 			in.skipBytes(remaining);

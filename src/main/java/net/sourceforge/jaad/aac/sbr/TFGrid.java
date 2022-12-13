@@ -136,7 +136,7 @@ class TFGrid implements Constants {
 				break;
 		}
 
-		return (retval>0) ? retval : 0;
+		return Math.max(retval, 0);
 	}
 
 }

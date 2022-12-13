@@ -51,7 +51,7 @@ public class VideoSampleEntry extends SampleEntry {
 		in.skipBytes(4); //reserved
 		frameCount = (int) in.readBytes(2);
 
-		final int len = in.read();
+		int len = in.read();
 		compressorName = in.readString(len);
 		in.skipBytes(31-len);
 

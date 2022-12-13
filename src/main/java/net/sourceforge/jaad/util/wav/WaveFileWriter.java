@@ -62,7 +62,7 @@ public class WaveFileWriter {
 
 	private void writeWaveHeader() throws IOException {
 		out.seek(0);
-		final int bytesPerSec = (bitsPerSample+7)/8;
+		int bytesPerSec = (bitsPerSample+7)/8;
 
 		out.writeInt(RIFF); //wave label
 		out.writeInt(Integer.reverseBytes(bytesWritten+36)); //length in bytes without header

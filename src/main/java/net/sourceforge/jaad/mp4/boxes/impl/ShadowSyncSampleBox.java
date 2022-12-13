@@ -48,7 +48,7 @@ public class ShadowSyncSampleBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 		
-		final int entryCount = (int) in.readBytes(4);
+		int entryCount = (int) in.readBytes(4);
 		sampleNumbers = new long[entryCount][2];
 
 		for(int i = 0; i<entryCount; i++) {

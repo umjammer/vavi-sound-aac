@@ -15,7 +15,7 @@ public class ICSInfo implements Constants, ScaleFactorBands {
 	public static final int PREVIOUS = 0;
 	public static final int CURRENT = 1;
 
-	public static enum WindowSequence {
+	public enum WindowSequence {
 
 		ONLY_LONG_SEQUENCE,
 		LONG_START_SEQUENCE,
@@ -70,7 +70,7 @@ public class ICSInfo implements Constants, ScaleFactorBands {
 
 	/* ========== decoding ========== */
 	public void decode(BitStream in, DecoderConfig conf, boolean commonWindow) throws AACException {
-		final SampleFrequency sf = conf.getSampleFrequency();
+		SampleFrequency sf = conf.getSampleFrequency();
 		if(sf.equals(SampleFrequency.SAMPLE_FREQUENCY_NONE)) throw new AACException("invalid sample frequency");
 
 		in.skipBit(); //reserved

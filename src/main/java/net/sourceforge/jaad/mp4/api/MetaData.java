@@ -273,7 +273,7 @@ public class MetaData {
 		if(udta.hasChild(BoxTypes.THREE_GPP_LOCATION_INFORMATION_BOX)) put(Field.LOCATION, ((ThreeGPPLocationBox) udta.getChild(BoxTypes.THREE_GPP_LOCATION_INFORMATION_BOX)).getPlaceName());
 		if(udta.hasChild(BoxTypes.THREE_GPP_PERFORMER_BOX)) put(Field.ARTIST, ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_PERFORMER_BOX)).getData());
 		if(udta.hasChild(BoxTypes.THREE_GPP_RECORDING_YEAR_BOX)) {
-			final String value = ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_RECORDING_YEAR_BOX)).getData();
+			String value = ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_RECORDING_YEAR_BOX)).getData();
 			try {
 				put(Field.RELEASE_DATE, new Date(Integer.parseInt(value)));
 			}
@@ -286,7 +286,7 @@ public class MetaData {
 
 	//parses children of 'ilst': iTunes
 	private void parseITunesMetaData(Box ilst) {
-		final List<Box> boxes = ilst.getChildren();
+		List<Box> boxes = ilst.getChildren();
 		long l;
 		ITunesMetadataBox data;
 		for(Box box : boxes) {
@@ -311,7 +311,7 @@ public class MetaData {
 				String s = null;
 				if(data.getDataType()==ITunesMetadataBox.DataType.UTF8) s = data.getText();
 				else {
-					final int i = data.getInteger();
+					int i = data.getInteger();
 					if(i>0&&i<STANDARD_GENRES.length) s = STANDARD_GENRES[data.getInteger()];
 				}
 				if(s!=null) put(Field.GENRE, s);
@@ -321,10 +321,10 @@ public class MetaData {
 			else if(l==BoxTypes.COPYRIGHT_BOX) put(Field.COPYRIGHT, data.getText());
 			else if(l==BoxTypes.COMPILATION_PART_BOX) put(Field.COMPILATION, data.getBoolean());
 			else if(l==BoxTypes.COVER_BOX) {
-				final Artwork aw = new Artwork(Artwork.Type.forDataType(data.getDataType()), data.getData());
+				Artwork aw = new Artwork(Artwork.Type.forDataType(data.getDataType()), data.getData());
 				if(contents.containsKey(Field.COVER_ARTWORKS)) get(Field.COVER_ARTWORKS).add(aw);
 				else {
-					final List<Artwork> list = new ArrayList<Artwork>();
+					List<Artwork> list = new ArrayList<Artwork>();
 					list.add(aw);
 					put(Field.COVER_ARTWORKS, list);
 				}
@@ -355,7 +355,7 @@ public class MetaData {
 	//parses children of ID3
 	private void parseID3(ID3TagBox box) {
 		try {
-			final DataInputStream in = new DataInputStream(new ByteArrayInputStream(box.getID3Data()));
+			DataInputStream in = new DataInputStream(new ByteArrayInputStream(box.getID3Data()));
 			ID3Tag tag = new ID3Tag(in);
 			int[] num;
 			for(ID3Frame frame : tag.getFrames()) {
@@ -423,7 +423,7 @@ public class MetaData {
 
 	//parses children of 'tags': Nero
 	private void parseNeroTags(NeroMetadataTagsBox tags) {
-		final Map<String, String> pairs = tags.getPairs();
+		Map<String, String> pairs = tags.getPairs();
 		String val;
 		for(String key : pairs.keySet()) {
 			val = pairs.get(key);

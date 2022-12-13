@@ -36,27 +36,27 @@ public class Huffman implements Codebooks {
 	}
 
 	private static int getEscape(BitStream in, int s) throws AACException {
-		final boolean neg = s<0;
+		boolean neg = s<0;
 
 		int i = 4;
 		while(in.readBool()) {
 			i++;
 		}
-		final int j = in.readBits(i)|(1<<i);
+		int j = in.readBits(i)|(1<<i);
 
 		return (neg ? -j : j);
 	}
 
 	public static int decodeScaleFactor(BitStream in) throws AACException {
-		final int offset = findOffset(in, HCB_SF);
+		int offset = findOffset(in, HCB_SF);
 		return HCB_SF[offset][2];
 	}
 
 	public static void decodeSpectralData(BitStream in, int cb, int[] data, int off) throws AACException {
-		final int[][] HCB = CODEBOOKS[cb-1];
+		int[][] HCB = CODEBOOKS[cb-1];
 
 		//find index
-		final int offset = findOffset(in, HCB);
+		int offset = findOffset(in, HCB);
 
 		//copy data
 		data[off] = HCB[offset][2];

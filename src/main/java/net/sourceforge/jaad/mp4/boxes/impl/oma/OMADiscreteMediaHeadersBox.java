@@ -24,7 +24,7 @@ public class OMADiscreteMediaHeadersBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int len = in.read();
+		int len = in.read();
 		contentType = in.readString(len);
 		
 		readChildren(in);

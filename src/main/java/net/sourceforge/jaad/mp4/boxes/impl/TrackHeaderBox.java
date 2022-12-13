@@ -42,7 +42,7 @@ public class TrackHeaderBox extends FullBox {
 		inMovie = (flags&2)==2;
 		inPreview = (flags&4)==4;
 
-		final int len = (version==1) ? 8 : 4;
+		int len = (version==1) ? 8 : 4;
 		creationTime = in.readBytes(len);
 		modificationTime = in.readBytes(len);
 		trackID = (int) in.readBytes(4);

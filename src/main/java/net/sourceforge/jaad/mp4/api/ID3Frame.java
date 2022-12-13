@@ -153,7 +153,7 @@ class ID3Frame {
 
 	public String getEncodedText() {
 		//first byte indicates encoding
-		final int enc = data[0];
+		int enc = data[0];
 
 		//charsets 0,3 end with '0'; 1,2 end with '00'
 		int t = -1;
@@ -169,9 +169,9 @@ class ID3Frame {
 
 	public int[] getNumbers() {
 		//multiple numbers separated by '/'
-		final String x = new String(data, Charset.forName(TEXT_ENCODINGS[0]));
-		final int i = x.indexOf('/');
-		final int[] y;
+		String x = new String(data, Charset.forName(TEXT_ENCODINGS[0]));
+		int i = x.indexOf('/');
+		int[] y;
 		if(i>0) y = new int[]{Integer.parseInt(x.substring(0, i)), Integer.parseInt(x.substring(i+1))};
 		else y = new int[]{Integer.parseInt(x)};
 		return y;
@@ -179,10 +179,10 @@ class ID3Frame {
 
 	public Date getDate() {
 		//timestamp lengths: 4,7,10,13,16,19
-		final int i = (int) Math.floor(data.length/3)-1;
-		final Date date;
+		int i = (int) Math.floor(data.length/3f)-1;
+		Date date;
 		if(i>=0&&i<VALID_TIMESTAMPS.length) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(VALID_TIMESTAMPS[i]);
+			SimpleDateFormat sdf = new SimpleDateFormat(VALID_TIMESTAMPS[i]);
 			date = sdf.parse(new String(data), new ParsePosition(0));
 		}
 		else date = null;
@@ -190,8 +190,8 @@ class ID3Frame {
 	}
 
 	public Locale getLocale() {
-		final String s = new String(data).toLowerCase();
-		final Locale l;
+		String s = new String(data).toLowerCase();
+		Locale l;
 		if(s.equals(UNKNOWN_LANGUAGE)) l = null;
 		else l = new Locale(s);
 		return l;

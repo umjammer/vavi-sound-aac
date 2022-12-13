@@ -124,7 +124,7 @@ public class PCE extends Element {
 
 		in.byteAlign();
 
-		final int commentFieldBytes = in.readBits(8);
+		int commentFieldBytes = in.readBits(8);
 		commentFieldData = new byte[commentFieldBytes];
 		for(i = 0; i<commentFieldBytes; i++) {
 			commentFieldData[i] = (byte) in.readBits(8);

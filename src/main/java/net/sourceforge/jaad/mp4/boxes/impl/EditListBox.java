@@ -37,8 +37,8 @@ public class EditListBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(4);
-		final int len = (version==1) ? 8 : 4;
+		int entryCount = (int) in.readBytes(4);
+		int len = (version==1) ? 8 : 4;
 
 		segmentDuration = new long[entryCount];
 		mediaTime = new long[entryCount];

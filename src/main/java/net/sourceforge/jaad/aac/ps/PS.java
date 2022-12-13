@@ -319,8 +319,7 @@ public class PS implements PSConstants, PSTables, HuffmanTables {
 	/* limits the value i to the range [min,max] */
 	private int delta_clip(int i, int min, int max) {
 		if(i<min) return min;
-		else if(i>max) return max;
-		else return i;
+		else return Math.min(i, max);
 	}
 
 
@@ -842,8 +841,8 @@ public class PS implements PSConstants, PSTables, HuffmanTables {
 							tmp[1] = (tmp0[1]*Q_Fract_allpass[0])-(tmp0[0]*Q_Fract_allpass[1]);
 
 							/* -a(m) * g_DecaySlope[k] */
-							tmp[0] += -(g_DecaySlope_filt[m]*R0[0]);
-							tmp[1] += -(g_DecaySlope_filt[m]*R0[1]);
+							tmp[0] -= (g_DecaySlope_filt[m] * R0[0]);
+							tmp[1] -= (g_DecaySlope_filt[m] * R0[1]);
 
 							/* -a(m) * g_DecaySlope[k] * Q_Fract_allpass[k,m] * z^(-d(m)) */
 							tmp2[0] = R0[0]+(g_DecaySlope_filt[m]*tmp[0]);

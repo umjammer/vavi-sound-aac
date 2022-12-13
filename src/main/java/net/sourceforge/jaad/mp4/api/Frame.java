@@ -31,7 +31,7 @@ public class Frame implements Comparable<Frame> {
 	}
 
 	public int compareTo(Frame f) {
-		final double d = time-f.time;
+		double d = time-f.time;
 		//0 should not happen, since frames don't have the same timestamps
 		return (d<0) ? -1 : ((d>0) ? 1 : 0);
 	}

@@ -55,7 +55,7 @@ public class BitsBuffer {
 
 	public void rewindReverse() {
 		if(len==0) return;
-		final int[] i = HCR.rewindReverse64(bufb, bufa, len);
+		int[] i = HCR.rewindReverse64(bufb, bufa, len);
 		bufb = i[0];
 		bufa = i[1];
 	}

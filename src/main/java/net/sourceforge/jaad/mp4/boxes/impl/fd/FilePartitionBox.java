@@ -30,7 +30,7 @@ public class FilePartitionBox extends FullBox {
 		maxNumberOfEncodingSymbols = (int) in.readBytes(2);
 		schemeSpecificInfo = new String(Base64Decoder.decode(in.readTerminated((int) getLeft(in), 0)));
 
-		final int entryCount = (int) in.readBytes(2);
+		int entryCount = (int) in.readBytes(2);
 		blockCounts = new int[entryCount];
 		blockSizes = new long[entryCount];
 		for(int i = 0; i<entryCount; i++) {

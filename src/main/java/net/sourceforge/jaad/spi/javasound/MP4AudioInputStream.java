@@ -25,9 +25,9 @@ class MP4AudioInputStream extends AsynchronousAudioInputStream {
 	 */
 	MP4AudioInputStream(InputStream in, AudioFormat format, long length) throws IOException {
 		super(in, format, length);
-		final MP4Container cont = new MP4Container(in);
-		final Movie movie = cont.getMovie();
-		final List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
+		MP4Container cont = new MP4Container(in);
+		Movie movie = cont.getMovie();
+		List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
 		if(tracks.isEmpty()) throw new IllegalArgumentException("movie does not contain any AAC track");
 		track = (AudioTrack) tracks.get(0);
 
@@ -63,7 +63,7 @@ class MP4AudioInputStream extends AsynchronousAudioInputStream {
 			return;
 		}
 		try {
-			final Frame frame = track.readNextFrame();
+			Frame frame = track.readNextFrame();
 			if(frame==null) {
 				buffer.close();
 				return;

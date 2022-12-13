@@ -48,7 +48,7 @@ public class LTPrediction implements Constants {
 		if(lag>(frameLength<<1)) throw new AACException("LTP lag too large: "+lag);
 		coef = in.readBits(3);
 
-		final int windowCount = info.getWindowCount();
+		int windowCount = info.getWindowCount();
 
 		if(info.isEightShortFrame()) {
 			shortUsed = new boolean[windowCount];
@@ -75,12 +75,12 @@ public class LTPrediction implements Constants {
 	}
 
 	public void process(ICStream ics, float[] data, FilterBank filterBank, SampleFrequency sf) {
-		final ICSInfo info = ics.getInfo();
+		ICSInfo info = ics.getInfo();
 
 		if(!info.isEightShortFrame()) {
-			final int samples = frameLength<<1;
-			final float[] in = new float[2048];
-			final float[] out = new float[2048];
+			int samples = frameLength<<1;
+			float[] in = new float[2048];
+			float[] out = new float[2048];
 
 			for(int i = 0; i<samples; i++) {
 				in[i] = states[samples+i-lag]*CODEBOOK[coef];
@@ -91,8 +91,8 @@ public class LTPrediction implements Constants {
 
 			if(ics.isTNSDataPresent()) ics.getTNS().process(ics, out, sf, true);
 
-			final int[] swbOffsets = info.getSWBOffsets();
-			final int swbOffsetMax = info.getSWBOffsetMax();
+			int[] swbOffsets = info.getSWBOffsets();
+			int swbOffsetMax = info.getSWBOffsetMax();
 			int low, high, bin;
 			for(int sfb = 0; sfb<lastBand; sfb++) {
 				if(longUsed[sfb]) {

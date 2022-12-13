@@ -23,7 +23,7 @@ public class DecoderConfigDescriptor extends Descriptor {
 	void decode(MP4InputStream in) throws IOException {
 		objectProfile = in.read();
 		//6 bits stream type, 1 bit upstream flag, 1 bit reserved
-		final int x = in.read();
+		int x = in.read();
 		streamType = (x>>2)&0x3F;
 		upstream = ((x>>1)&1)==1;
 

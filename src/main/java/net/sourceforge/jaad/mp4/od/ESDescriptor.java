@@ -31,7 +31,7 @@ public class ESDescriptor extends Descriptor {
 		esID = (int) in.readBytes(2);
 
 		//1 bit stream dependence flag, 1 it url flag, 1 reserved, 5 bits stream priority
-		final int flags = in.read();
+		int flags = in.read();
 		streamDependency = ((flags>>7)&1)==1;
 		urlPresent = ((flags>>6)&1)==1;
 		streamPriority = flags&31;
@@ -40,7 +40,7 @@ public class ESDescriptor extends Descriptor {
 		else dependingOnES_ID = -1;
 
 		if(urlPresent) {
-			final int len = in.read();
+			int len = in.read();
 			url = in.readString(len);
 		}
 

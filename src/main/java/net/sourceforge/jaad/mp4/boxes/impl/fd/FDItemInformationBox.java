@@ -26,7 +26,7 @@ public class FDItemInformationBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(2);
+		int entryCount = (int) in.readBytes(2);
 		readChildren(in, entryCount); //partition entries
 
 		readChildren(in); //FDSessionGroupBox and GroupIDToNameBox

@@ -22,7 +22,7 @@ public class MediaHeaderBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 		
-		final int len = (version==1) ? 8 : 4;
+		int len = (version==1) ? 8 : 4;
 		creationTime = in.readBytes(len);
 		modificationTime = in.readBytes(len);
 		timeScale = in.readBytes(4);

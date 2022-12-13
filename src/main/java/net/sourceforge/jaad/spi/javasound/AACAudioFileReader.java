@@ -2,7 +2,6 @@ package net.sourceforge.jaad.spi.javasound;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +18,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.spi.AudioFileReader;
 
-import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.Decoder;
-import net.sourceforge.jaad.aac.syntax.BitStream;
 import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
@@ -94,7 +91,7 @@ logger.fine("reached to limit");
 		try {
 			in = new BufferedInputStream(Files.newInputStream(file.toPath()));
 			in.mark(1000);
-			final AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
+			AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
 			return aff;
 		} finally {
             in.reset();
@@ -104,7 +101,7 @@ logger.fine("reached to limit");
 
 	private AudioFileFormat getAudioFileFormat(InputStream in, int mediaLength) throws UnsupportedAudioFileException, IOException {
         try {
-    		final byte[] head = new byte[12];
+    		byte[] head = new byte[12];
     		in.read(head);
     		boolean canHandle = false;
     		AudioFileFormat.Type type = AAC;
@@ -117,7 +114,7 @@ logger.fine("reached to limit");
     	        Movie movie = cont.getMovie();
     	        List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
     	        if (tracks.isEmpty()) throw new UnsupportedAudioFileException("movie does not contain any AAC track");
-    	        Track track = (AudioTrack) tracks.get(0);
+    	        Track track = tracks.get(0);
 	            new Decoder(track.getDecoderSpecificInfo());
 
     	        canHandle = true;
@@ -183,7 +180,7 @@ logger.fine(e.getClass().getSimpleName() + ": " + e.getMessage());
 logger.finer("mark: " + in.available());
 			    needReset = true;
 			}
-			final AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
+			AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
             synchronized (this) {
 logger.finer("before reset: " + in.available());
                 in.reset();
@@ -231,7 +228,7 @@ logger.info(e.toString());
 
 	@Override
 	public AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
-		final InputStream in = url.openStream();
+		InputStream in = url.openStream();
 		try {
 			return getAudioInputStream(in);
 		} catch(UnsupportedAudioFileException | IOException e) {
@@ -242,7 +239,7 @@ logger.info(e.toString());
 
 	@Override
 	public AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
-		final InputStream in = Files.newInputStream(file.toPath());
+		InputStream in = Files.newInputStream(file.toPath());
 		try {
 			return getAudioInputStream(in);
 		} catch(UnsupportedAudioFileException | IOException e) {

@@ -19,7 +19,7 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
 	}
 
 	void process(float[] in, float[] out, int winShape, int winShapePrev, WindowSequence winSeq) throws AACException {
-		final float[] buf = new float[frameLen];
+		float[] buf = new float[frameLen];
 
 		int b, j, i;
 		if(winSeq.equals(WindowSequence.EIGHT_SHORT_SEQUENCE)) {
@@ -47,11 +47,11 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
 	}
 
 	private void process2(float[] in, float[] out, WindowSequence winSeq, int winShape, int winShapePrev, int band) throws AACException {
-		final float[] bufIn = new float[lbLong];
-		final float[] bufOut = new float[lbLong*2];
-		final float[] window = new float[lbLong*2];
-		final float[] window1 = new float[lbShort*2];
-		final float[] window2 = new float[lbShort*2];
+		float[] bufIn = new float[lbLong];
+		float[] bufOut = new float[lbLong*2];
+		float[] window = new float[lbLong*2];
+		float[] window1 = new float[lbShort*2];
+		float[] window2 = new float[lbShort*2];
 
 		//init windows
 		int i;
@@ -128,7 +128,7 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
 	}
 
 	private void imdct(float[] in, float[] out, float[] window, int n) throws AACException {
-		final int n2 = n/2;
+		int n2 = n/2;
 		float[][] table, table2;
 		if(n==256) {
 			table = IMDCT_TABLE_256;
@@ -140,7 +140,7 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
 		}
 		else throw new AACException("gain control: unexpected IMDCT length");
 
-		final float[] tmp = new float[n];
+		float[] tmp = new float[n];
 		int i;
 		for(i = 0; i<n2; ++i) {
 			tmp[i] = in[2*i];
@@ -150,7 +150,7 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
 		}
 
 		//pre-twiddle
-		final float[][] buf = new float[n2][2];
+		float[][] buf = new float[n2][2];
 		for(i = 0; i<n2; i++) {
 			buf[i][0] = (table[i][0]*tmp[2*i])-(table[i][1]*tmp[2*i+1]);
 			buf[i][1] = (table[i][0]*tmp[2*i+1])+(table[i][1]*tmp[2*i]);

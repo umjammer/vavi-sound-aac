@@ -19,7 +19,7 @@ public class GroupIDToNameBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(2);
+		int entryCount = (int) in.readBytes(2);
 		long id;
 		String name;
 		for(int i = 0; i<entryCount; i++) {

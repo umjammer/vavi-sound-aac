@@ -81,11 +81,11 @@ class FFT {
 	};
 
 	static void process(float[][] in, int n) {
-		final int ln = (int) Math.round(Math.log(n)/Math.log(2));
-		final float[][] table = (n==128) ? FFT_TABLE_128 : FFT_TABLE_16;
+		int ln = (int) Math.round(Math.log(n)/Math.log(2));
+		float[][] table = (n==128) ? FFT_TABLE_128 : FFT_TABLE_16;
 
 		//bit-reversal
-		final float[][] rev = new float[n][2];
+		float[][] rev = new float[n][2];
 		int i, ii = 0;
 		for(i = 0; i<n; i++) {
 			rev[i][0] = in[ii][0];

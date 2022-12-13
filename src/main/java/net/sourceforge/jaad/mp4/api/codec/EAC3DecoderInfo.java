@@ -35,12 +35,12 @@ public class EAC3DecoderInfo extends DecoderInfo {
 		private IndependentSubstream(int index) {
 			this.index = index;
 
-			final int loc = box.getDependentSubstreamLocation()[index];
-			final List<DependentSubstream> list = new ArrayList<DependentSubstream>();
+			int loc = box.getDependentSubstreamLocation()[index];
+			List<DependentSubstream> list = new ArrayList<DependentSubstream>();
 			for(int i = 0; i<9; i++) {
 				if(((loc>>(8-i))&1)==1) list.add(DependentSubstream.values()[i]);
 			}
-			dependentSubstreams = list.toArray(new DependentSubstream[list.size()]);
+			dependentSubstreams = list.toArray(new DependentSubstream[0]);
 		}
 
 		public int getFscod() {

@@ -30,8 +30,8 @@ public class TNS implements Constants, TNSTables {
 	}
 
 	public void decode(BitStream in, ICSInfo info) throws AACException {
-		final int windowCount = info.getWindowCount();
-		final int[] bits = info.isEightShortFrame() ? SHORT_BITS : LONG_BITS;
+		int windowCount = info.getWindowCount();
+		int[] bits = info.isEightShortFrame() ? SHORT_BITS : LONG_BITS;
 
 		int w, i, filt, coefLen, coefRes, coefCompress, tmp;
 		for(w = 0; w<windowCount; w++) {

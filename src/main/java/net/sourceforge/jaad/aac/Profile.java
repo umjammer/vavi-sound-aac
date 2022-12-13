@@ -46,7 +46,7 @@ public enum Profile {
 	private final String descr;
 	private final boolean supported;
 
-	private Profile(int num, String descr, boolean supported) {
+	Profile(int num, String descr, boolean supported) {
 		this.num = num;
 		this.descr = descr;
 		this.supported = supported;

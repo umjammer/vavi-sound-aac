@@ -28,7 +28,7 @@ public class ChapterBox extends FullBox {
 
 		in.skipBytes(4); //??
 
-		final int count = in.read();
+		int count = in.read();
 
 		long timestamp;
 		int len;

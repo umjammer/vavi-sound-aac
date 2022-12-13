@@ -117,7 +117,7 @@ public class ItemInformationEntry extends FullBox {
 		private static final int TYPE_FDEL = 1717855596; //fdel
 
 		static Extension forType(int type) {
-			final Extension ext;
+			Extension ext;
 			switch(type) {
 				case Extension.TYPE_FDEL:
 					ext = new FDExtension();
@@ -145,7 +145,7 @@ public class ItemInformationEntry extends FullBox {
 			contentLength = in.readBytes(8);
 			transferLength = in.readBytes(8);
 
-			final int entryCount = in.read();
+			int entryCount = in.read();
 			groupID = new long[entryCount];
 			for(int i = 0; i<entryCount; i++) {
 				groupID[i] = in.readBytes(4);

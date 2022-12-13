@@ -38,7 +38,7 @@ abstract class AsynchronousAudioInputStream extends AudioInputStream implements 
 	@Override
 	public long skip(long len) throws IOException {
 		int l = (int) len;
-		final byte[] b = new byte[l];
+		byte[] b = new byte[l];
 		while(l>0) {
 			l -= buffer.read(b, 0, l);
 		}

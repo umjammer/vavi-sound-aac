@@ -23,7 +23,7 @@ public class Decoder implements Constants {
             }
             LOGGER.setLevel(Level.WARNING);
 
-            final ConsoleHandler h = new ConsoleHandler();
+            ConsoleHandler h = new ConsoleHandler();
             h.setLevel(Level.ALL);
             LOGGER.addHandler(h);
         }
@@ -94,7 +94,7 @@ public class Decoder implements Constants {
 	private void decode(SampleBuffer buffer) throws AACException {
 		if(ADIFHeader.isPresent(in)) {
 			adifHeader = ADIFHeader.readHeader(in);
-			final PCE pce = adifHeader.getFirstPCE();
+			PCE pce = adifHeader.getFirstPCE();
 			config.setProfile(pce.getProfile());
 			config.setSampleFrequency(pce.getSampleFrequency());
 			config.setChannelConfiguration(ChannelConfiguration.forInt(pce.getChannelCount()));

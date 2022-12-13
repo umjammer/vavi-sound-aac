@@ -38,7 +38,7 @@ public class ItemInformationBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int protectionCount = (int) in.readBytes(2);
+		int protectionCount = (int) in.readBytes(2);
 
 		readChildren(in, protectionCount);
 	}

@@ -91,37 +91,37 @@ public class HCR implements Constants {
 
 	//sectionDataResilience = hDecoder->aacSectionDataResilienceFlag
 	public static void decodeReorderedSpectralData(ICStream ics, BitStream in, short[] spectralData, boolean sectionDataResilience) throws AACException {
-		final ICSInfo info = ics.getInfo();
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
-		final int[] swbOffsets = info.getSWBOffsets();
-		final int swbOffsetMax = info.getSWBOffsetMax();
+		ICSInfo info = ics.getInfo();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
+		int[] swbOffsets = info.getSWBOffsets();
+		int swbOffsetMax = info.getSWBOffsetMax();
 		//TODO:
 		//final SectionData sectData = ics.getSectionData();
-		final int[][] sectStart = null; //sectData.getSectStart();
-		final int[][] sectEnd = null; //sectData.getSectEnd();
-		final int[] numSec = null; //sectData.getNumSec();
-		final int[][] sectCB = null; //sectData.getSectCB();
-		final int[][] sectSFBOffsets = null; //info.getSectSFBOffsets();
+		int[][] sectStart = null; //sectData.getSectStart();
+		int[][] sectEnd = null; //sectData.getSectEnd();
+		int[] numSec = null; //sectData.getNumSec();
+		int[][] sectCB = null; //sectData.getSectCB();
+		int[][] sectSFBOffsets = null; //info.getSectSFBOffsets();
 
 		//check parameter
-		final int spDataLen = ics.getReorderedSpectralDataLength();
+		int spDataLen = ics.getReorderedSpectralDataLength();
 		if(spDataLen==0) return;
 
-		final int longestLen = ics.getLongestCodewordLength();
+		int longestLen = ics.getLongestCodewordLength();
 		if(longestLen==0||longestLen>=spDataLen) throw new AACException("length of longest HCR codeword out of range");
 
 		//create spOffsets
-		final int[] spOffsets = new int[8];
-		final int shortFrameLen = spectralData.length/8;
+		int[] spOffsets = new int[8];
+		int shortFrameLen = spectralData.length/8;
 		spOffsets[0] = 0;
 		int g;
 		for(g = 1; g<windowGroupCount; g++) {
 			spOffsets[g] = spOffsets[g-1]+shortFrameLen*info.getWindowGroupLength(g-1);
 		}
 
-		final Codeword[] codeword = new Codeword[512];
-		final BitsBuffer[] segment = new BitsBuffer[512];
+		Codeword[] codeword = new Codeword[512];
+		BitsBuffer[] segment = new BitsBuffer[512];
 
 		int lastCB;
 		int[] preSortCB;
@@ -181,7 +181,7 @@ public class HCR implements Constants {
 											else {
 												//remaining after last segment
 												if(bitsread<spDataLen) {
-													final int additional_bits = spDataLen-bitsread;
+													int additional_bits = spDataLen-bitsread;
 
 													segment[segmentsCount].readSegment(additional_bits, in);
 													segment[segmentsCount].len += segment[segmentsCount-1].len;
@@ -221,7 +221,7 @@ public class HCR implements Constants {
 
 		if(segmentsCount==0) throw new AACException("no segments in HCR");
 
-		final int numberOfSets = numberOfCodewords/segmentsCount;
+		int numberOfSets = numberOfCodewords/segmentsCount;
 
 		//step 2: decode nonPCWs
 		int trial, codewordBase, segmentID, codewordID;

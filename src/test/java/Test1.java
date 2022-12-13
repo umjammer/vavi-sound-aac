@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import vavi.util.Debug;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static vavi.sound.SoundUtil.volume;
 import static vavix.util.DelayedWorker.later;
 
@@ -63,11 +64,11 @@ public class Test1 {
         line.start();
 
         // create AAC decoder
-        final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+        Decoder dec = new Decoder(track.getDecoderSpecificInfo());
 
         // decode
         Frame frame;
-        final SampleBuffer buf = new SampleBuffer();
+        SampleBuffer buf = new SampleBuffer();
         while (track.hasMoreFrames() && !later(time).come()) {
             frame = track.readNextFrame();
             dec.decodeFrame(frame.getData(), buf);
@@ -104,6 +105,11 @@ Debug.println("IN: " + aufmt);
                 break;
             }
         }
+    }
+
+    @Test
+    void testX() {
+        assertArrayEquals(new byte[4], "\0\0\0\0".getBytes());
     }
 }
 

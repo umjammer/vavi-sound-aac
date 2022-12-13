@@ -8,6 +8,8 @@ import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.api.*;
 import java.io.FileInputStream;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -32,7 +34,7 @@ public class Play {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			System.err.println("error while decoding: "+e.toString());
+			System.err.println("error while decoding: "+ e);
 		}
 	}
 
@@ -46,25 +48,25 @@ public class Play {
 		byte[] b;
 		try {
 			//create container
-			final MP4Container cont = new MP4Container(new RandomAccessFile(in, "r"));
-			final Movie movie = cont.getMovie();
+			MP4Container cont = new MP4Container(new RandomAccessFile(in, "r"));
+			Movie movie = cont.getMovie();
 			//find AAC track
-			final List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
+			List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
 			if(tracks.isEmpty()) throw new Exception("movie does not contain any AAC track");
-			final AudioTrack track = (AudioTrack) tracks.get(0);
+			AudioTrack track = (AudioTrack) tracks.get(0);
 
 			//create audio format
-			final AudioFormat aufmt = new AudioFormat(track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
+			AudioFormat aufmt = new AudioFormat(track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
 			line = AudioSystem.getSourceDataLine(aufmt);
 			line.open();
 			line.start();
 
 			//create AAC decoder
-			final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+			Decoder dec = new Decoder(track.getDecoderSpecificInfo());
 
 			//decode
 			Frame frame;
-			final SampleBuffer buf = new SampleBuffer();
+			SampleBuffer buf = new SampleBuffer();
 			while(track.hasMoreFrames()) {
 				frame = track.readNextFrame();
 				try {
@@ -90,15 +92,15 @@ public class Play {
 		SourceDataLine line = null;
 		byte[] b;
 		try {
-			final ADTSDemultiplexer adts = new ADTSDemultiplexer(new FileInputStream(in));
-			final Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
-			final SampleBuffer buf = new SampleBuffer();
+			ADTSDemultiplexer adts = new ADTSDemultiplexer(Files.newInputStream(Paths.get(in)));
+			Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
+			SampleBuffer buf = new SampleBuffer();
 			while(true) {
 				b = adts.readNextFrame();
 				dec.decodeFrame(b, buf);
 
 				if(line==null) {
-					final AudioFormat aufmt = new AudioFormat(buf.getSampleRate(), buf.getBitsPerSample(), buf.getChannels(), true, true);
+					AudioFormat aufmt = new AudioFormat(buf.getSampleRate(), buf.getBitsPerSample(), buf.getChannels(), true, true);
 					line = AudioSystem.getSourceDataLine(aufmt);
 					line.open();
 					line.start();

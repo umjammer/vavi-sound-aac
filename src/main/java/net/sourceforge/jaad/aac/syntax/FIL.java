@@ -46,21 +46,21 @@ class FIL extends Element implements Constants {
 		if(count==15) count += in.readBits(8)-1;
 		count *= 8; //convert to bits
 
-		final int cpy = count;
-		final int pos = in.getPosition();
+		int cpy = count;
+		int pos = in.getPosition();
 
 		while(count>0) {
 			count = decodeExtensionPayload(in, count, prev, sf, sbrEnabled, smallFrames);
 		}
 
-		final int pos2 = in.getPosition()-pos;
-		final int bitsLeft = cpy-pos2;
+		int pos2 = in.getPosition()-pos;
+		int bitsLeft = cpy-pos2;
 		if(bitsLeft>0) in.skipBits(pos2);
 		else if(bitsLeft<0) throw new AACException("FIL element overread: "+bitsLeft);
 	}
 
 	private int decodeExtensionPayload(BitStream in, int count, Element prev, SampleFrequency sf, boolean sbrEnabled, boolean smallFrames) throws AACException {
-		final int type = in.readBits(4);
+		int type = in.readBits(4);
 		int ret = count-4;
 		switch(type) {
 			case TYPE_DYNAMIC_RANGE:

@@ -23,7 +23,7 @@ public class MovieExtendsHeaderBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int len = (version==1) ? 8 : 4;
+		int len = (version==1) ? 8 : 4;
 		fragmentDuration = in.readBytes(len);
 	}
 

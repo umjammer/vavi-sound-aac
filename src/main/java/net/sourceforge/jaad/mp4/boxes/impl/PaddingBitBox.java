@@ -24,7 +24,7 @@ public class PaddingBitBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int sampleCount = (int) (in.readBytes(4)+1)/2;
+		int sampleCount = (int) (in.readBytes(4)+1)/2;
 		pad1 = new int[sampleCount];
 		pad2 = new int[sampleCount];
 

@@ -25,7 +25,7 @@ public final class ADIFHeader {
 	}
 
 	public static ADIFHeader readHeader(BitStream in) throws AACException {
-		final ADIFHeader h = new ADIFHeader();
+		ADIFHeader h = new ADIFHeader();
 		h.decode(in);
 		return h;
 	}

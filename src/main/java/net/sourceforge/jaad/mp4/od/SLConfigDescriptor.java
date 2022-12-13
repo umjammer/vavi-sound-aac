@@ -22,7 +22,7 @@ public class SLConfigDescriptor extends Descriptor {
 	void decode(MP4InputStream in) throws IOException {
 		int tmp;
 
-		final boolean predefined = in.read()==1;
+		boolean predefined = in.read()==1;
 		if(!predefined) {
 			//flags
 			tmp = in.read();
@@ -53,8 +53,8 @@ public class SLConfigDescriptor extends Descriptor {
 			if(!useTimeStamp) {
 				if(useWallClockTimeStamp) wallClockTimeStamp = in.readBytes(4);
 				tmp = (int) Math.ceil((double) (2*timeStampLength)/8);
-				final long tmp2 = in.readBytes(tmp);
-				final long mask = ((1<<timeStampLength)-1);
+				long tmp2 = in.readBytes(tmp);
+				long mask = ((1L <<timeStampLength)-1);
 				startDecodingTimeStamp = (tmp2>>timeStampLength)&mask;
 				startCompositionTimeStamp = tmp2&mask;
 			}

@@ -38,7 +38,7 @@ public class MP4InputStream {
 	 * <code>RandomAccessFile</code>. It will have random access and seeking 
 	 * will be possible.
 	 * 
-	 * @param in a <code>RandomAccessFile</code> to read from
+	 * @param fin a <code>RandomAccessFile</code> to read from
 	 */
 	MP4InputStream(RandomAccessFile fin) {
 		this.fin = fin;
@@ -126,7 +126,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public void peek(final byte[] b, int off, int len) throws IOException {
+	public void peek(byte[] b, int off, int len) throws IOException {
 		int read = 0;
 		int i = 0;
 
@@ -180,7 +180,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public void read(final byte[] b, int off, int len) throws IOException {
+	public void read(byte[] b, int off, int len) throws IOException {
 		int read = 0;
 		int i = 0;
 
@@ -213,7 +213,7 @@ public class MP4InputStream {
 	 */
 	public long peekBytes(int n) throws IOException {
 		if(n<1||n>8) throw new IndexOutOfBoundsException("invalid number of bytes to read: "+n);
-		final byte[] b = new byte[n];
+		byte[] b = new byte[n];
 		peek(b, 0, n);
 
 		long result = 0;
@@ -237,7 +237,7 @@ public class MP4InputStream {
 	 */
 	public long readBytes(int n) throws IOException {
 		if(n<1||n>8) throw new IndexOutOfBoundsException("invalid number of bytes to read: "+n);
-		final byte[] b = new byte[n];
+		byte[] b = new byte[n];
 		read(b, 0, n);
 
 		long result = 0;
@@ -257,7 +257,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public void peekBytes(final byte[] b) throws IOException {
+	public void peekBytes(byte[] b) throws IOException {
 		peek(b, 0, b.length);
 	}
 
@@ -271,7 +271,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public void readBytes(final byte[] b) throws IOException {
+	public void readBytes(byte[] b) throws IOException {
 		read(b, 0, b.length);
 	}
 
@@ -287,7 +287,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public String readString(final int n) throws IOException {
+	public String readString(int n) throws IOException {
 		int i = -1;
 		int pos = 0;
 		char[] c = new char[n];
@@ -338,13 +338,13 @@ public class MP4InputStream {
 	 */
 	public String readUTFString(int max) throws IOException {
 		//read byte order mask
-		final byte[] bom = new byte[2];
+		byte[] bom = new byte[2];
 		read(bom, 0, 2);
-		if(bom[0]==0||bom[1]==0) return new String();
-		final int i = (bom[0]<<8)|bom[1];
+		if(bom[0]==0||bom[1]==0) return "";
+		int i = (bom[0]<<8)|bom[1];
 
 		//read null-terminated
-		final byte[] b = readTerminated(max-2, 0);
+		byte[] b = readTerminated(max-2, 0);
 		//copy bom
 		byte[] b2 = new byte[b.length+bom.length];
 		System.arraycopy(bom, 0, b2, 0, bom.length);
@@ -371,7 +371,7 @@ public class MP4InputStream {
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
 	public byte[] readTerminated(int max, int terminator) throws IOException {
-		final byte[] b = new byte[max];
+		byte[] b = new byte[max];
 		int pos = 0;
 		int i = 0;
 		while(pos<max&&i!=-1) {
@@ -395,10 +395,10 @@ public class MP4InputStream {
 	 * a multiple of eight
 	 */
 	public double readFixedPoint(int m, int n) throws IOException {
-		final int bits = m+n;
+		int bits = m+n;
 		if((bits%8)!=0) throw new IllegalArgumentException("number of bits is not a multiple of 8: "+(m+n));
-		final long l = readBytes(bits/8);
-		final double x = Math.pow(2, n);
+		long l = readBytes(bits/8);
+		double x = Math.pow(2, n);
 		double d = ((double) l)/x;
 		return d;
 	}
@@ -412,7 +412,7 @@ public class MP4InputStream {
 	 * @throws IOException If the end of the stream is detected, the input 
 	 * stream has been closed, or if some other I/O error occurs.
 	 */
-	public void skipBytes(final long n) throws IOException {
+	public void skipBytes(long n) throws IOException {
 		long l = 0;
 		while(l<n && !peeked.isEmpty()){
 			peeked.remove();
@@ -474,13 +474,13 @@ public class MP4InputStream {
 	 * @throws IOException if an I/O error occurs
 	 */
 	public boolean hasLeft() throws IOException {
-		final boolean b;
+		boolean b;
 		if(!peeked.isEmpty()){
 			b = true;
 		}else if(fin!=null){
 			b = fin.getFilePointer()<(fin.length()-1);
 		} else {
-			final int i = in.read();
+			int i = in.read();
 			b = (i!=-1);
 			if(b) peeked.add((byte) i);
 		}

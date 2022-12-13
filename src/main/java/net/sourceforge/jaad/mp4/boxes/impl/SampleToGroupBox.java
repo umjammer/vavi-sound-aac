@@ -33,7 +33,7 @@ public class SampleToGroupBox extends FullBox {
 		super.decode(in);
 
 		groupingType = in.readBytes(4);
-		final int entryCount = (int) in.readBytes(4);
+		int entryCount = (int) in.readBytes(4);
 		sampleCount = new long[entryCount];
 		groupDescriptionIndex = new long[entryCount];
 

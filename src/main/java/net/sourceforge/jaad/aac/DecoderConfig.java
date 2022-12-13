@@ -138,8 +138,8 @@ public class DecoderConfig implements Constants {
 	 * @return a DecoderConfig
 	 */
 	static DecoderConfig parseMP4DecoderSpecificInfo(byte[] data) throws AACException {
-		final BitStream in = new BitStream(data);
-		final DecoderConfig config = new DecoderConfig();
+		BitStream in = new BitStream(data);
+		DecoderConfig config = new DecoderConfig();
 
 		try {
 			config.profile = readProfile(in);
@@ -215,10 +215,10 @@ public class DecoderConfig implements Constants {
 	}
 
 	private static void readSyncExtension(BitStream in, DecoderConfig config) throws AACException {
-		final int type = in.readBits(11);
+		int type = in.readBits(11);
 		switch(type) {
 			case 0x2B7:
-				final Profile profile = Profile.forInt(in.readBits(5));
+				Profile profile = Profile.forInt(in.readBits(5));
 
 				if(profile.equals(Profile.AAC_SBR)) {
 					config.sbrPresent = in.readBool();

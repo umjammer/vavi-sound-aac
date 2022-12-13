@@ -24,7 +24,7 @@ public class SyncSampleBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(4);
+		int entryCount = (int) in.readBytes(4);
 		sampleNumbers = new long[entryCount];
 		for(int i = 0; i<entryCount; i++) {
 			sampleNumbers[i] = in.readBytes(4);
@@ -35,7 +35,7 @@ public class SyncSampleBox extends FullBox {
 	 * Gives the numbers of the samples for each entry that are random access
 	 * points in the stream.
 	 * 
-	 * @return a list of sample numbers
+	 * @return an array of sample numbers
 	 */
 	public long[] getSampleNumbers() {
 		return sampleNumbers;

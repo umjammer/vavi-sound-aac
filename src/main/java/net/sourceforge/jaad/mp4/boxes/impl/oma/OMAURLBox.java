@@ -1,6 +1,8 @@
 package net.sourceforge.jaad.mp4.boxes.impl.oma;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
@@ -22,9 +24,9 @@ public class OMAURLBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final byte[] b = new byte[(int) getLeft(in)];
+		byte[] b = new byte[(int) getLeft(in)];
 		in.readBytes(b);
-		content = new String(b, MP4InputStream.UTF8);
+		content = new String(b, StandardCharsets.UTF_8);
 	}
 
 	/**

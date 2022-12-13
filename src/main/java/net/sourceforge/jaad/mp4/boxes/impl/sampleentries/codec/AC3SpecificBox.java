@@ -22,7 +22,7 @@ public class AC3SpecificBox extends CodecSpecificBox {
 
 	@Override
 	public void decode(MP4InputStream in) throws IOException {
-		final long l = in.readBytes(3);
+		long l = in.readBytes(3);
 
 		//2 bits fscod
 		fscod = (int) ((l>>22)&0x3);

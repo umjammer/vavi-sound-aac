@@ -46,7 +46,7 @@ public class SyntacticElements implements Constants {
 	}
 
 	public void decode(BitStream in) throws AACException {
-		final int start = in.getPosition(); //should be 0
+		int start = in.getPosition(); //should be 0
 
 		int type;
 		Element prev = null;
@@ -182,13 +182,13 @@ public class SyntacticElements implements Constants {
 	}
 
 	public void process(FilterBank filterBank) throws AACException {
-		final Profile profile = config.getProfile();
-		final SampleFrequency sf = config.getSampleFrequency();
+		Profile profile = config.getProfile();
+		SampleFrequency sf = config.getSampleFrequency();
 		//final ChannelConfiguration channels = config.getChannelConfiguration();
 
 		int chs = config.getChannelConfiguration().getChannelCount();
 		if(chs==1&&psPresent) chs++;
-		final int mult = sbrPresent ? 2 : 1;
+		int mult = sbrPresent ? 2 : 1;
 		//only reallocate if needed
 		if(data==null||chs!=data.length||(mult*config.getFrameLength())!=data[0].length) data = new float[chs][mult*config.getFrameLength()];
 
@@ -217,13 +217,13 @@ public class SyntacticElements implements Constants {
 	}
 
 	private int processSingle(SCE_LFE scelfe, FilterBank filterBank, int channel, Profile profile, SampleFrequency sf) throws AACException {
-		final ICStream ics = scelfe.getICStream();
-		final ICSInfo info = ics.getInfo();
-		final LTPrediction ltp = info.getLTPrediction1();
-		final int elementID = scelfe.getElementInstanceTag();
+		ICStream ics = scelfe.getICStream();
+		ICSInfo info = ics.getInfo();
+		LTPrediction ltp = info.getLTPrediction1();
+		int elementID = scelfe.getElementInstanceTag();
 
 		//inverse quantization
-		final float[] iqData = ics.getInvQuantData();
+		float[] iqData = ics.getInvQuantData();
 
 		//prediction
 		if(profile.equals(Profile.AAC_MAIN)&&info.isICPredictionPresent()) info.getICPrediction().process(ics, iqData, sf);
@@ -253,7 +253,7 @@ public class SyntacticElements implements Constants {
 		int chs = 1;
 		if(sbrPresent&&config.isSBREnabled()) {
 			if(data[channel].length==config.getFrameLength()) LOGGER.log(Level.WARNING, "SBR data present, but buffer has normal size!");
-			final SBR sbr = scelfe.getSBR();
+			SBR sbr = scelfe.getSBR();
 			if(sbr.isPSUsed()) {
 				chs = 2;
 				scelfe.getSBR().process(data[channel], data[channel+1], false);
@@ -264,17 +264,17 @@ public class SyntacticElements implements Constants {
 	}
 
 	private void processPair(CPE cpe, FilterBank filterBank, int channel, Profile profile, SampleFrequency sf) throws AACException {
-		final ICStream ics1 = cpe.getLeftChannel();
-		final ICStream ics2 = cpe.getRightChannel();
-		final ICSInfo info1 = ics1.getInfo();
-		final ICSInfo info2 = ics2.getInfo();
-		final LTPrediction ltp1 = info1.getLTPrediction1();
-		final LTPrediction ltp2 = cpe.isCommonWindow() ? info1.getLTPrediction2() : info2.getLTPrediction1();
-		final int elementID = cpe.getElementInstanceTag();
+		ICStream ics1 = cpe.getLeftChannel();
+		ICStream ics2 = cpe.getRightChannel();
+		ICSInfo info1 = ics1.getInfo();
+		ICSInfo info2 = ics2.getInfo();
+		LTPrediction ltp1 = info1.getLTPrediction1();
+		LTPrediction ltp2 = cpe.isCommonWindow() ? info1.getLTPrediction2() : info2.getLTPrediction1();
+		int elementID = cpe.getElementInstanceTag();
 
 		//inverse quantization
-		final float[] iqData1 = ics1.getInvQuantData();
-		final float[] iqData2 = ics2.getInvQuantData();
+		float[] iqData1 = ics1.getInvQuantData();
+		float[] iqData2 = ics2.getInvQuantData();
 
 		//MS
 		if(cpe.isCommonWindow()&&cpe.isMSMaskPresent()) MS.process(cpe, iqData1, iqData2);
@@ -377,12 +377,12 @@ public class SyntacticElements implements Constants {
 	}
 
 	public void sendToOutput(SampleBuffer buffer) {
-		final boolean be = buffer.isBigEndian();
+		boolean be = buffer.isBigEndian();
 
-		final int chs = data.length;
-		final int mult = (sbrPresent&&config.isSBREnabled()) ? 2 : 1;
-		final int length = mult*config.getFrameLength();
-		final int freq = mult*config.getSampleFrequency().getFrequency();
+		int chs = data.length;
+		int mult = (sbrPresent&&config.isSBREnabled()) ? 2 : 1;
+		int length = mult*config.getFrameLength();
+		int freq = mult*config.getSampleFrequency().getFrequency();
 
 		byte[] b = buffer.getData();
 		if(b.length!=chs*length*2) b = new byte[chs*length*2];

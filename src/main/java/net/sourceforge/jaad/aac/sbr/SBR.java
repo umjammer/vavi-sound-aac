@@ -714,7 +714,7 @@ public class SBR implements Constants, net.sourceforge.jaad.aac.syntax.Constants
 
 	/* integer log[2](x): input range [0,10) */
 	private int sbr_log2(int val) {
-		int log2tab[] = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4};
+		int[] log2tab = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4};
 		if(val<10&&val>=0)
 			return log2tab[val];
 		else

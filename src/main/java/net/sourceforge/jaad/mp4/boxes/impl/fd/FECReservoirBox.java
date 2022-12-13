@@ -26,7 +26,7 @@ public class FECReservoirBox extends FullBox {
 	public void decode(MP4InputStream in) throws IOException {
 		super.decode(in);
 
-		final int entryCount = (int) in.readBytes(2);
+		int entryCount = (int) in.readBytes(2);
 		itemIDs = new int[entryCount];
 		symbolCounts = new long[entryCount];
 		for(int i = 0; i<entryCount; i++) {

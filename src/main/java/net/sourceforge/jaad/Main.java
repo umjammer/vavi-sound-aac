@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -33,7 +35,7 @@ public class Main {
 			else decodeAAC(args[0], args[1]);
 		}
 		catch(Exception e) {
-			System.err.println("error while decoding: "+e.toString());
+			System.err.println("error while decoding: "+ e);
 		}
 	}
 
@@ -45,18 +47,18 @@ public class Main {
 	private static void decodeMP4(String in, String out) throws Exception {
 		WaveFileWriter wav = null;
 		try {
-			final MP4Container cont = new MP4Container(new RandomAccessFile(in, "r"));
-			final Movie movie = cont.getMovie();
-			final List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
+			MP4Container cont = new MP4Container(new RandomAccessFile(in, "r"));
+			Movie movie = cont.getMovie();
+			List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
 			if(tracks.isEmpty()) throw new Exception("movie does not contain any AAC track");
-			final AudioTrack track = (AudioTrack) tracks.get(0);
+			AudioTrack track = (AudioTrack) tracks.get(0);
 
 			wav = new WaveFileWriter(new File(out), track.getSampleRate(), track.getChannelCount(), track.getSampleSize());
 
-			final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+			Decoder dec = new Decoder(track.getDecoderSpecificInfo());
 
 			Frame frame;
-			final SampleBuffer buf = new SampleBuffer();
+			SampleBuffer buf = new SampleBuffer();
 			while(track.hasMoreFrames()) {
 				frame = track.readNextFrame();
 				dec.decodeFrame(frame.getData(), buf);
@@ -71,10 +73,10 @@ public class Main {
 	private static void decodeAAC(String in, String out) throws IOException {
 		WaveFileWriter wav = null;
 		try {
-			final ADTSDemultiplexer adts = new ADTSDemultiplexer(new FileInputStream(in));
-			final Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
+			ADTSDemultiplexer adts = new ADTSDemultiplexer(Files.newInputStream(Paths.get(in)));
+			Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
 
-			final SampleBuffer buf = new SampleBuffer();
+			SampleBuffer buf = new SampleBuffer();
 			byte[] b;
 			while(true) {
 				b = adts.readNextFrame();

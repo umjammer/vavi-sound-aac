@@ -24,7 +24,6 @@ import net.sourceforge.jaad.mp4.boxes.impl.DecodingTimeToSampleBox;
 import net.sourceforge.jaad.mp4.boxes.impl.TrackHeaderBox;
 import net.sourceforge.jaad.mp4.od.DecoderSpecificInfo;
 import net.sourceforge.jaad.mp4.boxes.impl.ESDBox;
-import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.SampleEntry;
 import net.sourceforge.jaad.mp4.od.Descriptor;
 
 /**
@@ -59,12 +58,12 @@ public abstract class Track {
 
 		tkhd = (TrackHeaderBox) trak.getChild(BoxTypes.TRACK_HEADER_BOX);
 
-		final Box mdia = trak.getChild(BoxTypes.MEDIA_BOX);
+		Box mdia = trak.getChild(BoxTypes.MEDIA_BOX);
 		mdhd = (MediaHeaderBox) mdia.getChild(BoxTypes.MEDIA_HEADER_BOX);
-		final Box minf = mdia.getChild(BoxTypes.MEDIA_INFORMATION_BOX);
+		Box minf = mdia.getChild(BoxTypes.MEDIA_INFORMATION_BOX);
 
-		final Box dinf = minf.getChild(BoxTypes.DATA_INFORMATION_BOX);
-		final DataReferenceBox dref = (DataReferenceBox) dinf.getChild(BoxTypes.DATA_REFERENCE_BOX);
+		Box dinf = minf.getChild(BoxTypes.DATA_INFORMATION_BOX);
+		DataReferenceBox dref = (DataReferenceBox) dinf.getChild(BoxTypes.DATA_REFERENCE_BOX);
 		//TODO: support URNs
 		if(dref.hasChild(BoxTypes.DATA_ENTRY_URL_BOX)) {
 			DataEntryUrlBox url = (DataEntryUrlBox) dref.getChild(BoxTypes.DATA_ENTRY_URL_BOX);
@@ -90,7 +89,7 @@ public abstract class Track {
 		}
 
 		//sample table
-		final Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
+		Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
 		if(stbl.hasChildren()) {
 			frames = new ArrayList<Frame>();
 			parseSampleTable(stbl);
@@ -100,28 +99,28 @@ public abstract class Track {
 	}
 
 	private void parseSampleTable(Box stbl) {
-		final double timeScale = mdhd.getTimeScale();
-		final Type type = getType();
+		double timeScale = mdhd.getTimeScale();
+		Type type = getType();
 
 		//sample sizes
-		final long[] sampleSizes = ((SampleSizeBox) stbl.getChild(BoxTypes.SAMPLE_SIZE_BOX)).getSampleSizes();
+		long[] sampleSizes = ((SampleSizeBox) stbl.getChild(BoxTypes.SAMPLE_SIZE_BOX)).getSampleSizes();
 
 		//chunk offsets
-		final ChunkOffsetBox stco;
+		ChunkOffsetBox stco;
 		if(stbl.hasChild(BoxTypes.CHUNK_OFFSET_BOX)) stco = (ChunkOffsetBox) stbl.getChild(BoxTypes.CHUNK_OFFSET_BOX);
 		else stco = (ChunkOffsetBox) stbl.getChild(BoxTypes.CHUNK_LARGE_OFFSET_BOX);
-		final long[] chunkOffsets = stco.getChunks();
+		long[] chunkOffsets = stco.getChunks();
 
 		//samples to chunks
-		final SampleToChunkBox stsc = ((SampleToChunkBox) stbl.getChild(BoxTypes.SAMPLE_TO_CHUNK_BOX));
-		final long[] firstChunks = stsc.getFirstChunks();
-		final long[] samplesPerChunk = stsc.getSamplesPerChunk();
+		SampleToChunkBox stsc = ((SampleToChunkBox) stbl.getChild(BoxTypes.SAMPLE_TO_CHUNK_BOX));
+		long[] firstChunks = stsc.getFirstChunks();
+		long[] samplesPerChunk = stsc.getSamplesPerChunk();
 
 		//sample durations/timestamps
-		final DecodingTimeToSampleBox stts = (DecodingTimeToSampleBox) stbl.getChild(BoxTypes.DECODING_TIME_TO_SAMPLE_BOX);
-		final long[] sampleCounts = stts.getSampleCounts();
-		final long[] sampleDeltas = stts.getSampleDeltas();
-		final long[] timeOffsets = new long[sampleSizes.length];
+		DecodingTimeToSampleBox stts = (DecodingTimeToSampleBox) stbl.getChild(BoxTypes.DECODING_TIME_TO_SAMPLE_BOX);
+		long[] sampleCounts = stts.getSampleCounts();
+		long[] sampleDeltas = stts.getSampleDeltas();
+		long[] timeOffsets = new long[sampleSizes.length];
 		long tmp = 0;
 		int off = 0;
 		for(int i = 0; i<sampleCounts.length; i++) {
@@ -164,8 +163,8 @@ public abstract class Track {
 
 	//TODO: implement other entry descriptors
 	protected void findDecoderSpecificInfo(ESDBox esds) {
-		final Descriptor ed = esds.getEntryDescriptor();
-		final List<Descriptor> children = ed.getChildren();
+		Descriptor ed = esds.getEntryDescriptor();
+		List<Descriptor> children = ed.getChildren();
 		List<Descriptor> children2;
 
 		for(Descriptor e : children) {
@@ -330,7 +329,7 @@ public abstract class Track {
 		if(hasMoreFrames()) {
 			frame = frames.get(currentFrame);
 
-			final long diff = frame.getOffset()-in.getOffset();
+			long diff = frame.getOffset()-in.getOffset();
 			if(diff>0) in.skipBytes(diff);
 			else if(diff<0) {
 				if(in.hasRandomAccess()) in.seek(frame.getOffset());
@@ -340,7 +339,7 @@ public abstract class Track {
 				}
 			}
 
-			final byte[] b = new byte[(int) frame.getSize()];
+			byte[] b = new byte[(int) frame.getSize()];
 			try {
 				in.readBytes(b);
 			}

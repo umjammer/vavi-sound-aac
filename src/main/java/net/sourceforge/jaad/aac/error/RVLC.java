@@ -15,15 +15,15 @@ public class RVLC implements RVLCTables {
 	private static final int ESCAPE_FLAG = 7;
 
 	public void decode(BitStream in, ICStream ics, int[][] scaleFactors) throws AACException {
-		final int bits = (ics.getInfo().isEightShortFrame()) ? 11 : 9;
-		final boolean sfConcealment = in.readBool();
-		final int revGlobalGain = in.readBits(8);
-		final int rvlcSFLen = in.readBits(bits);
+		int bits = (ics.getInfo().isEightShortFrame()) ? 11 : 9;
+		boolean sfConcealment = in.readBool();
+		int revGlobalGain = in.readBits(8);
+		int rvlcSFLen = in.readBits(bits);
 
-		final ICSInfo info = ics.getInfo();
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
-		final int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
+		ICSInfo info = ics.getInfo();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
+		int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
 
 		int sf = ics.getGlobalGain();
 		int intensityPosition = 0;
@@ -68,12 +68,12 @@ public class RVLC implements RVLCTables {
 	}
 
 	private void decodeEscapes(BitStream in, ICStream ics, int[][] scaleFactors) throws AACException {
-		final ICSInfo info = ics.getInfo();
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
-		final int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
+		ICSInfo info = ics.getInfo();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
+		int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
 
-		final int escapesLen = in.readBits(8);
+		int escapesLen = in.readBits(8);
 
 		boolean noiseUsed = false;
 

@@ -6,10 +6,7 @@ import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import net.sourceforge.jaad.mp4.api.Brand;
 import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.boxes.Box;
@@ -121,7 +118,7 @@ public class MP4Container {
 
 	public Brand[] getCompatibleBrands() {
 		if(compatible==null) {
-			final String[] s = ftyp.getCompatibleBrands();
+			String[] s = ftyp.getCompatibleBrands();
 			compatible = new Brand[s.length];
 			for(int i = 0; i<s.length; i++) {
 				compatible[i] = Brand.forID(s[i]);

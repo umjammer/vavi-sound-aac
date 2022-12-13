@@ -22,9 +22,9 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.*;
 public abstract class DecoderInfo {
 
 	static DecoderInfo parse(CodecSpecificBox css) {
-		final long l = css.getType();
+		long l = css.getType();
 
-		final DecoderInfo info;
+		DecoderInfo info;
 		if(l==BoxTypes.H263_SPECIFIC_BOX) info = new H263DecoderInfo(css);
 		else if(l==BoxTypes.AMR_SPECIFIC_BOX) info = new AMRDecoderInfo(css);
 		else if(l==BoxTypes.EVRC_SPECIFIC_BOX) info = new EVRCDecoderInfo(css);

@@ -51,7 +51,6 @@ class AACAudioInputStream extends AsynchronousAudioInputStream {
 		}
 		catch(IOException e) {
 			buffer.close();
-			return;
 		}
 	}
 }

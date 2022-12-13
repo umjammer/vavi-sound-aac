@@ -29,7 +29,7 @@ public class ObjectDescriptor extends Descriptor {
 
 	void decode(MP4InputStream in) throws IOException {
 		//10 bits objectDescriptorID, 1 bit url flag, 5 bits reserved
-		final int x = (int) in.readBytes(2);
+		int x = (int) in.readBytes(2);
 		objectDescriptorID = (x>>6)&0x3FF;
 		urlPresent = ((x>>5)&1)==1;
 

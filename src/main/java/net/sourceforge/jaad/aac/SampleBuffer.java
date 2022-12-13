@@ -118,8 +118,8 @@ public class SampleBuffer {
 			encodedBitrate = 0;
 		}
 		else {
-			final int bytesPerSample = bitsPerSample/8; //usually 2
-			final int samplesPerChannel = data.length/(bytesPerSample*channels); //=1024
+			int bytesPerSample = bitsPerSample/8; //usually 2
+			int samplesPerChannel = data.length/(bytesPerSample*channels); //=1024
 			length = (double) samplesPerChannel/(double) sampleRate;
 			bitrate = (double) (samplesPerChannel*bitsPerSample*channels)/length;
 			encodedBitrate = (double) bitsRead/length;

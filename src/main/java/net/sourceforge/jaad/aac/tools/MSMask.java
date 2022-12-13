@@ -33,9 +33,9 @@ public enum MSMask {
 		}
 		return m;
 	}
-	private int num;
+	private final int num;
 
-	private MSMask(int num) {
+	MSMask(int num) {
 		this.num = num;
 	}
 }

@@ -74,15 +74,15 @@ class CCE extends Element implements Constants {
 		couplingPoint += in.readBit();
 		couplingPoint |= (couplingPoint>>1);
 
-		final boolean sign = in.readBool();
-		final double scale = CCE_SCALE[in.readBits(2)];
+		boolean sign = in.readBool();
+		double scale = CCE_SCALE[in.readBits(2)];
 
 		ics.decode(in, false, conf);
-		final ICSInfo info = ics.getInfo();
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
+		ICSInfo info = ics.getInfo();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
 		//TODO:
-		final int[][] sfbCB = null;//ics.getSectionData().getSfbCB();
+		int[][] sfbCB = null;//ics.getSectionData().getSfbCB();
 
 		for(i = 0; i<gainCount; i++) {
 			int idx = 0;
@@ -125,19 +125,19 @@ class CCE extends Element implements Constants {
 	}
 
 	void applyIndependentCoupling(int index, float[] data) {
-		final double g = gain[index][0];
+		double g = gain[index][0];
 		for(int i = 0; i<data.length; i++) {
 			data[i] += g*iqData[i];
 		}
 	}
 
 	void applyDependentCoupling(int index, float[] data) {
-		final ICSInfo info = ics.getInfo();
-		final int[] swbOffsets = info.getSWBOffsets();
-		final int windowGroupCount = info.getWindowGroupCount();
-		final int maxSFB = info.getMaxSFB();
+		ICSInfo info = ics.getInfo();
+		int[] swbOffsets = info.getSWBOffsets();
+		int windowGroupCount = info.getWindowGroupCount();
+		int maxSFB = info.getMaxSFB();
 		//TODO:
-		final int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
+		int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
 
 		int srcOff = 0;
 		int dstOff = 0;

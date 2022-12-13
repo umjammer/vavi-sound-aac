@@ -19,7 +19,7 @@ public class MP4Info {
 			if(args.length<1) printUsage();
 			else {
 				boolean boxes = false;
-				final String file;
+				String file;
 				if(args.length>1) {
 					if(args[0].equals("-b")) boxes = true;
 					else printUsage();
@@ -27,33 +27,33 @@ public class MP4Info {
 				}
 				else file = args[0];
 
-				final MP4Container cont = new MP4Container(new RandomAccessFile(file, "r"));
-				final Movie movie = cont.getMovie();
+				MP4Container cont = new MP4Container(new RandomAccessFile(file, "r"));
+				Movie movie = cont.getMovie();
 				System.out.println("Movie:");
 
-				final List<Track> tracks = movie.getTracks();
+				List<Track> tracks = movie.getTracks();
 				Track t;
 				for(int i = 0; i<tracks.size(); i++) {
 					t = tracks.get(i);
 					System.out.println("\tTrack "+i+": "+t.getCodec()+" (language: "+t.getLanguage()+", created: "+t.getCreationTime()+")");
 
-					final Protection p = t.getProtection();
+					Protection p = t.getProtection();
 					if(p!=null) System.out.println("\t\tprotection: "+p.getScheme());
 				}
 
 				if(movie.containsMetaData()) {
 					System.out.println("\tMetadata:");
-					final Map<MetaData.Field<?>, Object> data = movie.getMetaData().getAll();
+					Map<MetaData.Field<?>, Object> data = movie.getMetaData().getAll();
 					for(MetaData.Field<?> key : data.keySet()) {
 						if(key.equals(MetaData.Field.COVER_ARTWORKS)) {
-							final List<?> l = (List<?>) data.get(MetaData.Field.COVER_ARTWORKS);
+							List<?> l = (List<?>) data.get(MetaData.Field.COVER_ARTWORKS);
 							System.out.println("\t\t"+l.size()+" Cover Artworks present");
 						}
 						else System.out.println("\t\t"+key.getName()+" = "+data.get(key));
 					}
 				}
 
-				final List<Protection> protections = movie.getProtections();
+				List<Protection> protections = movie.getProtections();
 				if(protections.size()>0) {
 					System.out.println("\tprotections:");
 					for(Protection p : protections) {
@@ -72,7 +72,7 @@ public class MP4Info {
 		}
 		catch(Exception e) {
 			e.printStackTrace();
-			System.err.println("error while reading file: "+e.toString());
+			System.err.println("error while reading file: "+ e);
 		}
 	}
 
@@ -82,12 +82,12 @@ public class MP4Info {
 	}
 
 	private static void printBox(Box box, int level) {
-		final StringBuilder sb = new StringBuilder();
+		StringBuilder sb = new StringBuilder();
 		for(int i = 0; i<level; i++) {
 			sb.append("  ");
 		}
 		sb.append(box.toString());
-		System.out.println(sb.toString());
+		System.out.println(sb);
 
 		for(Box child : box.getChildren()) {
 			printBox(child, level+1);

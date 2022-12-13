@@ -18,7 +18,7 @@ class ID3Tag {
 
 		//id3v2 header
 		tag = (in.read()<<16)|(in.read()<<8)|in.read(); //'ID3'
-		final int majorVersion = in.read();
+		int majorVersion = in.read();
 		in.read(); //revision
 		flags = in.read();
 		len = readSynch(in);
@@ -26,7 +26,7 @@ class ID3Tag {
 		if(tag==ID3_TAG&&majorVersion<=SUPPORTED_VERSION) {
 			if((flags&0x40)==0x40) {
 				//extended header; TODO: parse
-				final int extSize = readSynch(in);
+				int extSize = readSynch(in);
 				in.skipBytes(extSize-6);
 			}
 

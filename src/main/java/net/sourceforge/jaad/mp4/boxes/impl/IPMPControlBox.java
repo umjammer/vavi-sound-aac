@@ -36,7 +36,7 @@ public class IPMPControlBox extends FullBox {
 
 		toolList = /*(IPMPToolListDescriptor)*/ Descriptor.createDescriptor(in);
 
-		final int count = in.read();
+		int count = in.read();
 
 		ipmpDescriptors = new Descriptor[count];
 		for(int i = 0; i<count; i++) {

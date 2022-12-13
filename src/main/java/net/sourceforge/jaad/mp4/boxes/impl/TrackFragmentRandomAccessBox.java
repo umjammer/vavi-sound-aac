@@ -20,13 +20,13 @@ public class TrackFragmentRandomAccessBox extends FullBox {
 
 		trackID = in.readBytes(4);
 		//26 bits reserved, 2 bits trafSizeLen, 2 bits trunSizeLen, 2 bits sampleSizeLen
-		final long l = in.readBytes(4);
-		final int trafNumberLen = (int) ((l>>4)&0x3)+1;
-		final int trunNumberLen = (int) ((l>>2)&0x3)+1;
-		final int sampleNumberLen = (int) (l&0x3)+1;
+		long l = in.readBytes(4);
+		int trafNumberLen = (int) ((l>>4)&0x3)+1;
+		int trunNumberLen = (int) ((l>>2)&0x3)+1;
+		int sampleNumberLen = (int) (l&0x3)+1;
 		entryCount = (int) in.readBytes(4);
 
-		final int len = (version==1) ? 8 : 4;
+		int len = (version==1) ? 8 : 4;
 
 		for(int i = 0; i<entryCount; i++) {
 			times[i] = in.readBytes(len);

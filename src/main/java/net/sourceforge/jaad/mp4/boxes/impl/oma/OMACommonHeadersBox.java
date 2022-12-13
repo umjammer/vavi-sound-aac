@@ -25,8 +25,8 @@ public class OMACommonHeadersBox extends FullBox {
 		encryptionMethod = in.read();
 		paddingScheme = in.read();
 		plaintextLength = in.readBytes(8);
-		final int contentIDLength = (int) in.readBytes(2);
-		final int rightsIssuerURLLength = (int) in.readBytes(2);
+		int contentIDLength = (int) in.readBytes(2);
+		int rightsIssuerURLLength = (int) in.readBytes(2);
 		int textualHeadersLength = (int) in.readBytes(2);
 
 		contentID = new byte[contentIDLength];

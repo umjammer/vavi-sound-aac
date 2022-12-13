@@ -25,7 +25,7 @@ public class AVCSpecificBox extends CodecSpecificBox {
 
 		int len;
 		//3 bits reserved, 5 bits number of sequence parameter sets
-		final int sequenceParameterSets = in.read()&31;
+		int sequenceParameterSets = in.read()&31;
 
 		sequenceParameterSetNALUnit = new byte[sequenceParameterSets][];
 		for(int i = 0; i<sequenceParameterSets; i++) {
@@ -34,7 +34,7 @@ public class AVCSpecificBox extends CodecSpecificBox {
 			in.readBytes(sequenceParameterSetNALUnit[i]);
 		}
 
-		final int pictureParameterSets = in.read();
+		int pictureParameterSets = in.read();
 
 		pictureParameterSetNALUnit = new byte[pictureParameterSets][];
 		for(int i = 0; i<pictureParameterSets; i++) {

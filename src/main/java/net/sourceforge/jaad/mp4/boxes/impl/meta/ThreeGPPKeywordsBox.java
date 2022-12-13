@@ -15,7 +15,7 @@ public class ThreeGPPKeywordsBox extends ThreeGPPMetadataBox {
 	public void decode(MP4InputStream in) throws IOException {
 		decodeCommon(in);
 
-		final int count = in.read();
+		int count = in.read();
 		keywords = new String[count];
 
 		int len;

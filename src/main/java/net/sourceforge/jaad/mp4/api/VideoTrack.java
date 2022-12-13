@@ -1,6 +1,5 @@
 package net.sourceforge.jaad.mp4.api;
 
-import java.util.List;
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
@@ -20,7 +19,7 @@ public class VideoTrack extends Track {
 		UNKNOWN_VIDEO_CODEC;
 
 		static Codec forType(long type) {
-			final Codec ac;
+			Codec ac;
 			if(type==BoxTypes.AVC_SAMPLE_ENTRY) ac = AVC;
 			else if(type==BoxTypes.H263_SAMPLE_ENTRY) ac = H263;
 			else if(type==BoxTypes.MP4V_SAMPLE_ENTRY) ac = MP4_ASP;
@@ -35,16 +34,16 @@ public class VideoTrack extends Track {
 	public VideoTrack(Box trak, MP4InputStream in) {
 		super(trak, in);
 
-		final Box minf = trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.MEDIA_INFORMATION_BOX);
+		Box minf = trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.MEDIA_INFORMATION_BOX);
 		vmhd = (VideoMediaHeaderBox) minf.getChild(BoxTypes.VIDEO_MEDIA_HEADER_BOX);
 
-		final Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
+		Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
 
 		//sample descriptions: 'mp4v' has an ESDBox, all others have a CodecSpecificBox
-		final SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
+		SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
 		if(stsd.getChildren().get(0) instanceof VideoSampleEntry) {
 			sampleEntry = (VideoSampleEntry) stsd.getChildren().get(0);
-			final long type = sampleEntry.getType();
+			long type = sampleEntry.getType();
 			if(type==BoxTypes.MP4V_SAMPLE_ENTRY) findDecoderSpecificInfo((ESDBox) sampleEntry.getChild(BoxTypes.ESD_BOX));
 			else if(type==BoxTypes.ENCRYPTED_VIDEO_SAMPLE_ENTRY||type==BoxTypes.DRMS_SAMPLE_ENTRY) {
 				findDecoderSpecificInfo((ESDBox) sampleEntry.getChild(BoxTypes.ESD_BOX));

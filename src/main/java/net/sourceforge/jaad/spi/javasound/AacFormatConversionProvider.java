@@ -9,11 +9,9 @@ package net.sourceforge.jaad.spi.javasound;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.sound.sampled.spi.FormatConversionProvider;
 
 
@@ -84,9 +82,9 @@ logger.info("convert1: " + type);
                             return new AACAudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         }
                     } else if (sourceFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED) && targetFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING) {
-                        throw new IllegalArgumentException("unable to convert " + sourceFormat.toString() + " to " + targetFormat.toString());
+                        throw new IllegalArgumentException("unable to convert " + sourceFormat + " to " + targetFormat);
                     } else {
-                        throw new IllegalArgumentException("unable to convert " + sourceFormat.toString() + " to " + targetFormat.toString());
+                        throw new IllegalArgumentException("unable to convert " + sourceFormat + " to " + targetFormat.toString());
                     }
                 } else {
                     throw new IllegalArgumentException("target format not found");
@@ -119,9 +117,9 @@ logger.info("convert2: " + type);
                             return new AACAudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         }
                     } else if (sourceFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED) && targetFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING) {
-                        throw new IllegalArgumentException("unable to convert " + sourceFormat.toString() + " to " + targetFormat.toString());
+                        throw new IllegalArgumentException("unable to convert " + sourceFormat + " to " + targetFormat);
                     } else {
-                        throw new IllegalArgumentException("unable to convert " + sourceFormat.toString() + " to " + targetFormat.toString());
+                        throw new IllegalArgumentException("unable to convert " + sourceFormat + " to " + targetFormat);
                     }
                 } else {
                     throw new IllegalArgumentException("target format not found");
