@@ -1,23 +1,24 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
+import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
-import net.sourceforge.jaad.mp4.boxes.impl.samplegroupentries.*;
-import java.io.IOException;
+import net.sourceforge.jaad.mp4.boxes.impl.samplegroupentries.SampleGroupDescriptionEntry;
 
 
 /**
  * This description table gives information about the characteristics of sample
  * groups. The descriptive information is any other information needed to define
  * or characterize the sample group.
- *
+ * <p>
  * There may be multiple instances of this box if there is more than one sample
  * grouping for the samples in a track. Each instance of the
  * SampleGroupDescriptionBox has a type code that distinguishes different sample
  * groupings. Within a track, there shall be at most one instance of this box
  * with a particular grouping type. The associated SampleToGroupBox shall
  * indicate the same value for the grouping type.
- *
+ * <p>
  * The information is stored in the sample group description box after the
  * entry-count. An abstract entry type is defined and sample groupings shall
  * define derived types to represent the description of each sample group. For
@@ -28,23 +29,23 @@ import java.io.IOException;
  */
 public class SampleGroupDescriptionBox extends FullBox {
 
-	private long groupingType, defaultLength, descriptionLength;
-	private SampleGroupDescriptionEntry[] entries;
+    private long groupingType, defaultLength, descriptionLength;
+    private SampleGroupDescriptionEntry[] entries;
 
-	public SampleGroupDescriptionBox() {
-		super("Sample Group Description Box");
-	}
+    public SampleGroupDescriptionBox() {
+        super("Sample Group Description Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
-		groupingType = in.readBytes(4);
-		defaultLength = (version==1)?in.readBytes(4):0;
+        groupingType = in.readBytes(4);
+        defaultLength = (version == 1) ? in.readBytes(4) : 0;
 
-		int entryCount = (int) in.readBytes(4);
+        int entryCount = (int) in.readBytes(4);
 
-		//TODO!
+        //TODO!
 		/*final HandlerBox hdlr = (HandlerBox) parent.getParent().getParent().getChild(BoxTypes.HANDLER_BOX);
 		final int handlerType = (int) hdlr.getHandlerType();
 		
@@ -73,29 +74,29 @@ public class SampleGroupDescriptionBox extends FullBox {
 		if(entries[i]!=null) left -= entries[i].getSize();
 		}
 		}*/
-	}
+    }
 
-	/**
-	 * The grouping type is an integer that identifies the SampleToGroup box
-	 * that is associated with this sample group description.
-	 */
-	public long getGroupingType() {
-		return groupingType;
-	}
+    /**
+     * The grouping type is an integer that identifies the SampleToGroup box
+     * that is associated with this sample group description.
+     */
+    public long getGroupingType() {
+        return groupingType;
+    }
 
-	/**
-	 * The default length indicates the length of every group entry (if the
-	 * length is constant), or zero (0) if it is variable.
-	 */
-	public long getDefaultLength() {
-		return defaultLength;
-	}
+    /**
+     * The default length indicates the length of every group entry (if the
+     * length is constant), or zero (0) if it is variable.
+     */
+    public long getDefaultLength() {
+        return defaultLength;
+    }
 
-	/**
-	 * The description length indicates the length of an individual group entry,
-	 * in the case it varies from entry to entry and default length is therefore 0.
-	 */
-	public long getDescriptionLength() {
-		return descriptionLength;
-	}
+    /**
+     * The description length indicates the length of an individual group entry,
+     * in the case it varies from entry to entry and default length is therefore 0.
+     */
+    public long getDescriptionLength() {
+        return descriptionLength;
+    }
 }

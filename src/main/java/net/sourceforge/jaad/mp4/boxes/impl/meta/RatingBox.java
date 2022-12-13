@@ -8,35 +8,35 @@ import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 import net.sourceforge.jaad.mp4.boxes.Utils;
 
+
 public class RatingBox extends FullBox {
 
-	private String languageCode, rating;
+    private String languageCode, rating;
 
-	public RatingBox() {
-		super("Rating Box");
-	}
+    public RatingBox() {
+        super("Rating Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		//3gpp or iTunes
-		if(parent.getType()==BoxTypes.USER_DATA_BOX) {
-			super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        //3gpp or iTunes
+        if (parent.getType() == BoxTypes.USER_DATA_BOX) {
+            super.decode(in);
 
-			//TODO: what to do with both?
-			long entity = in.readBytes(4);
-			long criteria = in.readBytes(4);
-			languageCode = Utils.getLanguageCode(in.readBytes(2));
-			byte[] b = in.readTerminated((int) getLeft(in), 0);
-			rating = new String(b, StandardCharsets.UTF_8);
-		}
-		else readChildren(in);
-	}
+            //TODO: what to do with both?
+            long entity = in.readBytes(4);
+            long criteria = in.readBytes(4);
+            languageCode = Utils.getLanguageCode(in.readBytes(2));
+            byte[] b = in.readTerminated((int) getLeft(in), 0);
+            rating = new String(b, StandardCharsets.UTF_8);
+        } else readChildren(in);
+    }
 
-	public String getLanguageCode() {
-		return languageCode;
-	}
+    public String getLanguageCode() {
+        return languageCode;
+    }
 
-	public String getRating() {
-		return rating;
-	}
+    public String getRating() {
+        return rating;
+    }
 }

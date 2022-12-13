@@ -7,61 +7,65 @@ import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.impl.OriginalFormatBox;
 import net.sourceforge.jaad.mp4.boxes.impl.SchemeTypeBox;
 
+
 /**
  * This class contains information about a DRM system.
  */
 public abstract class Protection {
 
-	public enum Scheme {
+    public enum Scheme {
 
-		ITUNES_FAIR_PLAY(1769239918),
-		UNKNOWN(-1);
-		private final long type;
+        ITUNES_FAIR_PLAY(1769239918),
+        UNKNOWN(-1);
+        private final long type;
 
-		Scheme(long type) {
-			this.type = type;
-		}
-	}
+        Scheme(long type) {
+            this.type = type;
+        }
+    }
 
-	static Protection parse(Box sinf) {
-		Protection p = null;
-		if(sinf.hasChild(BoxTypes.SCHEME_TYPE_BOX)) {
-			SchemeTypeBox schm = (SchemeTypeBox) sinf.getChild(BoxTypes.SCHEME_TYPE_BOX);
-			long l = schm.getSchemeType();
-			if(l==Scheme.ITUNES_FAIR_PLAY.type) p = new ITunesProtection(sinf);
-		}
+    static Protection parse(Box sinf) {
+        Protection p = null;
+        if (sinf.hasChild(BoxTypes.SCHEME_TYPE_BOX)) {
+            SchemeTypeBox schm = (SchemeTypeBox) sinf.getChild(BoxTypes.SCHEME_TYPE_BOX);
+            long l = schm.getSchemeType();
+            if (l == Scheme.ITUNES_FAIR_PLAY.type) p = new ITunesProtection(sinf);
+        }
 
-		if(p==null) p = new UnknownProtection(sinf);
-		return p;
-	}
-	private final Codec originalFormat;
+        if (p == null) p = new UnknownProtection(sinf);
+        return p;
+    }
 
-	protected Protection(Box sinf) {
-		//original format
-		long type = ((OriginalFormatBox) sinf.getChild(BoxTypes.ORIGINAL_FORMAT_BOX)).getOriginalFormat();
-		Codec c;
-		//TODO: currently it tests for audio and video codec, can do this any other way?
-		if(!(c = AudioTrack.AudioCodec.forType(type)).equals(AudioTrack.AudioCodec.UNKNOWN_AUDIO_CODEC)) originalFormat = c;
-		else if(!(c = VideoTrack.VideoCodec.forType(type)).equals(VideoTrack.VideoCodec.UNKNOWN_VIDEO_CODEC)) originalFormat = c;
-		else originalFormat = null;
-	}
+    private final Codec originalFormat;
 
-	Codec getOriginalFormat() {
-		return originalFormat;
-	}
+    protected Protection(Box sinf) {
+        //original format
+        long type = ((OriginalFormatBox) sinf.getChild(BoxTypes.ORIGINAL_FORMAT_BOX)).getOriginalFormat();
+        Codec c;
+        //TODO: currently it tests for audio and video codec, can do this any other way?
+        if (!(c = AudioTrack.AudioCodec.forType(type)).equals(AudioTrack.AudioCodec.UNKNOWN_AUDIO_CODEC))
+            originalFormat = c;
+        else if (!(c = VideoTrack.VideoCodec.forType(type)).equals(VideoTrack.VideoCodec.UNKNOWN_VIDEO_CODEC))
+            originalFormat = c;
+        else originalFormat = null;
+    }
 
-	public abstract Scheme getScheme();
+    Codec getOriginalFormat() {
+        return originalFormat;
+    }
 
-	//default implementation for unknown protection schemes
-	private static class UnknownProtection extends Protection {
+    public abstract Scheme getScheme();
 
-		UnknownProtection(Box sinf) {
-			super(sinf);
-		}
+    //default implementation for unknown protection schemes
+    private static class UnknownProtection extends Protection {
 
-		@Override
-		public Scheme getScheme() {
-			return Scheme.UNKNOWN;
-		}
-	}
+        UnknownProtection(Box sinf) {
+            super(sinf);
+        }
+
+        @Override
+        public Scheme getScheme() {
+            return Scheme.UNKNOWN;
+        }
+    }
 }

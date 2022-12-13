@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * This box may be present in any visual sample entry. This box indicates the
@@ -25,84 +27,85 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  * in a sequence. The offset values are positive when the desired visual centre
  * is below or to the right of the image centre, and negative for offsets above
  * or to the left.
- * 
+ *
  * @author in-somnia
  */
 public class SampleScaleBox extends FullBox {
 
-	private boolean constrained;
-	private int scaleMethod, displayCenterX, displayCenterY;
+    private boolean constrained;
+    private int scaleMethod, displayCenterX, displayCenterY;
 
-	public SampleScaleBox() {
-		super("Sample Scale Box");
-	}
+    public SampleScaleBox() {
+        super("Sample Scale Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
-		//7 bits reserved, 1 bit flag
-		constrained = (in.read()&1)==1;
+        //7 bits reserved, 1 bit flag
+        constrained = (in.read() & 1) == 1;
 
-		scaleMethod = in.read();
-		displayCenterX = (int) in.readBytes(2);
-		displayCenterY = (int) in.readBytes(2);
-	}
+        scaleMethod = in.read();
+        displayCenterX = (int) in.readBytes(2);
+        displayCenterY = (int) in.readBytes(2);
+    }
 
-	/**
-	 * If this flag is set, all samples described by this sample entry shall be 
-	 * scaled according to the method specified by the field 'scale_method'.
-	 * Otherwise, it is recommended that all the samples be scaled according to
-	 * the method specified by the field 'scale_method', but can be displayed in
-	 * an implementation dependent way, which may include not scaling the image
-	 * (i.e. neither to the width and height specified in the track header box,
-	 * nor by the method indicated here).
-	 *
-	 * @return true if the samples should be scaled by the scale method
-	 */
-	public boolean isConstrained() {
-		return constrained;
-	}
+    /**
+     * If this flag is set, all samples described by this sample entry shall be
+     * scaled according to the method specified by the field 'scale_method'.
+     * Otherwise, it is recommended that all the samples be scaled according to
+     * the method specified by the field 'scale_method', but can be displayed in
+     * an implementation dependent way, which may include not scaling the image
+     * (i.e. neither to the width and height specified in the track header box,
+     * nor by the method indicated here).
+     *
+     * @return true if the samples should be scaled by the scale method
+     */
+    public boolean isConstrained() {
+        return constrained;
+    }
 
-	/**
-	 * The horizontal offset in pixels of the centre of the region that should
-	 * be displayed by priority relative to the centre of the image. Default
-	 * value is zero. Positive values indicate a display centre to the right of
-	 * the image centre.
-	 *
-	 * @return the horizontal offset
-	 */
-	public int getDisplayCenterX() {
-		return displayCenterX;
-	}
+    /**
+     * The horizontal offset in pixels of the centre of the region that should
+     * be displayed by priority relative to the centre of the image. Default
+     * value is zero. Positive values indicate a display centre to the right of
+     * the image centre.
+     *
+     * @return the horizontal offset
+     */
+    public int getDisplayCenterX() {
+        return displayCenterX;
+    }
 
-	/**
-	 * The vertical offset in pixels of the centre of the region that should be 
-	 * displayed by priority relative to the centre of the image. Default value
-	 * is zero. Positive values indicate a display centre below the image
-	 * centre.
-	 * @return the vertical offset
-	 */
-	public int getDisplayCenterY() {
-		return displayCenterY;
-	}
+    /**
+     * The vertical offset in pixels of the centre of the region that should be
+     * displayed by priority relative to the centre of the image. Default value
+     * is zero. Positive values indicate a display centre below the image
+     * centre.
+     *
+     * @return the vertical offset
+     */
+    public int getDisplayCenterY() {
+        return displayCenterY;
+    }
 
-	/**
-	 * The scale method is an integer that defines the scaling mode to be used.
-	 * Of the 256 possible values the values 0 through 127 are reserved for use
-	 * by ISO and values 128 through 255 are user-defined and are not specified
-	 * in this International Standard; they may be used as determined by the
-	 * application. Of the reserved values the following modes are currently
-	 * defined:
-	 * 1: scaling is done by 'fill' mode.
-	 * 2: scaling is done by 'hidden' mode.
-	 * 3: scaling is done by 'meet' mode.
-	 * 4: scaling is done by 'slice' mode in the x-coordinate.
-	 * 5: scaling is done by 'slice' mode in the y-coordinate.
-	 *
-	 * @return the scale method
-	 */
-	public int getScaleMethod() {
-		return scaleMethod;
-	}
+    /**
+     * The scale method is an integer that defines the scaling mode to be used.
+     * Of the 256 possible values the values 0 through 127 are reserved for use
+     * by ISO and values 128 through 255 are user-defined and are not specified
+     * in this International Standard; they may be used as determined by the
+     * application. Of the reserved values the following modes are currently
+     * defined:
+     * 1: scaling is done by 'fill' mode.
+     * 2: scaling is done by 'hidden' mode.
+     * 3: scaling is done by 'meet' mode.
+     * 4: scaling is done by 'slice' mode in the x-coordinate.
+     * 5: scaling is done by 'slice' mode in the y-coordinate.
+     *
+     * @return the scale method
+     */
+    public int getScaleMethod() {
+        return scaleMethod;
+    }
 }

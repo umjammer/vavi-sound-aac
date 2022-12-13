@@ -2,24 +2,25 @@ package net.sourceforge.jaad.aac.syntax;
 
 import net.sourceforge.jaad.aac.AACException;
 
+
 class DSE extends Element {
 
-	private byte[] dataStreamBytes;
+    private byte[] dataStreamBytes;
 
-	DSE() {
-		super();
-	}
+    DSE() {
+        super();
+    }
 
-	void decode(BitStream in) throws AACException {
-		boolean byteAlign = in.readBool();
-		int count = in.readBits(8);
-		if(count==255) count += in.readBits(8);
+    void decode(BitStream in) throws AACException {
+        boolean byteAlign = in.readBool();
+        int count = in.readBits(8);
+        if (count == 255) count += in.readBits(8);
 
-		if(byteAlign) in.byteAlign();
+        if (byteAlign) in.byteAlign();
 
-		dataStreamBytes = new byte[count];
-		for(int i = 0; i<count; i++) {
-			dataStreamBytes[i] = (byte) in.readBits(8);
-		}
-	}
+        dataStreamBytes = new byte[count];
+        for (int i = 0; i < count; i++) {
+            dataStreamBytes[i] = (byte) in.readBits(8);
+        }
+    }
 }

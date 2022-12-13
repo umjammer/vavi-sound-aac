@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The item location box provides a directory of resources in this or other
@@ -12,7 +14,7 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  * (handler) used. For example, a system might integrate all the externally
  * referenced metadata resources into one file, re-adjusting file offsets and
  * file references accordingly.
- *
+ * <p>
  * Items may be stored fragmented into extents, e.g. to enable interleaving. An
  * extent is a contiguous subset of the bytes of the resource; the resource is
  * formed by concatenating the extents. If only one extent is used then either
@@ -25,12 +27,12 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  * items divided into more than one extent, should have an explicit offset and
  * length, or use a MIME type requiring a different interpretation of the file,
  * to avoid infinite recursion.</li>
- * 
+ * <p>
  * The size of the item is the sum of the extent lengths.
- *
+ * <p>
  * The data-reference index may take the value 0, indicating a reference into
  * the same file as this metadata, or an index into the data-reference table.
- *
+ * <p>
  * Some referenced data may itself use offset/length techniques to address
  * resources within it (e.g. an MP4 file might be 'included' in this way).
  * Normally such offsets are relative to the beginning of the containing file.
@@ -44,99 +46,99 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class ItemLocationBox extends FullBox {
 
-	private int[] itemID, dataReferenceIndex;
-	private long[] baseOffset;
-	private long[][] extentOffset, extentLength;
+    private int[] itemID, dataReferenceIndex;
+    private long[] baseOffset;
+    private long[][] extentOffset, extentLength;
 
-	public ItemLocationBox() {
-		super("Item Location Box");
-	}
+    public ItemLocationBox() {
+        super("Item Location Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
 		/*4 bits offsetSize
 		4 bits lengthSize
 		4 bits baseOffsetSize
 		4 bits reserved
 		 */
-		long l = in.readBytes(2);
-		int offsetSize = (int) (l>>12)&0xF;
-		int lengthSize = (int) (l>>8)&0xF;
-		int baseOffsetSize = (int) (l>>4)&0xF;
+        long l = in.readBytes(2);
+        int offsetSize = (int) (l >> 12) & 0xF;
+        int lengthSize = (int) (l >> 8) & 0xF;
+        int baseOffsetSize = (int) (l >> 4) & 0xF;
 
-		int itemCount = (int) in.readBytes(2);
-		dataReferenceIndex = new int[itemCount];
-		baseOffset = new long[itemCount];
-		extentOffset = new long[itemCount][];
-		extentLength = new long[itemCount][];
+        int itemCount = (int) in.readBytes(2);
+        dataReferenceIndex = new int[itemCount];
+        baseOffset = new long[itemCount];
+        extentOffset = new long[itemCount][];
+        extentLength = new long[itemCount][];
 
-		int j, extentCount;
-		for(int i = 0; i<itemCount; i++) {
-			itemID[i] = (int) in.readBytes(2);
-			dataReferenceIndex[i] = (int) in.readBytes(2);
-			baseOffset[i] = in.readBytes(baseOffsetSize);
+        int j, extentCount;
+        for (int i = 0; i < itemCount; i++) {
+            itemID[i] = (int) in.readBytes(2);
+            dataReferenceIndex[i] = (int) in.readBytes(2);
+            baseOffset[i] = in.readBytes(baseOffsetSize);
 
-			extentCount = (int) in.readBytes(2);
-			extentOffset[i] = new long[extentCount];
-			extentLength[i] = new long[extentCount];
+            extentCount = (int) in.readBytes(2);
+            extentOffset[i] = new long[extentCount];
+            extentLength[i] = new long[extentCount];
 
-			for(j = 0; j<extentCount; j++) {
-				extentOffset[i][j] = in.readBytes(offsetSize);
-				extentLength[i][j] = in.readBytes(lengthSize);
-			}
-		}
-	}
+            for (j = 0; j < extentCount; j++) {
+                extentOffset[i][j] = in.readBytes(offsetSize);
+                extentLength[i][j] = in.readBytes(lengthSize);
+            }
+        }
+    }
 
-	/**
-	 * The item ID is an arbitrary integer 'name' for this resource which can be
-	 * used to refer to it (e.g. in a URL).
-	 *
-	 * @return the item ID
-	 */
-	public int[] getItemID() {
-		return itemID;
-	}
+    /**
+     * The item ID is an arbitrary integer 'name' for this resource which can be
+     * used to refer to it (e.g. in a URL).
+     *
+     * @return the item ID
+     */
+    public int[] getItemID() {
+        return itemID;
+    }
 
-	/**
-	 * The data reference index is either zero ('this file') or a 1-based index
-	 * into the data references in the data information box.
-	 *
-	 * @return the data reference index
-	 */
-	public int[] getDataReferenceIndex() {
-		return dataReferenceIndex;
-	}
+    /**
+     * The data reference index is either zero ('this file') or a 1-based index
+     * into the data references in the data information box.
+     *
+     * @return the data reference index
+     */
+    public int[] getDataReferenceIndex() {
+        return dataReferenceIndex;
+    }
 
-	/**
-	 * The base offset provides a base value for offset calculations within the 
-	 * referenced data.
-	 * 
-	 * @return the base offsets for all items
-	 */
-	public long[] getBaseOffset() {
-		return baseOffset;
-	}
+    /**
+     * The base offset provides a base value for offset calculations within the
+     * referenced data.
+     *
+     * @return the base offsets for all items
+     */
+    public long[] getBaseOffset() {
+        return baseOffset;
+    }
 
-	/**
-	 * The extent offset provides the absolute offset in bytes from the
-	 * beginning of the containing file, of this item.
-	 *
-	 * @return the offsets for all extents in all items
-	 */
-	public long[][] getExtentOffset() {
-		return extentOffset;
-	}
+    /**
+     * The extent offset provides the absolute offset in bytes from the
+     * beginning of the containing file, of this item.
+     *
+     * @return the offsets for all extents in all items
+     */
+    public long[][] getExtentOffset() {
+        return extentOffset;
+    }
 
-	/**
-	 * The extends length provides the absolute length in bytes of this metadata
-	 * item. If the value is 0, then length of the item is the length of the
-	 * entire referenced file.
-	 *
-	 * @return the lengths for all extends in all items
-	 */
-	public long[][] getExtentLength() {
-		return extentLength;
-	}
+    /**
+     * The extends length provides the absolute length in bytes of this metadata
+     * item. If the value is 0, then length of the item is the length of the
+     * entire referenced file.
+     *
+     * @return the lengths for all extends in all items
+     */
+    public long[][] getExtentLength() {
+        return extentLength;
+    }
 }

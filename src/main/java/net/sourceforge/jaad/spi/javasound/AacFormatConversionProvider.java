@@ -8,7 +8,6 @@ package net.sourceforge.jaad.spi.javasound;
 
 import java.io.IOException;
 import java.util.logging.Logger;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -27,18 +26,18 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
 
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
-        return new AudioFormat.Encoding[] { AACAudioFileReader.AAC_ENCODING };
+        return new AudioFormat.Encoding[] {AACAudioFileReader.AAC_ENCODING};
     }
 
     @Override
     public AudioFormat.Encoding[] getTargetEncodings() {
-        return new AudioFormat.Encoding[] { AudioFormat.Encoding.PCM_SIGNED };
+        return new AudioFormat.Encoding[] {AudioFormat.Encoding.PCM_SIGNED};
     }
 
     @Override
     public AudioFormat.Encoding[] getTargetEncodings(AudioFormat sourceFormat) {
         if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING) {
-            return new AudioFormat.Encoding[] { AudioFormat.Encoding.PCM_SIGNED };
+            return new AudioFormat.Encoding[] {AudioFormat.Encoding.PCM_SIGNED};
         } else {
             return new AudioFormat.Encoding[0];
         }
@@ -50,12 +49,12 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
             return new AudioFormat[0];
         } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING && targetEncoding.equals(AudioFormat.Encoding.PCM_SIGNED)) {
             return new AudioFormat[] {
-                // TODO signed, endian should be free (means add more 3 patterns)
-                new AudioFormat(sourceFormat.getSampleRate(),
-                                16,         // sample size in bits
-                                sourceFormat.getChannels(),
-                                true,       // signed
-                                false)      // little endian (for PCM wav)
+                    // TODO signed, endian should be free (means add more 3 patterns)
+                    new AudioFormat(sourceFormat.getSampleRate(),
+                            16,         // sample size in bits
+                            sourceFormat.getChannels(),
+                            true,       // signed
+                            false)      // little endian (for PCM wav)
             };
         } else {
             return new AudioFormat[0];
@@ -71,11 +70,11 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     AudioFormat targetFormat = formats[0];
                     if (sourceFormat.equals(targetFormat)) {
-logger.info("same1: " + sourceFormat);
+                        logger.info("same1: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING && targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-logger.info("convert1: " + type);
+                        logger.info("convert1: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {
@@ -105,12 +104,12 @@ logger.info("convert1: " + type);
                 if (formats != null && formats.length > 0) {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     if (sourceFormat.equals(targetFormat)) {
-logger.info("same2: " + sourceFormat);
+                        logger.info("same2: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING &&
-                               targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
+                            targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-logger.info("convert2: " + type);
+                        logger.info("convert2: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {

@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * When the primary data is in XML format and it is desired that the XML be
@@ -10,29 +12,29 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  * used. The Binary XML Box may only be used when there is a single well-defined
  * binarization of the XML for that defined format as identified by the handler.
  *
- * @see XMLBox
  * @author in-somnia
+ * @see XMLBox
  */
 public class BinaryXMLBox extends FullBox {
 
-	private byte[] data;
+    private byte[] data;
 
-	public BinaryXMLBox() {
-		super("Binary XML Box");
-	}
+    public BinaryXMLBox() {
+        super("Binary XML Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
-		data = new byte[(int) getLeft(in)];
-		in.readBytes(data);
-	}
+        data = new byte[(int) getLeft(in)];
+        in.readBytes(data);
+    }
 
-	/**
-	 * The binary data.
-	 */
-	public byte[] getData() {
-		return data;
-	}
+    /**
+     * The binary data.
+     */
+    public byte[] getData() {
+        return data;
+    }
 }

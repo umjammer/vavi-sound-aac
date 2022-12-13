@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The Movie Fragment Random Access Offset Box provides a copy of the length
@@ -17,20 +19,20 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class MovieFragmentRandomAccessOffsetBox extends FullBox {
 
-	private long byteSize;
+    private long byteSize;
 
-	public MovieFragmentRandomAccessOffsetBox() {
-		super("Movie Fragment Random Access Offset Box");
-	}
+    public MovieFragmentRandomAccessOffsetBox() {
+        super("Movie Fragment Random Access Offset Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
-		byteSize = in.readBytes(4);
-	}
+        byteSize = in.readBytes(4);
+    }
 
-	public long getByteSize() {
-		return byteSize;
-	}
+    public long getByteSize() {
+        return byteSize;
+    }
 }

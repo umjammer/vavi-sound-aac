@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
+
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The sound media header contains general presentation information, independent
@@ -13,28 +15,28 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class SoundMediaHeaderBox extends FullBox {
 
-	private double balance;
+    private double balance;
 
-	public SoundMediaHeaderBox() {
-		super("Sound Media Header Box");
-	}
+    public SoundMediaHeaderBox() {
+        super("Sound Media Header Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4InputStream in) throws IOException {
+        super.decode(in);
 
-		balance = in.readFixedPoint(8, 8);
-		in.skipBytes(2); //reserved
-	}
+        balance = in.readFixedPoint(8, 8);
+        in.skipBytes(2); //reserved
+    }
 
-	/**
-	 * The balance is a floating-point number that places mono audio tracks in a
-	 * stereo space: 0 is centre (the normal value), full left is -1.0 and full
-	 * right is 1.0.
-	 *
-	 * @return the stereo balance for a mono track
-	 */
-	public double getBalance() {
-		return balance;
-	}
+    /**
+     * The balance is a floating-point number that places mono audio tracks in a
+     * stereo space: 0 is centre (the normal value), full left is -1.0 and full
+     * right is 1.0.
+     *
+     * @return the stereo balance for a mono track
+     */
+    public double getBalance() {
+        return balance;
+    }
 }
