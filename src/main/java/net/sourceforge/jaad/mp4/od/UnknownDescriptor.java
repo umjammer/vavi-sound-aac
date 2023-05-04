@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.od;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -14,7 +14,7 @@ import net.sourceforge.jaad.mp4.MP4InputStream;
 public class UnknownDescriptor extends Descriptor {
 
     @Override
-    void decode(MP4InputStream in) throws IOException {
+    void decode(MP4Input in) throws IOException {
         //content will be skipped
     }
 }

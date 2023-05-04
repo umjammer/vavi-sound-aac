@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 import net.sourceforge.jaad.mp4.od.Descriptor;
 import net.sourceforge.jaad.mp4.od.ObjectDescriptor;
@@ -46,10 +46,10 @@ public class IPMPInfoBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        ipmpDescriptors = new ArrayList</*IPMP*/Descriptor>();
+        ipmpDescriptors = new ArrayList<>();
         /*IPMP*/
         Descriptor desc;
         while (getLeft(in) > 0) {

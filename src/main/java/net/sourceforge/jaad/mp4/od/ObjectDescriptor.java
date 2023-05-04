@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.od;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -29,7 +29,7 @@ public class ObjectDescriptor extends Descriptor {
     private boolean urlPresent;
     private String url;
 
-    void decode(MP4InputStream in) throws IOException {
+    void decode(MP4Input in) throws IOException {
         //10 bits objectDescriptorID, 1 bit url flag, 5 bits reserved
         int x = (int) in.readBytes(2);
         objectDescriptorID = (x >> 6) & 0x3FF;

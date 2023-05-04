@@ -1,11 +1,60 @@
 package net.sourceforge.jaad.aac.syntax;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import net.sourceforge.jaad.aac.AACException;
+import net.sourceforge.jaad.aac.AudioDecoderInfo;
+import net.sourceforge.jaad.aac.ChannelConfiguration;
+import net.sourceforge.jaad.aac.DecoderConfig;
 import net.sourceforge.jaad.aac.Profile;
 import net.sourceforge.jaad.aac.SampleFrequency;
 
 
-public class PCE extends Element {
+public class PCE implements Element, AudioDecoderInfo {
+
+    static final Logger LOGGER = Logger.getLogger(PCE.class.getName());
+
+    public static final Type TYPE = Type.PCE;
+
+    static class Tag extends InstanceTag {
+
+        protected Tag(int id) {
+            super(id);
+        }
+
+        @Override
+        public Type getType() {
+            return TYPE;
+        }
+
+        @Override
+        public Element newElement(DecoderConfig config) {
+            return new PCE(this);
+        }
+    }
+
+    public static final List<Tag> TAGS = Element.createTagList(32, Tag::new);
+
+    /**
+     * Read a full PCE element with tag and content.
+     *
+     * @param in input stream to decode.
+     * @return a new program config element.
+     */
+    public static PCE read(BitStream in) {
+        Tag tag = TAGS.get(in.readBits(4));
+        PCE pce = new PCE(tag);
+        pce.decode(in);
+        return pce;
+    }
+
+    private final Tag tag;
+
+    @Override
+    public Tag getElementInstanceTag() {
+        return tag;
+    }
 
     private static final int MAX_FRONT_CHANNEL_ELEMENTS = 16;
     private static final int MAX_SIDE_CHANNEL_ELEMENTS = 16;
@@ -57,32 +106,32 @@ public class PCE extends Element {
     private int frontChannelElementsCount, sideChannelElementsCount, backChannelElementsCount;
     private int lfeChannelElementsCount, assocDataElementsCount;
     private int validCCElementsCount;
-    private boolean monoMixdown, stereoMixdown, matrixMixdownIDXPresent;
-    private int monoMixdownElementNumber, stereoMixdownElementNumber, matrixMixdownIDX;
-    private boolean pseudoSurround;
+    boolean monoMixdown, stereoMixdown, matrixMixdownIDXPresent;
+    int monoMixdownElementNumber, stereoMixdownElementNumber, matrixMixdownIDX;
+    boolean pseudoSurround;
     private final TaggedElement[] frontElements, sideElements, backElements;
     private final int[] lfeElementTags;
     private final int[] assocDataElementTags;
     private final CCE[] ccElements;
     private byte[] commentFieldData;
 
-    public PCE() {
-        super();
+    public PCE(Tag tag) {
+        this.tag = tag;
+
         frontElements = new TaggedElement[MAX_FRONT_CHANNEL_ELEMENTS];
         sideElements = new TaggedElement[MAX_SIDE_CHANNEL_ELEMENTS];
         backElements = new TaggedElement[MAX_BACK_CHANNEL_ELEMENTS];
         lfeElementTags = new int[MAX_LFE_CHANNEL_ELEMENTS];
         assocDataElementTags = new int[MAX_ASSOC_DATA_ELEMENTS];
         ccElements = new CCE[MAX_VALID_CC_ELEMENTS];
-        sampleFrequency = SampleFrequency.SAMPLE_FREQUENCY_NONE;
+        sampleFrequency = SampleFrequency.SF_NONE;
     }
 
     public void decode(BitStream in) throws AACException {
-        readElementInstanceTag(in);
 
         profile = Profile.forInt(in.readBits(2));
 
-        sampleFrequency = SampleFrequency.forInt(in.readBits(4));
+        sampleFrequency = SampleFrequency.decode(in);
 
         frontChannelElementsCount = in.readBits(4);
         sideChannelElementsCount = in.readBits(4);
@@ -92,15 +141,15 @@ public class PCE extends Element {
         validCCElementsCount = in.readBits(4);
 
         if (monoMixdown = in.readBool()) {
-            Constants.LOGGER.warning("mono mixdown present, but not yet supported");
+            LOGGER.warning("mono mixdown present, but not yet supported");
             monoMixdownElementNumber = in.readBits(4);
         }
         if (stereoMixdown = in.readBool()) {
-            Constants.LOGGER.warning("stereo mixdown present, but not yet supported");
+            LOGGER.warning("stereo mixdown present, but not yet supported");
             stereoMixdownElementNumber = in.readBits(4);
         }
         if (matrixMixdownIDXPresent = in.readBool()) {
-            Constants.LOGGER.warning("matrix mixdown present, but not yet supported");
+            LOGGER.warning("matrix mixdown present, but not yet supported");
             matrixMixdownIDX = in.readBits(2);
             pseudoSurround = in.readBool();
         }
@@ -111,16 +160,15 @@ public class PCE extends Element {
 
         readTaggedElementArray(backElements, in, backChannelElementsCount);
 
-        int i;
-        for (i = 0; i < lfeChannelElementsCount; ++i) {
+        for (int i = 0; i < lfeChannelElementsCount; ++i) {
             lfeElementTags[i] = in.readBits(4);
         }
 
-        for (i = 0; i < assocDataElementsCount; ++i) {
+        for (int i = 0; i < assocDataElementsCount; ++i) {
             assocDataElementTags[i] = in.readBits(4);
         }
 
-        for (i = 0; i < validCCElementsCount; ++i) {
+        for (int i = 0; i < validCCElementsCount; ++i) {
             ccElements[i] = new CCE(in.readBool(), in.readBits(4));
         }
 
@@ -128,7 +176,7 @@ public class PCE extends Element {
 
         int commentFieldBytes = in.readBits(8);
         commentFieldData = new byte[commentFieldBytes];
-        for (i = 0; i < commentFieldBytes; i++) {
+        for (int i = 0; i < commentFieldBytes; i++) {
             commentFieldData[i] = (byte) in.readBits(8);
         }
     }
@@ -148,7 +196,27 @@ public class PCE extends Element {
     }
 
     public int getChannelCount() {
-        return frontChannelElementsCount + sideChannelElementsCount + backChannelElementsCount
-                + lfeChannelElementsCount + assocDataElementsCount;
+        int count = lfeChannelElementsCount; // + assocDataElementsCount;
+
+        for (int n = 0; n < frontChannelElementsCount; ++n)
+            count += frontElements[n].isCPE ? 2 : 1;
+
+        for (int n = 0; n < sideChannelElementsCount; ++n)
+            count += sideElements[n].isCPE ? 2 : 1;
+
+        for (int n = 0; n < backChannelElementsCount; ++n)
+            count += backElements[n].isCPE ? 2 : 1;
+
+        return count;
+    }
+
+    /**
+     * Turn this PCE into a known ChannelConfiguration.
+     * Todo: replace ChannelConfiguration by a preconfigured PCE.
+     *
+     * @return a matching ChannelConfiguration according its channel count.
+     */
+    public ChannelConfiguration getChannelConfiguration() {
+        return ChannelConfiguration.forChannelCount(getChannelCount());
     }
 }

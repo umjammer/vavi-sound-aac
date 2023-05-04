@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -51,11 +51,11 @@ public class TrackSelectionBox extends FullBox {
 
     public TrackSelectionBox() {
         super("Track Selection Box");
-        attributes = new ArrayList<Long>();
+        attributes = new ArrayList<>();
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         switchGroup = in.readBytes(4);

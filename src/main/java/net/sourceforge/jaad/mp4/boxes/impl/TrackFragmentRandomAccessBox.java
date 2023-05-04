@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -17,7 +17,7 @@ public class TrackFragmentRandomAccessBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         trackID = in.readBytes(4);
@@ -64,7 +64,7 @@ public class TrackFragmentRandomAccessBox extends FullBox {
 
     /**
      * The moof-Offset is an integer that gives the offset of the 'moof' used in
-     * the an entry. Offset is the byte-offset between the beginning of the file
+     * the entry. Offset is the byte-offset between the beginning of the file
      * and the beginning of the 'moof'.
      *
      * @return the offsets for all entries

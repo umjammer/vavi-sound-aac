@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -32,7 +32,7 @@ public class SubSampleInformationBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         int len = (version == 1) ? 4 : 2;
@@ -52,8 +52,8 @@ public class SubSampleInformationBox extends FullBox {
 
             for (j = 0; j < subsampleCount; j++) {
                 subsampleSize[i][j] = in.readBytes(len);
-                subsamplePriority[i][j] = in.read();
-                discardable[i][j] = (in.read() & 1) == 1;
+                subsamplePriority[i][j] = in.readByte();
+                discardable[i][j] = (in.readByte() & 1) == 1;
                 in.skipBytes(4); //reserved
             }
         }

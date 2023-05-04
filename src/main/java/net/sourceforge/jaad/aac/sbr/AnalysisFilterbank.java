@@ -1,34 +1,19 @@
 package net.sourceforge.jaad.aac.sbr;
 
-import java.util.Arrays;
-
-
-class AnalysisFilterbank implements FilterbankTable {
-
-    private float[] x; //x is implemented as double ringbuffer
-    private int x_index; //ringbuffer index
-    private int channels;
+class AnalysisFilterbank extends Filterbank {
 
     AnalysisFilterbank(int channels) {
-        this.channels = channels;
-        x = new float[2 * channels * 10];
-        x_index = 0;
+        super(channels);
     }
 
-    public void reset() {
-        Arrays.fill(x, 0);
-    }
-
-    void sbr_qmf_analysis_32(SBR sbr, float[] input,
+    void sbr_qmf_analysis_32(int numTimeSlotsRate, float[] input,
                              float[][][] X, int offset, int kx) {
         float[] u = new float[64];
         float[] in_real = new float[32], in_imag = new float[32];
         float[] out_real = new float[32], out_imag = new float[32];
-        int in = 0;
-        int l;
 
         /* qmf subsample l */
-        for (l = 0; l < sbr.numTimeSlotsRate; l++) {
+        for (int l = 0, in=0; l < numTimeSlotsRate; l++) {
             int n;
 
             /* shift input buffer x */
@@ -37,22 +22,22 @@ class AnalysisFilterbank implements FilterbankTable {
 
             /* add new samples to input buffer x */
             for (n = 32 - 1; n >= 0; n--) {
-                this.x[this.x_index + n] = this.x[this.x_index + n + 320] = input[in++];
+                this.v[this.v_index + n] = this.v[this.v_index + n + 320] = input[in++];
             }
 
             /* window and summation to create array u */
             for (n = 0; n < 64; n++) {
-                u[n] = (this.x[this.x_index + n] * qmf_c[2 * n])
-                        + (this.x[this.x_index + n + 64] * qmf_c[2 * (n + 64)])
-                        + (this.x[this.x_index + n + 128] * qmf_c[2 * (n + 128)])
-                        + (this.x[this.x_index + n + 192] * qmf_c[2 * (n + 192)])
-                        + (this.x[this.x_index + n + 256] * qmf_c[2 * (n + 256)]);
+                u[n] = (this.v[this.v_index + n] * qmf_c[2 * n])
+                        + (this.v[this.v_index + n + 64] * qmf_c[2 * (n + 64)])
+                        + (this.v[this.v_index + n + 128] * qmf_c[2 * (n + 128)])
+                        + (this.v[this.v_index + n + 192] * qmf_c[2 * (n + 192)])
+                        + (this.v[this.v_index + n + 256] * qmf_c[2 * (n + 256)]);
             }
 
             /* update ringbuffer index */
-            this.x_index -= 32;
-            if (this.x_index < 0)
-                this.x_index = (320 - 32);
+            this.v_index -= 32;
+            if (this.v_index < 0)
+                this.v_index = (320 - 32);
 
             /* calculate 32 subband samples by introducing X */
             // Reordering of data moved from DCT_IV to here

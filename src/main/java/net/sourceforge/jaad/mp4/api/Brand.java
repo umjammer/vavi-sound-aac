@@ -1,7 +1,7 @@
 package net.sourceforge.jaad.mp4.api;
 
 /**
- * http://www.ftyps.com
+ * @see "https://www.ftyps.com"
  *
  * @author in-somnia
  */

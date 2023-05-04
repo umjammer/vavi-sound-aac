@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -17,7 +17,7 @@ class UnknownBox extends BoxImpl {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         //no need to read, box will be skipped
     }
 }

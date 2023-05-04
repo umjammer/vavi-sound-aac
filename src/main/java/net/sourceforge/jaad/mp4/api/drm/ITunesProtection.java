@@ -17,7 +17,7 @@ public class ITunesProtection extends Protection {
         Box schi = sinf.getChild(BoxTypes.SCHEME_INFORMATION_BOX);
         userID = new String(((FairPlayDataBox) schi.getChild(BoxTypes.FAIRPLAY_USER_ID_BOX)).getData());
 
-        //user name box is filled with 0
+        // user name box is filled with 0
         byte[] b = ((FairPlayDataBox) schi.getChild(BoxTypes.FAIRPLAY_USER_NAME_BOX)).getData();
         int i = 0;
         while (b[i] != 0) {

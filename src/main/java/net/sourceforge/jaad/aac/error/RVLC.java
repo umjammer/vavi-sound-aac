@@ -1,6 +1,5 @@
 package net.sourceforge.jaad.aac.error;
 
-import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.huffman.HCB;
 import net.sourceforge.jaad.aac.syntax.BitStream;
 import net.sourceforge.jaad.aac.syntax.ICSInfo;
@@ -15,7 +14,7 @@ public class RVLC implements RVLCTables {
 
     private static final int ESCAPE_FLAG = 7;
 
-    public void decode(BitStream in, ICStream ics, int[][] scaleFactors) throws AACException {
+    public void decode(BitStream in, ICStream ics, int[][] scaleFactors) {
         int bits = (ics.getInfo().isEightShortFrame()) ? 11 : 9;
         boolean sfConcealment = in.readBool();
         int revGlobalGain = in.readBits(8);
@@ -67,7 +66,7 @@ public class RVLC implements RVLCTables {
         if (in.readBool()) decodeEscapes(in, ics, scaleFactors);
     }
 
-    private void decodeEscapes(BitStream in, ICStream ics, int[][] scaleFactors) throws AACException {
+    private void decodeEscapes(BitStream in, ICStream ics, int[][] scaleFactors) {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
@@ -90,7 +89,7 @@ public class RVLC implements RVLCTables {
         }
     }
 
-    private int decodeHuffman(BitStream in) throws AACException {
+    private int decodeHuffman(BitStream in) {
         int off = 0;
         int i = RVLC_BOOK[off][1];
         int cw = in.readBits(i);
@@ -107,7 +106,7 @@ public class RVLC implements RVLCTables {
         return RVLC_BOOK[off][0];
     }
 
-    private int decodeHuffmanEscape(BitStream in) throws AACException {
+    private int decodeHuffmanEscape(BitStream in) {
         int off = 0;
         int i = ESCAPE_BOOK[off][1];
         int cw = in.readBits(i);

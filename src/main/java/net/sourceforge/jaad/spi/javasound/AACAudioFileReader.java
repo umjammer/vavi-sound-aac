@@ -20,6 +20,7 @@ import javax.sound.sampled.spi.AudioFileReader;
 import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 import net.sourceforge.jaad.mp4.MP4Container;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
 import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.api.Track;
@@ -100,8 +101,10 @@ public class AACAudioFileReader extends AudioFileReader {
             AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
             return aff;
         } finally {
-            in.reset();
-            if (in != null) in.close();
+            if (in != null) {
+                in.reset();
+                in.close();
+            }
         }
     }
 
@@ -116,12 +119,13 @@ public class AACAudioFileReader extends AudioFileReader {
                 in.mark(1000);
 
                 // in position should be zero
-                MP4Container cont = new MP4Container(in);
+                MP4Input is = MP4Input.open(in);
+                MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
                 List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
                 if (tracks.isEmpty()) throw new UnsupportedAudioFileException("movie does not contain any AAC track");
                 Track track = tracks.get(0);
-                new Decoder(track.getDecoderSpecificInfo());
+                Decoder.create(track.getDecoderSpecificInfo().getData());
 
                 canHandle = true;
                 type = MP4;
@@ -142,7 +146,7 @@ public class AACAudioFileReader extends AudioFileReader {
                 canHandle = false;    //Ogg stream ?
             } else {
                 ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
-                new Decoder(adts.getDecoderSpecificInfo());
+                Decoder.create(adts.getDecoderInfo());
 
                 canHandle = true;
             }
@@ -235,10 +239,8 @@ public class AACAudioFileReader extends AudioFileReader {
         try {
             return getAudioInputStream(in);
         } catch (UnsupportedAudioFileException | IOException e) {
-            if (in != null) in.close();
+            in.close();
             throw e;
         }
     }
-
-
 }

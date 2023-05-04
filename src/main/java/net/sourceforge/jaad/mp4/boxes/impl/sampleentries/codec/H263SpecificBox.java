@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 public class H263SpecificBox extends CodecSpecificBox {
@@ -14,11 +14,11 @@ public class H263SpecificBox extends CodecSpecificBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         decodeCommon(in);
 
-        level = in.read();
-        profile = in.read();
+        level = in.readByte();
+        profile = in.readByte();
     }
 
     public int getLevel() {

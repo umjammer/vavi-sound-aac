@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.impl.HandlerBox;
@@ -15,22 +15,22 @@ import net.sourceforge.jaad.mp4.boxes.impl.MovieHeaderBox;
 
 public class Movie {
 
-    private final MP4InputStream in;
+    private final MP4Input in;
     private final MovieHeaderBox mvhd;
     private final List<Track> tracks;
     private final MetaData metaData;
     private final List<Protection> protections;
 
-    public Movie(Box moov, MP4InputStream in) {
+    public Movie(Box moov, MP4Input in) {
         this.in = in;
 
         //create tracks
         mvhd = (MovieHeaderBox) moov.getChild(BoxTypes.MOVIE_HEADER_BOX);
         List<Box> trackBoxes = moov.getChildren(BoxTypes.TRACK_BOX);
-        tracks = new ArrayList<Track>(trackBoxes.size());
+        tracks = new ArrayList<>(trackBoxes.size());
         Track track;
-        for (int i = 0; i < trackBoxes.size(); i++) {
-            track = createTrack(trackBoxes.get(i));
+        for (Box trackBox : trackBoxes) {
+            track = createTrack(trackBox);
             if (track != null) tracks.add(track);
         }
 
@@ -43,7 +43,7 @@ public class Movie {
         }
 
         //detect DRM
-        protections = new ArrayList<Protection>();
+        protections = new ArrayList<>();
         if (moov.hasChild(BoxTypes.ITEM_PROTECTION_BOX)) {
             Box ipro = moov.getChild(BoxTypes.ITEM_PROTECTION_BOX);
             for (Box sinf : ipro.getChildren(BoxTypes.PROTECTION_SCHEME_INFORMATION_BOX)) {
@@ -52,7 +52,7 @@ public class Movie {
         }
     }
 
-    //TODO: support hint and meta
+    // TODO: support hint and meta
     private Track createTrack(Box trak) {
         HandlerBox hdlr = (HandlerBox) trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.HANDLER_BOX);
         Track track;
@@ -87,7 +87,7 @@ public class Movie {
      * @return the tracks contained by this movie with the passed type
      */
     public List<Track> getTracks(Type type) {
-        List<Track> l = new ArrayList<Track>();
+        List<Track> l = new ArrayList<>();
         for (Track t : tracks) {
             if (t.getType().equals(type)) l.add(t);
         }
@@ -102,7 +102,7 @@ public class Movie {
      * @return the tracks contained by this movie with the passed type
      */
     public List<Track> getTracks(Track.Codec codec) {
-        List<Track> l = new ArrayList<Track>();
+        List<Track> l = new ArrayList<>();
         for (Track t : tracks) {
             if (t.getCodec().equals(codec)) l.add(t);
         }
@@ -133,7 +133,7 @@ public class Movie {
      * details about the DRM systems used. If no protection is present the
      * returned list will be empty.
      *
-     * @return a list of protection informations
+     * @return a list of protection information
      */
     public List<Protection> getProtections() {
         return Collections.unmodifiableList(protections);

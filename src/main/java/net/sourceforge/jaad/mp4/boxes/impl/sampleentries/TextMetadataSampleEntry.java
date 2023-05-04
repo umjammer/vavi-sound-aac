@@ -22,7 +22,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 public class TextMetadataSampleEntry extends MetadataSampleEntry {
@@ -34,10 +34,10 @@ public class TextMetadataSampleEntry extends MetadataSampleEntry {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        mimeType = in.readUTFString((int) getLeft(in), MP4InputStream.UTF8);
+        mimeType = in.readUTFString((int) getLeft(in), MP4Input.UTF8);
     }
 
     /**

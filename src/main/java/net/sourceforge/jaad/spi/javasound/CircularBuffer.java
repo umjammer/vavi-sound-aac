@@ -2,7 +2,7 @@ package net.sourceforge.jaad.spi.javasound;
 
 /**
  * CircularBuffer for asynchronous reading.
- * Adopted from Tritonus (http://www.tritonus.org/).
+ * Adopted from Tritonus ("https://www.tritonus.org/").
  *
  * @author in-somnia
  */

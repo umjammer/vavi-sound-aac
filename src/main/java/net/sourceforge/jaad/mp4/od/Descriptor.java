@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -18,6 +18,8 @@ import net.sourceforge.jaad.mp4.MP4InputStream;
  */
 public abstract class Descriptor {
 
+	static final Logger LOGGER = Logger.getLogger(Descriptor.class.getName());
+
     public static final int TYPE_OBJECT_DESCRIPTOR = 1;
     public static final int TYPE_INITIAL_OBJECT_DESCRIPTOR = 2;
     public static final int TYPE_ES_DESCRIPTOR = 3;
@@ -27,14 +29,14 @@ public abstract class Descriptor {
     public static final int TYPE_ES_ID_INC = 14;
     public static final int TYPE_MP4_INITIAL_OBJECT_DESCRIPTOR = 16;
 
-    public static Descriptor createDescriptor(MP4InputStream in) throws IOException {
+    public static Descriptor createDescriptor(MP4Input in) throws IOException {
         //read tag and size
-        int type = in.read();
+        int type = in.readByte();
         int read = 1;
         int size = 0;
         int b = 0;
         do {
-            b = in.read();
+            b = in.readByte();
             size <<= 7;
             size |= b & 0x7f;
             read++;
@@ -94,13 +96,13 @@ public abstract class Descriptor {
     private List<Descriptor> children;
 
     protected Descriptor() {
-        children = new ArrayList<Descriptor>();
+        children = new ArrayList<>();
     }
 
-    abstract void decode(MP4InputStream in) throws IOException;
+    abstract void decode(MP4Input in) throws IOException;
 
     //children
-    protected void readChildren(MP4InputStream in) throws IOException {
+    protected void readChildren(MP4Input in) throws IOException {
         Descriptor desc;
         while ((size - (in.getOffset() - start)) > 0) {
             desc = createDescriptor(in);

@@ -12,7 +12,9 @@ import net.sourceforge.jaad.mp4.boxes.impl.meta.ITunesMetadataBox.DataType;
 
 public class Artwork {
 
-    //TODO: need this enum? it just copies the DataType
+    static final Logger LOGGER = Logger.getLogger(Artwork.class.getName());
+
+    // TODO: need this enum? it just copies the DataType
     public enum Type {
 
         GIF, JPEG, PNG, BMP;

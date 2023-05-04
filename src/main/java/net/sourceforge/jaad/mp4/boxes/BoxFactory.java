@@ -4,11 +4,10 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.MP4InputStream;
 import net.sourceforge.jaad.mp4.boxes.impl.*;
 import net.sourceforge.jaad.mp4.boxes.impl.drm.FairPlayDataBox;
@@ -60,22 +59,9 @@ public class BoxFactory implements BoxTypes {
 
     private static final Logger LOGGER = Logger.getLogger("MP4 Boxes");
 
-    static {
-        if (System.getProperty("java.util.logging.config.file", "").isEmpty()) {
-            for (Handler h : LOGGER.getHandlers()) {
-                LOGGER.removeHandler(h);
-            }
-            LOGGER.setLevel(Level.WARNING);
-
-            ConsoleHandler h = new ConsoleHandler();
-            h.setLevel(Level.ALL);
-            LOGGER.addHandler(h);
-        }
-    }
-
-    private static final Map<Long, Class<? extends BoxImpl>> BOX_CLASSES = new HashMap<Long, Class<? extends BoxImpl>>();
-    private static final Map<Long, Class<? extends BoxImpl>[]> BOX_MULTIPLE_CLASSES = new HashMap<Long, Class<? extends BoxImpl>[]>();
-    private static final Map<Long, String[]> PARAMETER = new HashMap<Long, String[]>();
+    private static final Map<Long, Class<? extends BoxImpl>> BOX_CLASSES = new HashMap<>();
+    private static final Map<Long, Class<? extends BoxImpl>[]> BOX_MULTIPLE_CLASSES = new HashMap<>();
+    private static final Map<Long, String[]> PARAMETER = new HashMap<>();
 
     static {
         //classes
@@ -374,14 +360,24 @@ public class BoxFactory implements BoxTypes {
         PARAMETER.put(OMA_MUTABLE_DRM_INFORMATION_BOX, new String[] {"OMA DRM Mutable DRM Information Box"});
     }
 
-    public static Box parseBox(Box parent, MP4InputStream in) throws IOException {
-        long offset = in.getOffset();
+    public static Box parseBox(Box parent, MP4Input in) throws IOException {
 
+        long offset = in.getOffset();
         long size = in.readBytes(4);
         long type = in.readBytes(4);
-        if (size == 1) size = in.readBytes(8);
-        if (type == EXTENDED_TYPE) in.skipBytes(16);
-        LOGGER.finest("type: " + typeToString(type) + ", " + size);
+
+        return parseBox(parent, offset, size, type, in);
+    }
+
+    public static Box parseBox(Box parent, long offset, long size, long type, MP4Input in) throws IOException {
+
+        if (size == 1)
+            size = in.readBytes(8);
+
+        if (type == EXTENDED_TYPE)
+            in.skipBytes(16);
+
+LOGGER.finest("type: " + typeToString(type) + ", " + size);
 
         //error protection
         if (parent != null) {
@@ -414,7 +410,7 @@ public class BoxFactory implements BoxTypes {
         return box;
     }
 
-    //TODO: remove usages
+    // TODO: remove usages
     public static Box parseBox(MP4InputStream in, Class<? extends BoxImpl> boxClass) throws IOException {
         long offset = in.getOffset();
 
@@ -426,8 +422,7 @@ public class BoxFactory implements BoxTypes {
         BoxImpl box = null;
         try {
             box = boxClass.newInstance();
-        } catch (InstantiationException e) {
-        } catch (IllegalAccessException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
         }
 
         if (box != null) {
@@ -442,7 +437,7 @@ public class BoxFactory implements BoxTypes {
     private static BoxImpl forType(long type, long offset) {
         BoxImpl box = null;
 
-        Long l = Long.valueOf(type);
+        Long l = type;
         if (BOX_CLASSES.containsKey(l)) {
             Class<? extends BoxImpl> cl = BOX_CLASSES.get(l);
             if (PARAMETER.containsKey(l)) {
@@ -471,6 +466,8 @@ public class BoxFactory implements BoxTypes {
     }
 
     public static String typeToString(long l) {
+        // convert bytes to char directly
+        // first utf16 page is ISO 8859
         byte[] b = new byte[4];
         b[0] = (byte) ((l >> 24) & 0xFF);
         b[1] = (byte) ((l >> 16) & 0xFF);

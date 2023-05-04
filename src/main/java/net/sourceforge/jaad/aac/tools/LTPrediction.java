@@ -4,10 +4,8 @@ import java.util.Arrays;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.Profile;
-import net.sourceforge.jaad.aac.SampleFrequency;
 import net.sourceforge.jaad.aac.filterbank.FilterBank;
 import net.sourceforge.jaad.aac.syntax.BitStream;
-import net.sourceforge.jaad.aac.syntax.Constants;
 import net.sourceforge.jaad.aac.syntax.ICSInfo;
 import net.sourceforge.jaad.aac.syntax.ICStream;
 
@@ -17,18 +15,14 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
  *
  * @author in-somnia
  */
-public class LTPrediction implements Constants {
+public class LTPrediction {
 
-    private static final float[] CODEBOOK = {
-            0.570829f,
-            0.696616f,
-            0.813004f,
-            0.911304f,
-            0.984900f,
-            1.067894f,
-            1.194601f,
-            1.369533f
-    };
+    public static final int MAX_LTP_SFB = 40;
+
+    private static final float[] CODEBOOK = {0.570829f, 0.696616f, 0.813004f, 0.911304f, 0.984900f, 1.067894f, 1.194601f, 1.369533f};
+
+    private boolean isPresent = false;
+
     private final int frameLength;
     private final int[] states;
     private int coef, lag, lastBand;
@@ -71,11 +65,11 @@ public class LTPrediction implements Constants {
         }
     }
 
-    public void setPredictionUnused(int sfb) {
-        if (longUsed != null) longUsed[sfb] = false;
-    }
+    public void process(ICStream ics, FilterBank filterBank) {
+        if (!isPresent) return;
 
-    public void process(ICStream ics, float[] data, FilterBank filterBank, SampleFrequency sf) {
+        float[] data = ics.getInvQuantData();
+
         ICSInfo info = ics.getInfo();
 
         if (!info.isEightShortFrame()) {
@@ -87,10 +81,9 @@ public class LTPrediction implements Constants {
                 in[i] = states[samples + i - lag] * CODEBOOK[coef];
             }
 
-            filterBank.processLTP(info.getWindowSequence(), info.getWindowShape(ICSInfo.CURRENT),
-                    info.getWindowShape(ICSInfo.PREVIOUS), in, out);
+            filterBank.processLTP(info.getWindowSequence(), info.getWindowShape(ICSInfo.CURRENT), info.getWindowShape(ICSInfo.PREVIOUS), in, out);
 
-            if (ics.isTNSDataPresent()) ics.getTNS().process(ics, out, sf, true);
+            ics.processTNS(out);
 
             int[] swbOffsets = info.getSWBOffsets();
             int swbOffsetMax = info.getSWBOffsetMax();

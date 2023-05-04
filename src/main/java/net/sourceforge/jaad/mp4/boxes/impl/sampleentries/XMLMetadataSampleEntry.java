@@ -22,7 +22,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 public class XMLMetadataSampleEntry extends MetadataSampleEntry {
@@ -34,11 +34,11 @@ public class XMLMetadataSampleEntry extends MetadataSampleEntry {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        namespace = in.readUTFString((int) getLeft(in), MP4InputStream.UTF8);
-        schemaLocation = in.readUTFString((int) getLeft(in), MP4InputStream.UTF8);
+        namespace = in.readUTFString((int) getLeft(in), MP4Input.UTF8);
+        schemaLocation = in.readUTFString((int) getLeft(in), MP4Input.UTF8);
     }
 
     /**
@@ -54,7 +54,7 @@ public class XMLMetadataSampleEntry extends MetadataSampleEntry {
     }
 
     /**
-     * Optionally provides an URL to find the schema corresponding to the
+     * Optionally provides a URL to find the schema corresponding to the
      * namespace. This is needed for decoding of the timed metadata by XML aware
      * encoding mechanisms such as BiM.
      *

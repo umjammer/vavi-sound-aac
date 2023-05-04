@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -72,7 +72,7 @@ public class ITunesMetadataBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         dataType = DataType.forInt(flags);
@@ -104,7 +104,7 @@ public class ITunesMetadataBox extends FullBox {
      */
     public String getText() {
         //first four bytes are padding (zero)
-        return new String(data, 0, data.length, StandardCharsets.UTF_8);
+        return new String(data, StandardCharsets.UTF_8);
     }
 
     /**
@@ -115,9 +115,9 @@ public class ITunesMetadataBox extends FullBox {
     public long getNumber() {
         //first four bytes are padding (zero)
         long l = 0;
-        for (int i = 0; i < data.length; i++) {
+        for (byte datum : data) {
             l <<= 8;
-            l |= (data[i] & 0xFF);
+            l |= (datum & 0xFF);
         }
         return l;
     }

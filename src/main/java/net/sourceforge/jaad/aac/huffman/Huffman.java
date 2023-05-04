@@ -13,7 +13,7 @@ public class Huffman implements Codebooks {
     private Huffman() {
     }
 
-    private static int findOffset(BitStream in, int[][] table) throws AACException {
+    private static int findOffset(BitStream in, int[][] table) {
         int off = 0;
         int len = table[off][0];
         int cw = in.readBits(len);
@@ -28,7 +28,7 @@ public class Huffman implements Codebooks {
         return off;
     }
 
-    private static void signValues(BitStream in, int[] data, int off, int len) throws AACException {
+    private static void signValues(BitStream in, int[] data, int off, int len) {
         for (int i = off; i < off + len; i++) {
             if (data[i] != 0) {
                 if (in.readBool()) data[i] = -data[i];
@@ -56,10 +56,10 @@ public class Huffman implements Codebooks {
     public static void decodeSpectralData(BitStream in, int cb, int[] data, int off) throws AACException {
         int[][] HCB = CODEBOOKS[cb - 1];
 
-        //find index
+        // find index
         int offset = findOffset(in, HCB);
 
-        //copy data
+        // copy data
         data[off] = HCB[offset][2];
         data[off + 1] = HCB[offset][3];
         if (cb < 5) {
@@ -67,7 +67,7 @@ public class Huffman implements Codebooks {
             data[off + 3] = HCB[offset][5];
         }
 
-        //sign & escape
+        // sign & escape
         if (cb < 11) {
             if (UNSIGNED[cb - 1]) signValues(in, data, off, cb < 5 ? QUAD_LEN : PAIR_LEN);
         } else if (cb == 11 || cb > 15) {

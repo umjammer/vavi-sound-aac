@@ -3,7 +3,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.meta;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 import net.sourceforge.jaad.mp4.boxes.Utils;
@@ -18,12 +18,12 @@ public class RatingBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
-        //3gpp or iTunes
+    public void decode(MP4Input in) throws IOException {
+        // 3gpp or iTunes
         if (parent.getType() == BoxTypes.USER_DATA_BOX) {
             super.decode(in);
 
-            //TODO: what to do with both?
+            // TODO: what to do with both?
             long entity = in.readBytes(4);
             long criteria = in.readBytes(4);
             languageCode = Utils.getLanguageCode(in.readBytes(2));

@@ -1,13 +1,12 @@
 package net.sourceforge.jaad.aac.tools;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.SampleFrequency;
 import net.sourceforge.jaad.aac.syntax.BitStream;
-import net.sourceforge.jaad.aac.syntax.Constants;
 import net.sourceforge.jaad.aac.syntax.ICSInfo;
-import net.sourceforge.jaad.aac.syntax.ICStream;
 
 
 /**
@@ -16,6 +15,8 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
  * @author in-somnia
  */
 public class ICPrediction {
+
+    static final Logger LOGGER = Logger.getLogger(ICPrediction.class.getName());
 
     private static final float SF_SCALE = 1.0f / -1024.0f;
     private static final float INV_SF_SCALE = 1.0f / SF_SCALE;
@@ -53,31 +54,23 @@ public class ICPrediction {
         for (int sfb = 0; sfb < length; sfb++) {
             predictionUsed[sfb] = in.readBool();
         }
-        Constants.LOGGER.log(Level.WARNING, "ICPrediction: maxSFB={0}, maxPredSFB={1}", new int[] {maxSFB, maxPredSFB});
-		/*//if maxSFB<maxPredSFB set remaining to false
-		for(int sfb = length; sfb<maxPredSFB; sfb++) {
-		predictionUsed[sfb] = false;
-		}*/
+        LOGGER.log(Level.WARNING, "ICPrediction: maxSFB={0}, maxPredSFB={1}", new int[] {maxSFB, maxPredSFB});
     }
 
-    public void setPredictionUnused(int sfb) {
-        predictionUsed[sfb] = false;
-    }
+    public void process(ICSInfo info, float[] data) {
 
-    public void process(ICStream ics, float[] data, SampleFrequency sf) {
-        ICSInfo info = ics.getInfo();
-
-        if (info.isEightShortFrame()) resetAllPredictors();
+        if (info.isEightShortFrame())
+            resetAllPredictors();
         else {
-            int len = Math.min(sf.getMaximalPredictionSFB(), info.getMaxSFB());
+            int len = info.getSFB();
             int[] swbOffsets = info.getSWBOffsets();
-            int k;
             for (int sfb = 0; sfb < len; sfb++) {
-                for (k = swbOffsets[sfb]; k < swbOffsets[sfb + 1]; k++) {
+                for (int k = swbOffsets[sfb]; k < swbOffsets[sfb + 1]; k++) {
                     predict(data, k, predictionUsed[sfb]);
                 }
             }
-            if (predictorReset) resetPredictorGroup(predictorResetGroup);
+            if (predictorReset)
+                resetPredictorGroup(predictorResetGroup);
         }
     }
 
@@ -92,15 +85,13 @@ public class ICPrediction {
     }
 
     private void resetAllPredictors() {
-        int i;
-        for (i = 0; i < states.length; i++) {
+        for (int i = 0; i < states.length; i++) {
             resetPredictState(i);
         }
     }
 
     private void resetPredictorGroup(int group) {
-        int i;
-        for (i = group - 1; i < states.length; i += 30) {
+        for (int i = group - 1; i < states.length; i += 30) {
             resetPredictState(i);
         }
     }

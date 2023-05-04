@@ -1,6 +1,6 @@
 package net.sourceforge.jaad.mp4.api;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.impl.ESDBox;
@@ -33,7 +33,7 @@ public class VideoTrack extends Track {
     private final VideoSampleEntry sampleEntry;
     private final Codec codec;
 
-    public VideoTrack(Box trak, MP4InputStream in) {
+    public VideoTrack(Box trak, MP4Input in) {
         super(trak, in);
 
         Box minf = trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.MEDIA_INFORMATION_BOX);
@@ -41,7 +41,7 @@ public class VideoTrack extends Track {
 
         Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
 
-        //sample descriptions: 'mp4v' has an ESDBox, all others have a CodecSpecificBox
+        // sample descriptions: 'mp4v' has an ESDBox, all others have a CodecSpecificBox
         SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
         if (stsd.getChildren().get(0) instanceof VideoSampleEntry) {
             sampleEntry = (VideoSampleEntry) stsd.getChildren().get(0);

@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.meta;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -34,11 +34,11 @@ public class ThreeGPPLocationBox extends ThreeGPPMetadataBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         decodeCommon(in);
 
         placeName = in.readUTFString((int) getLeft(in));
-        role = in.read();
+        role = in.readByte();
         longitude = in.readFixedPoint(16, 16);
         latitude = in.readFixedPoint(16, 16);
         altitude = in.readFixedPoint(16, 16);

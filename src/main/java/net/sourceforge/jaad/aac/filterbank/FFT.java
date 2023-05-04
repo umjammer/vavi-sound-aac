@@ -1,5 +1,7 @@
 package net.sourceforge.jaad.aac.filterbank;
 
+import java.util.Arrays;
+
 import net.sourceforge.jaad.aac.AACException;
 
 
@@ -8,9 +10,8 @@ class FFT implements FFTTables {
     private final int length;
     private final float[][] roots;
     private final float[][] rev;
-    private float[] a, b, c, d, e1, e2;
 
-    FFT(int length) throws AACException {
+    FFT(int length) {
         this.length = length;
 
         switch (length) {
@@ -30,19 +31,22 @@ class FFT implements FFTTables {
             throw new AACException("unexpected FFT length: " + length);
         }
 
-        //processing buffers
+        // processing buffers
         rev = new float[length][2];
-        a = new float[2];
-        b = new float[2];
-        c = new float[2];
-        d = new float[2];
-        e1 = new float[2];
-        e2 = new float[2];
+    }
+
+    void processForward(float[][] in) {
+        process(in, true);
+    }
+
+    public static void dump(float[][] in) {
+        for (float[] c : in) {
+            System.out.format("cpx(%f, %f),\n", c[0], c[1]);
+        }
     }
 
     void process(float[][] in, boolean forward) {
-        int imOff = (forward ? 2 : 1);
-        int scale = (forward ? length : 1);
+
         //bit-reversal
         int ii = 0;
         for (int i = 0; i < length; i++) {
@@ -60,58 +64,81 @@ class FFT implements FFTTables {
             in[i][1] = rev[i][1];
         }
 
-        //bottom base-4 round
-        for (int i = 0; i < length; i += 4) {
-            a[0] = in[i][0] + in[i + 1][0];
-            a[1] = in[i][1] + in[i + 1][1];
-            b[0] = in[i + 2][0] + in[i + 3][0];
-            b[1] = in[i + 2][1] + in[i + 3][1];
-            c[0] = in[i][0] - in[i + 1][0];
-            c[1] = in[i][1] - in[i + 1][1];
-            d[0] = in[i + 2][0] - in[i + 3][0];
-            d[1] = in[i + 2][1] - in[i + 3][1];
-            in[i][0] = a[0] + b[0];
-            in[i][1] = a[1] + b[1];
-            in[i + 2][0] = a[0] - b[0];
-            in[i + 2][1] = a[1] - b[1];
+        // bottom base-4 round
+        for(int i = 0; i<length; i += 4) {
+            // a = i0 + i1
+            float aRe = in[i][0]+in[i+1][0];
+            float aIm = in[i][1]+in[i+1][1];
+            // b = i2 + i3
+            float bRe = in[i+2][0]+in[i+3][0];
+            float bIm = in[i+2][1]+in[i+3][1];
+            // c = i0 - i1
+            float cRe = in[i][0]-in[i+1][0];
+            float cIm = in[i][1]-in[i+1][1];
+            // d = i2 - i3
+            float dRe = in[i+2][0]-in[i+3][0];
+            float dIm = in[i+2][1]-in[i+3][1];
 
-            e1[0] = c[0] - d[1];
-            e1[1] = c[1] + d[0];
-            e2[0] = c[0] + d[1];
-            e2[1] = c[1] - d[0];
-            if (forward) {
-                in[i + 1][0] = e2[0];
-                in[i + 1][1] = e2[1];
-                in[i + 3][0] = e1[0];
-                in[i + 3][1] = e1[1];
-            } else {
-                in[i + 1][0] = e1[0];
-                in[i + 1][1] = e1[1];
-                in[i + 3][0] = e2[0];
-                in[i + 3][1] = e2[1];
+            in[i][0] = aRe+bRe;
+            in[i][1] = aIm+bIm;
+
+            in[i+2][0] = aRe-bRe;
+            in[i+2][1] = aIm-bIm;
+
+            // e1 = c + i*d
+            float e1Re = cRe-dIm;
+            float e1Im = cIm+dRe;
+            // e2 = c - i*d
+            float e2Re = cRe+dIm;
+            float e2Im = cIm-dRe;
+
+            if(forward) {
+                in[i+1][0] = e2Re;
+                in[i+1][1] = e2Im;
+                in[i+3][0] = e1Re;
+                in[i+3][1] = e1Im;
+            }
+            else {
+                in[i+1][0] = e1Re;
+                in[i+1][1] = e1Im;
+                in[i+3][0] = e2Re;
+                in[i+3][1] = e2Im;
             }
         }
 
-        //iterations from bottom to top
-        int shift, m, km;
-        float rootRe, rootIm, zRe, zIm;
+        int imOff = (forward ? 2 : 1);
+
+        // iterations from bottom to top
         for (int i = 4; i < length; i <<= 1) {
-            shift = i << 1;
-            m = length / shift;
+            int shift = i << 1;
+            int m = length / shift;
             for (int j = 0; j < length; j += shift) {
                 for (int k = 0; k < i; k++) {
-                    km = k * m;
-                    rootRe = roots[km][0];
-                    rootIm = roots[km][imOff];
-                    zRe = in[i + j + k][0] * rootRe - in[i + j + k][1] * rootIm;
-                    zIm = in[i + j + k][0] * rootIm + in[i + j + k][1] * rootRe;
+                    int km = k * m;
+                    float rootRe = roots[km][0];
+                    float rootIm = roots[km][imOff];
 
-                    in[i + j + k][0] = (in[j + k][0] - zRe) * scale;
-                    in[i + j + k][1] = (in[j + k][1] - zIm) * scale;
-                    in[j + k][0] = (in[j + k][0] + zRe) * scale;
-                    in[j + k][1] = (in[j + k][1] + zIm) * scale;
+                    float[] v0 = in[j + k];
+                    float[] v1 = in[i + k + j];
+
+                    float zRe = v1[0]*rootRe-v1[1]*rootIm;
+                    float zIm = v1[0]*rootIm+v1[1]*rootRe;
+
+                    v1[0] = v0[0]-zRe;
+                    v1[1] = v0[1]-zIm;
+                    v0[0] = v0[0]+zRe;
+                    v0[1] = v0[1]+zIm;
                 }
             }
         }
+    }
+
+    public static float[][] copyOf(float[][] array) {
+        float[][] result = new float[array.length][2];
+        for(int i=0; i<array.length; ++i) {
+            result[i] = Arrays.copyOf(array[i], array[i].length);
+        }
+
+        return result;
     }
 }

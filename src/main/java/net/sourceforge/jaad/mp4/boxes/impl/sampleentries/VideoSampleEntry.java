@@ -22,7 +22,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 public class VideoSampleEntry extends SampleEntry {
@@ -37,7 +37,7 @@ public class VideoSampleEntry extends SampleEntry {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         in.skipBytes(2); //pre-defined: 0
@@ -54,7 +54,7 @@ public class VideoSampleEntry extends SampleEntry {
         in.skipBytes(4); //reserved
         frameCount = (int) in.readBytes(2);
 
-        int len = in.read();
+        int len = in.readByte();
         compressorName = in.readString(len);
         in.skipBytes(31 - len);
 

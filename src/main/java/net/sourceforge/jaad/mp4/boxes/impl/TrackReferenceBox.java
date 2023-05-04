@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.BoxImpl;
 
 
@@ -30,11 +30,11 @@ public class TrackReferenceBox extends BoxImpl {
 
     public TrackReferenceBox() {
         super("Track Reference Box");
-        trackIDs = new ArrayList<Long>();
+        trackIDs = new ArrayList<>();
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         referenceType = in.readString(4);
 
         while (getLeft(in) > 3) {

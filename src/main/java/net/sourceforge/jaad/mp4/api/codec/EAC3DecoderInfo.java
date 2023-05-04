@@ -38,7 +38,7 @@ public class EAC3DecoderInfo extends DecoderInfo {
             this.index = index;
 
             int loc = box.getDependentSubstreamLocation()[index];
-            List<DependentSubstream> list = new ArrayList<DependentSubstream>();
+            List<DependentSubstream> list = new ArrayList<>();
             for (int i = 0; i < 9; i++) {
                 if (((loc >> (8 - i)) & 1) == 1) list.add(DependentSubstream.values()[i]);
             }

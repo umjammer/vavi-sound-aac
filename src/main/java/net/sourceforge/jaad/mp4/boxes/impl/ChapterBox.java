@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -21,23 +21,23 @@ public class ChapterBox extends FullBox {
 
     public ChapterBox() {
         super("Chapter Box");
-        chapters = new HashMap<Long, String>();
+        chapters = new HashMap<>();
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         in.skipBytes(4); //??
 
-        int count = in.read();
+        int count = in.readByte();
 
         long timestamp;
         int len;
         String name;
         for (int i = 0; i < count; i++) {
             timestamp = in.readBytes(8);
-            len = in.read();
+            len = in.readByte();
             name = in.readString(len);
             chapters.put(timestamp, name);
         }

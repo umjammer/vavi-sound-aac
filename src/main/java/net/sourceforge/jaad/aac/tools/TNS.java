@@ -3,7 +3,6 @@ package net.sourceforge.jaad.aac.tools;
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.SampleFrequency;
 import net.sourceforge.jaad.aac.syntax.BitStream;
-import net.sourceforge.jaad.aac.syntax.Constants;
 import net.sourceforge.jaad.aac.syntax.ICSInfo;
 import net.sourceforge.jaad.aac.syntax.ICStream;
 
@@ -13,7 +12,7 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
  *
  * @author in-somnia
  */
-public class TNS implements Constants, TNSTables {
+public class TNS implements TNSTables {
 
     private static final int TNS_MAX_ORDER = 20;
     private static final int[] SHORT_BITS = {1, 4, 3}, LONG_BITS = {2, 6, 5};

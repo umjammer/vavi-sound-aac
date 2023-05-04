@@ -1,8 +1,6 @@
 package net.sourceforge.jaad.mp4;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,7 +31,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.ProgressiveDownloadInformationBox;
  * version). Optionally, the following data may be present:
  * <ul>
  * <li>progressive download informations: pairs of download rate and playback
- * delay, see {@link #getDownloadInformationPairs() getDownloadInformationPairs()}</li>
+ * delay, see {@link ProgressiveDownloadInformationBox}</li>
  * <li>a <code>Movie</code></li>
  * </ul>
  * <p>
@@ -45,19 +43,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.ProgressiveDownloadInformationBox;
  */
 public class MP4Container {
 
-    static {
-//		Logger log = Logger.getLogger("MP4 API");
-//		for(Handler h : log.getHandlers()) {
-//			log.removeHandler(h);
-//		}
-//		log.setLevel(Level.WARNING);
-//
-//		final ConsoleHandler h = new ConsoleHandler();
-//		h.setLevel(Level.ALL);
-//		log.addHandler(h);
-    }
-
-    private final MP4InputStream in;
+    private final MP4Input in;
     private final List<Box> boxes;
     private Brand major, minor;
     private Brand[] compatible;
@@ -66,16 +52,9 @@ public class MP4Container {
     private Box moov;
     private Movie movie;
 
-    public MP4Container(InputStream in) throws IOException {
-        this.in = new MP4InputStream(in);
-        boxes = new ArrayList<Box>();
-
-        readContent();
-    }
-
-    public MP4Container(RandomAccessFile in) throws IOException {
-        this.in = new MP4InputStream(in);
-        boxes = new ArrayList<Box>();
+    public MP4Container(MP4Input in) throws IOException {
+        this.in = in;
+        boxes = new ArrayList<>();
 
         readContent();
     }
@@ -127,7 +106,7 @@ public class MP4Container {
         return compatible;
     }
 
-    //TODO: pdin, movie fragments??
+    // TODO: pdin, movie fragments??
     public Movie getMovie() {
         if (moov == null) return null;
         else if (movie == null) movie = new Movie(moov, in);

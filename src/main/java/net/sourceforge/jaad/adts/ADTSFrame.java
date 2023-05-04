@@ -3,22 +3,24 @@ package net.sourceforge.jaad.adts;
 import java.io.DataInputStream;
 import java.io.IOException;
 
+import net.sourceforge.jaad.aac.AudioDecoderInfo;
 import net.sourceforge.jaad.aac.ChannelConfiguration;
+import net.sourceforge.jaad.aac.Profile;
 import net.sourceforge.jaad.aac.SampleFrequency;
 
 
-class ADTSFrame {
+class ADTSFrame implements AudioDecoderInfo {
 
-    //fixed
+    // fixed
     private boolean id, protectionAbsent, privateBit, copy, home;
     private int layer, profile, sampleFrequency, channelConfiguration;
-    //variable
+    // variable
     private boolean copyrightIDBit, copyrightIDStart;
     private int frameLength, adtsBufferFullness, rawDataBlockCount;
-    //error check
+    // error check
     private int[] rawDataBlockPosition;
     private int crcCheck;
-    //decoder specific info
+    // decoder specific info
     private byte[] info;
 
     ADTSFrame(DataInputStream in) throws IOException {
@@ -82,26 +84,15 @@ class ADTSFrame {
         return frameLength - (protectionAbsent ? 7 : 9);
     }
 
-    byte[] createDecoderSpecificInfo() {
-        if (info == null) {
-            //5 bits profile, 4 bits sample frequency, 4 bits channel configuration
-            info = new byte[2];
-            info[0] = (byte) (profile << 3);
-            info[0] |= (sampleFrequency >> 1) & 0x7;
-            info[1] = (byte) ((sampleFrequency & 0x1) << 7);
-            info[1] |= (channelConfiguration << 3);
-			/*1 bit frame length flag, 1 bit depends on core coder,
-			1 bit extension flag (all three currently 0)*/
-        }
-
-        return info;
+    public Profile getProfile() {
+        return Profile.forInt(profile);
     }
 
-    int getSampleFrequency() {
-        return SampleFrequency.forInt(sampleFrequency).getFrequency();
+    public SampleFrequency getSampleFrequency() {
+        return SampleFrequency.forInt(sampleFrequency);
     }
 
-    int getChannelCount() {
-        return ChannelConfiguration.forInt(channelConfiguration).getChannelCount();
+    public ChannelConfiguration getChannelConfiguration() {
+        return ChannelConfiguration.forInt(channelConfiguration);
     }
 }

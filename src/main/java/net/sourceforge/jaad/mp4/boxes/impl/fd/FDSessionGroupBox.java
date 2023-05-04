@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.fd;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -32,7 +32,7 @@ public class FDSessionGroupBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         int sessionGroups = (int) in.readBytes(2);
@@ -41,7 +41,7 @@ public class FDSessionGroupBox extends FullBox {
 
         int j, entryCount, channelsInSessionGroup;
         for (int i = 0; i < sessionGroups; i++) {
-            entryCount = in.read();
+            entryCount = in.readByte();
             groupIDs[i] = new long[entryCount];
             for (j = 0; j < entryCount; j++) {
                 groupIDs[i][j] = in.readBytes(4);

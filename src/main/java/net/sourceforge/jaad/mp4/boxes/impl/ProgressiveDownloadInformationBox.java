@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -26,11 +26,11 @@ public class ProgressiveDownloadInformationBox extends FullBox {
 
     public ProgressiveDownloadInformationBox() {
         super("Progressive Download Information Box");
-        pairs = new HashMap<Long, Long>();
+        pairs = new HashMap<>();
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         long rate, initialDelay;

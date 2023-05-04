@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
 
+import net.sourceforge.jaad.aac.AudioDecoderInfo;
+
 
 public class ADTSDemultiplexer {
 
@@ -21,10 +23,6 @@ public class ADTSDemultiplexer {
         if (!findNextFrame()) throw new IOException("no ADTS header found");
     }
 
-    public byte[] getDecoderSpecificInfo() {
-        return frame.createDecoderSpecificInfo();
-    }
-
     public byte[] readNextFrame() throws IOException {
         if (first) first = false;
         else findNextFrame();
@@ -35,7 +33,7 @@ public class ADTSDemultiplexer {
     }
 
     private boolean findNextFrame() throws IOException {
-        //find next ADTS ID
+        // find next ADTS ID
         boolean found = false;
         int left = MAXIMUM_FRAME_SIZE;
         int i;
@@ -54,10 +52,14 @@ public class ADTSDemultiplexer {
     }
 
     public int getSampleFrequency() {
-        return frame.getSampleFrequency();
+        return frame.getSampleFrequency().getFrequency();
     }
 
     public int getChannelCount() {
-        return frame.getChannelCount();
+        return frame.getChannelConfiguration().getChannelCount();
+    }
+
+    public AudioDecoderInfo getDecoderInfo() {
+        return frame;
     }
 }

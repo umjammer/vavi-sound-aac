@@ -7,7 +7,6 @@
 package net.sourceforge.jaad.spi.javasound;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -56,13 +55,9 @@ class AacFormatConversionProviderTest {
             new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path.toFile().toPath())));
         });
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(path.toFile());
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(path.toFile()));
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(path.toUri().toURL());
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(path.toUri().toURL()));
     }
 
     @Test
@@ -70,9 +65,7 @@ class AacFormatConversionProviderTest {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test
@@ -81,9 +74,7 @@ class AacFormatConversionProviderTest {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile4).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test
@@ -92,9 +83,7 @@ class AacFormatConversionProviderTest {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile3).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test

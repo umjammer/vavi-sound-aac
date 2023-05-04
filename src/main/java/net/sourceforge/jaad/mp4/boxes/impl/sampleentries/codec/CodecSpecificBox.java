@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.BoxImpl;
 
 
@@ -21,9 +21,9 @@ public abstract class CodecSpecificBox extends BoxImpl {
         super(name);
     }
 
-    protected void decodeCommon(MP4InputStream in) throws IOException {
+    protected void decodeCommon(MP4Input in) throws IOException {
         vendor = in.readBytes(4);
-        decoderVersion = in.read();
+        decoderVersion = in.readByte();
     }
 
     public long getVendor() {

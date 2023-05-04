@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -21,11 +21,11 @@ public class OMACommonHeadersBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        encryptionMethod = in.read();
-        paddingScheme = in.read();
+        encryptionMethod = in.readByte();
+        paddingScheme = in.readByte();
         plaintextLength = in.readBytes(8);
         int contentIDLength = (int) in.readBytes(2);
         int rightsIssuerURLLength = (int) in.readBytes(2);
@@ -36,7 +36,7 @@ public class OMACommonHeadersBox extends FullBox {
         rightsIssuerURL = new byte[rightsIssuerURLLength];
         in.readBytes(rightsIssuerURL);
 
-        textualHeaders = new HashMap<String, String>();
+        textualHeaders = new HashMap<>();
         String key, value;
         while (textualHeadersLength > 0) {
             key = new String(in.readTerminated((int) getLeft(in), ':'));

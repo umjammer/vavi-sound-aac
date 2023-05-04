@@ -1,6 +1,5 @@
 package net.sourceforge.jaad.aac.error;
 
-import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
 
@@ -88,7 +87,7 @@ public class BitsBuffer {
         len += a.len;
     }
 
-    public void readSegment(int segwidth, BitStream in) throws AACException {
+    public void readSegment(int segwidth, BitStream in) {
         len = segwidth;
 
         if (segwidth > 32) {

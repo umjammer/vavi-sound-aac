@@ -1,4 +1,12 @@
-package net.sourceforge.jaad.aac;
+package net.sourceforge.jaad;
+
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.List;
+import javax.sound.sampled.AudioFormat;
+
+import net.sourceforge.jaad.aac.Receiver;
+
 
 /**
  * The SampleBuffer holds the decoded AAC frame. It contains the raw PCM data
@@ -6,10 +14,10 @@ package net.sourceforge.jaad.aac;
  *
  * @author in-somnia
  */
-public class SampleBuffer {
+public class SampleBuffer implements Receiver {
 
     private int sampleRate, channels, bitsPerSample;
-    private double length, bitrate, encodedBitrate;
+    private double length, bitrate;
     private byte[] data;
     private boolean bigEndian;
 
@@ -19,6 +27,14 @@ public class SampleBuffer {
         channels = 0;
         bitsPerSample = 0;
         bigEndian = true;
+    }
+
+    public SampleBuffer(AudioFormat af) {
+        data = new byte[0];
+        sampleRate = (int) af.getSampleRate();
+        channels = af.getChannels();
+        bitsPerSample = af.getSampleSizeInBits();
+        bigEndian = af.isBigEndian();
     }
 
     /**
@@ -79,15 +95,6 @@ public class SampleBuffer {
     }
 
     /**
-     * Returns the AAC bitrate of the current frame.
-     *
-     * @return the AAC bitrate
-     */
-    public double getEncodedBitrate() {
-        return encodedBitrate;
-    }
-
-    /**
      * Indicates the endianness for the data.
      *
      * @return true if the data is in big endian, false if it is in little endian
@@ -123,13 +130,40 @@ public class SampleBuffer {
         if (sampleRate == 0) {
             length = 0;
             bitrate = 0;
-            encodedBitrate = 0;
         } else {
             int bytesPerSample = bitsPerSample / 8; //usually 2
             int samplesPerChannel = data.length / (bytesPerSample * channels); //=1024
             length = (double) samplesPerChannel / (double) sampleRate;
             bitrate = (double) (samplesPerChannel * bitsPerSample * channels) / length;
-            encodedBitrate = (double) bitsRead / length;
+        }
+    }
+
+    @Override
+    public void accept(List<float[]> samples, int sampleLength, int sampleRate) {
+
+        this.sampleRate = sampleRate;
+        this.channels = samples.size();
+        this.bitsPerSample = Short.SIZE;
+
+        int bytes = samples.size() * Short.BYTES * sampleLength;
+        if (data == null || data.length != bytes)
+            data = new byte[bytes];
+
+        this.length = (double) sampleLength / sampleRate;
+        this.bitrate = (double) sampleLength * bitsPerSample * channels / bytes;
+
+        ByteBuffer bb = ByteBuffer.wrap(data);
+        bb.order(bigEndian ? ByteOrder.BIG_ENDIAN : ByteOrder.LITTLE_ENDIAN);
+
+        for (int is = 0; is < sampleLength; ++is) {
+            for (float[] sample : samples) {
+                int k = sample.length * is / sampleLength;
+                float s = sample[k];
+                int pulse = Math.round(s);
+                pulse = Math.min(pulse, Short.MAX_VALUE);
+                pulse = Math.max(pulse, Short.MIN_VALUE);
+                bb.putShort((short) pulse);
+            }
         }
     }
 }

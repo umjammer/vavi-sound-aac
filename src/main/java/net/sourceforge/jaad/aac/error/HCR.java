@@ -3,7 +3,6 @@ package net.sourceforge.jaad.aac.error;
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.huffman.HCB;
 import net.sourceforge.jaad.aac.syntax.BitStream;
-import net.sourceforge.jaad.aac.syntax.Constants;
 import net.sourceforge.jaad.aac.syntax.ICSInfo;
 import net.sourceforge.jaad.aac.syntax.ICStream;
 
@@ -14,7 +13,7 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
  * section data.
  */
 //TODO: needs decodeSpectralDataER() in BitStream
-public class HCR implements Constants {
+public class HCR {
 
     private static class Codeword {
 
@@ -91,7 +90,7 @@ public class HCR implements Constants {
     }
 
     //sectionDataResilience = hDecoder->aacSectionDataResilienceFlag
-    public static void decodeReorderedSpectralData(ICStream ics, BitStream in, short[] spectralData, boolean sectionDataResilience) throws AACException {
+    public static void decodeReorderedSpectralData(ICStream ics, BitStream in, short[] spectralData, boolean sectionDataResilience) {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();

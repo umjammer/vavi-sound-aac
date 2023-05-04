@@ -14,39 +14,38 @@ class HFGeneration {
         float det;
     }
 
-    public static void hf_generation(SBR sbr, float[][][] Xlow,
-                                     float[][][] Xhigh, int ch) {
-        int l, i, x;
+    public static void hf_generation(float[][][] Xlow, float[][][] Xhigh, Channel ch, boolean reset) {
+
         float[][] alpha_0 = new float[64][2], alpha_1 = new float[64][2];
 
-        int offset = sbr.tHFAdj;
-        int first = sbr.t_E[ch][0];
-        int last = sbr.t_E[ch][sbr.L_E[ch]];
+        int offset = ch.sbr.tHFAdj;
+        int first = ch.t_E[0];
+        int last = ch.t_E[ch.L_E];
 
-        calc_chirp_factors(sbr, ch);
+        calc_chirp_factors(ch);
 
-        if ((ch == 0) && (sbr.Reset))
-            patch_construction(sbr);
+        if (reset)
+            patch_construction(ch.sbr);
 
         /* calculate the prediction coefficients */
 
         /* actual HF generation */
-        for (i = 0; i < sbr.noPatches; i++) {
-            for (x = 0; x < sbr.patchNoSubbands[i]; x++) {
+        for (int i = 0; i < ch.sbr.noPatches; i++) {
+            for (int x = 0; x < ch.sbr.patchNoSubbands[i]; x++) {
                 float a0_r, a0_i, a1_r, a1_i;
                 float bw, bw2;
                 int q, p, k, g;
 
                 /* find the low and high band for patching */
-                k = sbr.kx + x;
+                k = ch.sbr.kx + x;
                 for (q = 0; q < i; q++) {
-                    k += sbr.patchNoSubbands[q];
+                    k += ch.sbr.patchNoSubbands[q];
                 }
-                p = sbr.patchStartSubband[i] + x;
+                p = ch.sbr.patchStartSubband[i] + x;
 
-                g = sbr.table_map_k_to_g[k];
+                g = ch.sbr.table_map_k_to_g[k];
 
-                bw = sbr.bwArray[ch][g];
+                bw = ch.bwArray[g];
                 bw2 = bw * bw;
 
                 /* do the patching */
@@ -54,7 +53,7 @@ class HFGeneration {
                 if (bw2 > 0) {
                     float temp1_r, temp2_r, temp3_r;
                     float temp1_i, temp2_i, temp3_i;
-                    calc_prediction_coef(sbr, Xlow, alpha_0, alpha_1, p);
+                    calc_prediction_coef(ch.sbr, Xlow, alpha_0, alpha_1, p);
 
                     a0_r = (alpha_0[p][0] * bw);
                     a1_r = (alpha_1[p][0] * bw2);
@@ -65,7 +64,7 @@ class HFGeneration {
                     temp3_r = (Xlow[first - 1 + offset][p][0]);
                     temp2_i = (Xlow[first - 2 + offset][p][1]);
                     temp3_i = (Xlow[first - 1 + offset][p][1]);
-                    for (l = first; l < last; l++) {
+                    for (int l = first; l < last; l++) {
                         temp1_r = temp2_r;
                         temp2_r = temp3_r;
                         temp3_r = (Xlow[l + offset][p][0]);
@@ -87,7 +86,7 @@ class HFGeneration {
                                 + (a1_r * temp1_i));
                     }
                 } else {
-                    for (l = first; l < last; l++) {
+                    for (int l = first; l < last; l++) {
                         Xhigh[l + offset][k][0] = Xlow[l + offset][p][0];
                         Xhigh[l + offset][k][1] = Xlow[l + offset][p][1];
                     }
@@ -95,8 +94,8 @@ class HFGeneration {
             }
         }
 
-        if (sbr.Reset) {
-            FBT.limiter_frequency_table(sbr);
+        if (ch.sbr.reset) {
+            FBT.limiter_frequency_table(ch.sbr);
         }
     }
 
@@ -225,31 +224,29 @@ class HFGeneration {
     }
 
     /* FIXED POINT: bwArray = COEF */
-    private static void calc_chirp_factors(SBR sbr, int ch) {
+    private static void calc_chirp_factors(Channel ch) {
         int i;
 
-        for (i = 0; i < sbr.N_Q; i++) {
-            sbr.bwArray[ch][i] = mapNewBw(sbr.bs_invf_mode[ch][i], sbr.bs_invf_mode_prev[ch][i]);
+        for (i = 0; i < ch.sbr.N_Q; i++) {
+            ch.bwArray[i] = mapNewBw(ch.bs_invf_mode[i], ch.bs_invf_mode_prev[i]);
 
-            if (sbr.bwArray[ch][i] < sbr.bwArray_prev[ch][i])
-                sbr.bwArray[ch][i] = (sbr.bwArray[ch][i] * 0.75f) + (sbr.bwArray_prev[ch][i] * 0.25f);
+            if (ch.bwArray[i] < ch.bwArray_prev[i])
+                ch.bwArray[i] = (ch.bwArray[i] * 0.75f) + (ch.bwArray_prev[i] * 0.25f);
             else
-                sbr.bwArray[ch][i] = (sbr.bwArray[ch][i] * 0.90625f) + (sbr.bwArray_prev[ch][i] * 0.09375f);
+                ch.bwArray[i] = (ch.bwArray[i] * 0.90625f) + (ch.bwArray_prev[i] * 0.09375f);
 
-            if (sbr.bwArray[ch][i] < 0.015625f)
-                sbr.bwArray[ch][i] = 0.0f;
+            if (ch.bwArray[i] < 0.015625f)
+                ch.bwArray[i] = 0.0f;
 
-            if (sbr.bwArray[ch][i] >= 0.99609375f)
-                sbr.bwArray[ch][i] = 0.99609375f;
+            if (ch.bwArray[i] >= 0.99609375f)
+                ch.bwArray[i] = 0.99609375f;
 
-            sbr.bwArray_prev[ch][i] = sbr.bwArray[ch][i];
-            sbr.bs_invf_mode_prev[ch][i] = sbr.bs_invf_mode[ch][i];
+            ch.bwArray_prev[i] = ch.bwArray[i];
+            ch.bs_invf_mode_prev[i] = ch.bs_invf_mode[i];
         }
     }
 
     private static void patch_construction(SBR sbr) {
-        int i, k;
-        int odd, sb;
         int msb = sbr.k0;
         int usb = sbr.kx;
         /* (uint8_t)(2.048e6/sbr.sample_rate + 0.5); */
@@ -257,8 +254,9 @@ class HFGeneration {
 
         sbr.noPatches = 0;
 
+        int k = 0;
         if (goalSb < (sbr.kx + sbr.M)) {
-            for (i = 0, k = 0; sbr.f_master[i] < goalSb; i++) {
+            for (int i = 0; sbr.f_master[i] < goalSb; i++) {
                 k = i + 1;
             }
         } else {
@@ -273,8 +271,10 @@ class HFGeneration {
             return;
         }
 
+        int sb;
         do {
             int j = k + 1;
+            int odd;
 
             do {
                 j--;

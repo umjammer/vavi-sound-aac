@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 import net.sourceforge.jaad.mp4.boxes.impl.samplegroupentries.SampleGroupDescriptionEntry;
 
@@ -37,7 +37,7 @@ public class SampleGroupDescriptionBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         groupingType = in.readBytes(4);
@@ -71,7 +71,8 @@ public class SampleGroupDescriptionBox extends FullBox {
 		}
 		if(boxClass!=null) {
 		entries[i] = (SampleGroupDescriptionEntry) BoxFactory.parseBox(in, boxClass);
-		if(entries[i]!=null) left -= entries[i].getSize();
+		if(entries[i]!=null)
+			left -= entries[i].getSize();
 		}
 		}*/
     }

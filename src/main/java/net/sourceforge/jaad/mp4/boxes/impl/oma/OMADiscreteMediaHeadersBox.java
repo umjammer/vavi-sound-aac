@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl.oma;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
@@ -23,10 +23,10 @@ public class OMADiscreteMediaHeadersBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        int len = in.read();
+        int len = in.readByte();
         contentType = in.readString(len);
 
         readChildren(in);

@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 
 import net.sourceforge.jaad.aac.Decoder;
-import net.sourceforge.jaad.aac.SampleBuffer;
+import net.sourceforge.jaad.SampleBuffer;
 import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 
 
@@ -23,7 +23,7 @@ class PcmAudioInputStream extends AsynchronousAudioInputStream {
     PcmAudioInputStream(InputStream in, AudioFormat format, long length) throws IOException {
         super(in, format, length);
         adts = new ADTSDemultiplexer(in);
-        decoder = new Decoder(adts.getDecoderSpecificInfo());
+        decoder = Decoder.create(adts.getDecoderInfo());
         sampleBuffer = new SampleBuffer();
     }
 

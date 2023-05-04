@@ -13,3 +13,6 @@
 *.iml
 *.ipr
 *.iws
+
+/tmp/
+local.properties

@@ -1,6 +1,6 @@
 package net.sourceforge.jaad.mp4.api;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.impl.ESDBox;
@@ -43,7 +43,7 @@ public class AudioTrack extends Track {
     private final AudioSampleEntry sampleEntry;
     private Codec codec;
 
-    public AudioTrack(Box trak, MP4InputStream in) {
+    public AudioTrack(Box trak, MP4Input in) {
         super(trak, in);
 
         Box mdia = trak.getChild(BoxTypes.MEDIA_BOX);
@@ -87,7 +87,7 @@ public class AudioTrack extends Track {
      * stereo space: 0 is centre (the normal value), full left is -1.0 and full
      * right is 1.0.
      *
-     * @return the stereo balance for a this track
+     * @return the stereo balance for this track
      */
     public double getBalance() {
         return smhd.getBalance();

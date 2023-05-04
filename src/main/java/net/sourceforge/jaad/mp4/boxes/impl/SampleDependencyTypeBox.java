@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
@@ -49,7 +49,7 @@ public class SampleDependencyTypeBox extends FullBox {
     }
 
     @Override
-    public void decode(MP4InputStream in) throws IOException {
+    public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
         //get number of samples from SampleSizeBox
@@ -64,7 +64,7 @@ public class SampleDependencyTypeBox extends FullBox {
 
         byte b;
         for (int i = 0; i < sampleCount; i++) {
-            b = (byte) in.read();
+            b = (byte) in.readByte();
             /* 2 bits reserved
              * 2 bits sampleDependsOn
              * 2 bits sampleIsDependedOn

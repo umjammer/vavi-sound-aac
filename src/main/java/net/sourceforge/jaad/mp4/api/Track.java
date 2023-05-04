@@ -12,7 +12,7 @@ import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.impl.ChunkOffsetBox;
@@ -44,7 +44,7 @@ public abstract class Track {
         //TODO: currently only marker interface
     }
 
-    private final MP4InputStream in;
+    private final MP4Input in;
     protected final TrackHeaderBox tkhd;
     private final MediaHeaderBox mdhd;
     private final boolean inFile;
@@ -56,7 +56,7 @@ public abstract class Track {
     protected DecoderInfo decoderInfo;
     protected Protection protection;
 
-    Track(Box trak, MP4InputStream in) {
+    Track(Box trak, MP4Input in) {
         this.in = in;
 
         tkhd = (TrackHeaderBox) trak.getChild(BoxTypes.TRACK_HEADER_BOX);
@@ -93,7 +93,7 @@ public abstract class Track {
         //sample table
         Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
         if (stbl.hasChildren()) {
-            frames = new ArrayList<Frame>();
+            frames = new ArrayList<>();
             parseSampleTable(stbl);
         } else frames = Collections.emptyList();
         currentFrame = 0;
@@ -187,9 +187,7 @@ public abstract class Track {
             if (sampleEntry.getClass().isInstance(type)) {
                 System.out.println("true");
             }
-        } catch (InstantiationException ex) {
-            ex.printStackTrace();
-        } catch (IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {
             ex.printStackTrace();
         }
     }
@@ -289,8 +287,8 @@ public abstract class Track {
      * @return the decoder specific info
      * @see #getDecoderInfo()
      */
-    public byte[] getDecoderSpecificInfo() {
-        return decoderSpecificInfo.getData();
+    public DecoderSpecificInfo getDecoderSpecificInfo() {
+        return decoderSpecificInfo;
     }
 
     /**

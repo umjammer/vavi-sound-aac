@@ -2,7 +2,7 @@ package net.sourceforge.jaad.mp4.od;
 
 import java.io.IOException;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 
 
 /**
@@ -29,11 +29,11 @@ public class ESDescriptor extends Descriptor {
     private boolean streamDependency, urlPresent, ocrPresent;
     private String url;
 
-    void decode(MP4InputStream in) throws IOException {
+    void decode(MP4Input in) throws IOException {
         esID = (int) in.readBytes(2);
 
         //1 bit stream dependence flag, 1 it url flag, 1 reserved, 5 bits stream priority
-        int flags = in.read();
+        int flags = in.readByte();
         streamDependency = ((flags >> 7) & 1) == 1;
         urlPresent = ((flags >> 6) & 1) == 1;
         streamPriority = flags & 31;
@@ -42,7 +42,7 @@ public class ESDescriptor extends Descriptor {
         else dependingOnES_ID = -1;
 
         if (urlPresent) {
-            int len = in.read();
+            int len = in.readByte();
             url = in.readString(len);
         }
 

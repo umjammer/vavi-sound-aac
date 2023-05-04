@@ -15,7 +15,7 @@ class ID3Tag {
     private final int tag, flags, len;
 
     ID3Tag(DataInputStream in) throws IOException {
-        frames = new ArrayList<ID3Frame>();
+        frames = new ArrayList<>();
 
         //id3v2 header
         tag = (in.read() << 16) | (in.read() << 8) | in.read(); //'ID3'

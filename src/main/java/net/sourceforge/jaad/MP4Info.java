@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.sourceforge.jaad.mp4.MP4Container;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.api.MetaData;
 import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.api.Protection;
@@ -28,7 +29,8 @@ public class MP4Info {
                     file = args[1];
                 } else file = args[0];
 
-                MP4Container cont = new MP4Container(new RandomAccessFile(file, "r"));
+                MP4Input is = MP4Input.open(new RandomAccessFile(file, "r"));
+                MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
                 System.out.println("Movie:");
 
