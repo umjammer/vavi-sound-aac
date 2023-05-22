@@ -20,3 +20,8 @@ and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).
 ## Install
 
  * https://jitpack.io/#/umjammer/JAADec
+
+## Applied Patches
+
+ * https://github.com/Tianscar/jaac/commit/cf9b24f55fcd8f77ae76c42cac87602fdb0382a8
+ * https://github.com/Tianscar/jaac/commit/bbaaec277d6620e0233561d02185f2e901970480
