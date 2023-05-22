@@ -70,11 +70,11 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     AudioFormat targetFormat = formats[0];
                     if (sourceFormat.equals(targetFormat)) {
-                        logger.info("same1: " + sourceFormat);
+                        logger.fine("same1: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING && targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-                        logger.info("convert1: " + type);
+                        logger.fine("convert1: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {
@@ -104,12 +104,12 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
                 if (formats != null && formats.length > 0) {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     if (sourceFormat.equals(targetFormat)) {
-                        logger.info("same2: " + sourceFormat);
+                        logger.fine("same2: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING &&
                             targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-                        logger.info("convert2: " + type);
+                        logger.fine("convert2: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {

@@ -34,7 +34,7 @@ class PcmAudioInputStream extends AsynchronousAudioInputStream {
             try {
                 decoder.decodeFrame(adts.readNextFrame(), sampleBuffer);
                 audioFormat = new AudioFormat(sampleBuffer.getSampleRate(), sampleBuffer.getBitsPerSample(), sampleBuffer.getChannels(), true, true);
-                logger.info("format: " + audioFormat);
+                logger.fine("format: " + audioFormat);
                 saved = sampleBuffer.getData();
             } catch (IOException e) {
                 return null;

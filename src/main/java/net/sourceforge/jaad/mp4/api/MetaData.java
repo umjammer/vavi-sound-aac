@@ -286,7 +286,7 @@ public class MetaData {
             try {
                 put(Field.RELEASE_DATE, new Date(Integer.parseInt(value)));
             } catch (NumberFormatException e) {
-                Logger.getLogger("MP4 API").log(Level.INFO, "unable to parse 3GPP metadata: recording year value: {0}", value);
+                Logger.getLogger("MP4 API").log(Level.FINE, "unable to parse 3GPP metadata: recording year value: {0}", value);
             }
         }
         if (udta.hasChild(BoxTypes.THREE_GPP_TITLE_BOX))
