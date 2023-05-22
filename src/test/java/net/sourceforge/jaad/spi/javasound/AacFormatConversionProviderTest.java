@@ -7,11 +7,9 @@
 package net.sourceforge.jaad.spi.javasound;
 
 import java.io.BufferedInputStream;
-import java.io.FileInputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,7 +20,6 @@ import javax.sound.sampled.UnsupportedAudioFileException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
 import vavi.util.Debug;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -42,25 +39,23 @@ class AacFormatConversionProviderTest {
 
     @BeforeAll
     static void setup() throws Exception {
-        time = Boolean.valueOf(System.getProperty("vavi.test", "false")) ? 10 * 1000 : 1000 * 1000;
+        time = System.getProperty("vavi.test", "").equals("ide") ? 10 * 1000 : 1000 * 1000;
     }
 
     @Test
+    @DisplayName("unsupported exception is able to detect in 3 ways")
     public void test1() throws Exception {
 
         Path path = Paths.get("src/test/resources", inFile);
 
         assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(new FileInputStream(path.toFile())));
+            // don't replace with Files#newInputStream(Path)
+            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path.toFile().toPath())));
         });
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(path.toFile());
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(path.toFile()));
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(path.toUri().toURL());
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(path.toUri().toURL()));
     }
 
     @Test
@@ -68,9 +63,7 @@ class AacFormatConversionProviderTest {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test
@@ -79,20 +72,16 @@ class AacFormatConversionProviderTest {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile4).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test
-    @DisplayName("xxx")
+    @DisplayName("a file consumes input stream all")
     public void test13() throws Exception {
 
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(inFile3).toURI());
 
-        assertThrows(UnsupportedAudioFileException.class, () -> {
-            new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path)));
-        });
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
     }
 
     @Test
@@ -124,10 +113,9 @@ Debug.println("OUT: " + pcmAis.getFormat());
         volume(line, .05d);
         line.start();
 
-
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[8192];
         while (!later(time).come()) {
-            int r = pcmAis.read(buf, 0, 1024);
+            int r = pcmAis.read(buf, 0, buf.length);
             if (r < 0) {
                 break;
             }

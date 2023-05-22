@@ -1,32 +1,97 @@
 package net.sourceforge.jaad.aac.syntax;
 
-import net.sourceforge.jaad.aac.AACException;
-import net.sourceforge.jaad.aac.SampleFrequency;
-import net.sourceforge.jaad.aac.sbr.SBR;
+import java.util.AbstractList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.IntFunction;
 
-public abstract class Element implements Constants {
+import net.sourceforge.jaad.aac.DecoderConfig;
+import net.sourceforge.jaad.aac.tools.Utils;
 
-	private int elementInstanceTag;
-	private SBR sbr;
 
-	protected void readElementInstanceTag(BitStream in) throws AACException {
-		elementInstanceTag = in.readBits(4);
-	}
+public interface Element {
 
-	public int getElementInstanceTag() {
-		return elementInstanceTag;
-	}
+    enum Type {
+        SCE, CPE, CCE, LFE, DSE, PCE, FIL, END;
+        public static final List<Type> VALUES = Utils.listOf(values());
 
-	void decodeSBR(BitStream in, SampleFrequency sf, int count, boolean stereo, boolean crc, boolean downSampled,boolean smallFrames) throws AACException {
-		if(sbr==null) sbr = new SBR(smallFrames,elementInstanceTag==ELEMENT_CPE,sf,downSampled);
-		sbr.decode(in, count);
-	}
+        public static Type get(int i) {
+            return VALUES.get(i);
+        }
+    }
 
-	boolean isSBRPresent() {
-		return sbr!=null;
-	}
+    static Type readType(BitStream in) {
+        return Type.get(in.readBits(3));
+    }
 
-	SBR getSBR() {
-		return sbr;
-	}
+    abstract class InstanceTag {
+
+        protected final int id;
+
+        protected InstanceTag(int id) {
+            this.id = id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        abstract public Type getType();
+
+        abstract public Element newElement(DecoderConfig config);
+
+        public int hashCode() {
+            return getType().ordinal() + 8 * id;
+        }
+
+        public boolean equals(Object obj) {
+            return this.getClass().equals(obj.getClass()) && equalsTag((InstanceTag) obj);
+        }
+
+        boolean equalsTag(InstanceTag other) {
+            return this.id == other.id && Objects.equals(getId(), other.getId());
+        }
+
+        transient String toString;
+
+        public String toString() {
+            if (toString == null)
+                toString = String.format("%s:[%d]", getType().name(), id);
+            return toString;
+        }
+    }
+
+    InstanceTag getElementInstanceTag();
+
+    void decode(BitStream in);
+
+    static <T extends InstanceTag> List<T>
+    createTagList(int count, IntFunction<T> newTag) {
+        List<T> tags = new AbstractList<T>() {
+
+            @Override
+            public int size() {
+                return count;
+            }
+
+            @Override
+            public T get(int index) {
+                return newTag.apply(index);
+            }
+        };
+        return Utils.listCopyOf(tags);
+    }
+
+    static Map<Type, IntFunction<InstanceTag>> tagFactory() {
+        Map<Type, IntFunction<InstanceTag>> types = new EnumMap<>(Element.Type.class);
+        types.put(Element.Type.PCE, PCE.TAGS::get);
+        types.put(Element.Type.SCE, SCE.TAGS::get);
+        types.put(Element.Type.CPE, CPE.TAGS::get);
+        types.put(Element.Type.LFE, LFE.TAGS::get);
+        types.put(Element.Type.CCE, CCE.TAGS::get);
+        types.put(Element.Type.DSE, DSE.TAGS::get);
+        return types;
+    }
 }

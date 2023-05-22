@@ -7,8 +7,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-import net.sourceforge.jaad.mp4.MP4InputStream;
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * This box contains the data for a metadata tag. It is right below an
@@ -21,124 +22,127 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
 its class (String/Integer/...)*/
 public class ITunesMetadataBox extends FullBox {
 
-	private static final String[] TIMESTAMPS = {"yyyy", "yyyy-MM", "yyyy-MM-dd"};
+    private static final String[] TIMESTAMPS = {"yyyy", "yyyy-MM", "yyyy-MM-dd"};
 
-	public enum DataType {
+    public enum DataType {
 
-		IMPLICIT(/*Object.class*/),
-		UTF8(/*String.class*/),
-		UTF16(/*String.class*/),
-		HTML(/*String.class*/),
-		XML(/*String.class*/),
-		UUID(/*Long.class*/),
-		ISRC(/*String.class*/),
-		MI3P(/*String.class*/),
-		GIF(/*byte[].class*/),
-		JPEG(/*byte[].class*/),
-		PNG(/*byte[].class*/),
-		URL(/*String.class*/),
-		DURATION(/*Long.class*/),
-		DATETIME(/*Long.class*/),
-		GENRE(/*Integer.class*/),
-		INTEGER(/*Long.class*/),
-		RIAA(/*Integer.class*/),
-		UPC(/*String.class*/),
-		BMP(/*byte[].class*/),
-		UNDEFINED(/*byte[].class*/);
-		private static final DataType[] TYPES = {
-			IMPLICIT, UTF8, UTF16, null, null, null, HTML, XML, UUID, ISRC, MI3P, null,
-			GIF, JPEG, PNG, URL, DURATION, DATETIME, GENRE, null, null, INTEGER,
-			null, null, RIAA, UPC, null, BMP
-		};
+        IMPLICIT(/*Object.class*/),
+        UTF8(/*String.class*/),
+        UTF16(/*String.class*/),
+        HTML(/*String.class*/),
+        XML(/*String.class*/),
+        UUID(/*Long.class*/),
+        ISRC(/*String.class*/),
+        MI3P(/*String.class*/),
+        GIF(/*byte[].class*/),
+        JPEG(/*byte[].class*/),
+        PNG(/*byte[].class*/),
+        URL(/*String.class*/),
+        DURATION(/*Long.class*/),
+        DATETIME(/*Long.class*/),
+        GENRE(/*Integer.class*/),
+        INTEGER(/*Long.class*/),
+        RIAA(/*Integer.class*/),
+        UPC(/*String.class*/),
+        BMP(/*byte[].class*/),
+        UNDEFINED(/*byte[].class*/);
+        private static final DataType[] TYPES = {
+                IMPLICIT, UTF8, UTF16, null, null, null, HTML, XML, UUID, ISRC, MI3P, null,
+                GIF, JPEG, PNG, URL, DURATION, DATETIME, GENRE, null, null, INTEGER,
+                null, null, RIAA, UPC, null, BMP
+        };
 
-		private DataType() {
-		}
+        DataType() {
+        }
 
-		private static DataType forInt(int i) {
-			DataType type = null;
-			if(i>=0&&i<TYPES.length) type = TYPES[i];
+        private static DataType forInt(int i) {
+            DataType type = null;
+            if (i >= 0 && i < TYPES.length) type = TYPES[i];
 
-			if(type==null) type = UNDEFINED;
-			return type;
-		}
-	}
-	private DataType dataType;
-	private byte[] data;
+            if (type == null) type = UNDEFINED;
+            return type;
+        }
+    }
 
-	public ITunesMetadataBox() {
-		super("iTunes Metadata Box");
-	}
+    private DataType dataType;
+    private byte[] data;
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    public ITunesMetadataBox() {
+        super("iTunes Metadata Box");
+    }
 
-		dataType = DataType.forInt(flags);
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        super.decode(in);
 
-		in.skipBytes(4); //padding?
+        dataType = DataType.forInt(flags);
 
-		data = new byte[(int) getLeft(in)];
-		in.readBytes(data);
-	}
+        in.skipBytes(4); //padding?
 
-	public DataType getDataType() {
-		return dataType;
-	}
+        data = new byte[(int) getLeft(in)];
+        in.readBytes(data);
+    }
 
-	/**
-	 * Returns an unmodifiable array with the raw content, that can be present
-	 * in different formats.
-	 * 
-	 * @return the raw metadata
-	 */
-	public byte[] getData() {
-		return Arrays.copyOf(data, data.length);
-	}
+    public DataType getDataType() {
+        return dataType;
+    }
 
-	/**
-	 * Returns the content as a text string.
-	 * @return the metadata as text
-	 */
-	public String getText() {
-		//first four bytes are padding (zero)
-		return new String(data, 0, data.length, StandardCharsets.UTF_8);
-	}
+    /**
+     * Returns an unmodifiable array with the raw content, that can be present
+     * in different formats.
+     *
+     * @return the raw metadata
+     */
+    public byte[] getData() {
+        return Arrays.copyOf(data, data.length);
+    }
 
-	/**
-	 * Returns the content as an unsigned 8-bit integer.
-	 * @return the metadata as an integer
-	 */
-	public long getNumber() {
-		//first four bytes are padding (zero)
-		long l = 0;
-		for(int i = 0; i<data.length; i++) {
-			l <<= 8;
-			l |= (data[i]&0xFF);
-		}
-		return l;
-	}
+    /**
+     * Returns the content as a text string.
+     *
+     * @return the metadata as text
+     */
+    public String getText() {
+        //first four bytes are padding (zero)
+        return new String(data, StandardCharsets.UTF_8);
+    }
 
-	public int getInteger() {
-		return (int) getNumber();
-	}
+    /**
+     * Returns the content as an unsigned 8-bit integer.
+     *
+     * @return the metadata as an integer
+     */
+    public long getNumber() {
+        //first four bytes are padding (zero)
+        long l = 0;
+        for (byte datum : data) {
+            l <<= 8;
+            l |= (datum & 0xFF);
+        }
+        return l;
+    }
 
-	/**
-	 * Returns the content as a boolean (flag) value.
-	 * @return the metadata as a boolean
-	 */
-	public boolean getBoolean() {
-		return getNumber()!=0;
-	}
+    public int getInteger() {
+        return (int) getNumber();
+    }
 
-	public Date getDate() {
-		//timestamp lengths: 4,7,9
-		final int i = (int) Math.floor(data.length/3)-1;
-		final Date date;
-		if(i>=0&&i<TIMESTAMPS.length) {
-			final SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMPS[i]);
-			date = sdf.parse(new String(data), new ParsePosition(0));
-		}
-		else date = null;
-		return date;
-	}
+    /**
+     * Returns the content as a boolean (flag) value.
+     *
+     * @return the metadata as a boolean
+     */
+    public boolean getBoolean() {
+        return getNumber() != 0;
+    }
+
+    public Date getDate() {
+        //timestamp lengths: 4,7,9
+        int i = (int) Math.floor(data.length / 3f) - 1;
+        Date date;
+        if (i >= 0 && i < TIMESTAMPS.length) {
+            SimpleDateFormat sdf = new SimpleDateFormat(TIMESTAMPS[i]);
+            date = sdf.parse(new String(data), new ParsePosition(0));
+        } else date = null;
+        return date;
+    }
 }

@@ -6,27 +6,34 @@
 
 import java.io.EOFException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.SourceDataLine;
 
+import net.sourceforge.jaad.mp4.MP4Input;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import vavi.util.Debug;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static vavi.sound.SoundUtil.volume;
 import static vavix.util.DelayedWorker.later;
 
 import net.sourceforge.jaad.aac.Decoder;
-import net.sourceforge.jaad.aac.SampleBuffer;
+import net.sourceforge.jaad.SampleBuffer;
 import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
 import net.sourceforge.jaad.mp4.api.Frame;
 import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.api.Track;
+import vavi.util.properties.annotation.Property;
+import vavi.util.properties.annotation.PropsEntity;
 
 
 /**
@@ -35,20 +42,36 @@ import net.sourceforge.jaad.mp4.api.Track;
  * @author <a href="mailto:umjammer@gmail.com">Naohide Sano</a> (umjammer)
  * @version 0.00 2022/02/19 umjammer initial version <br>
  */
+@PropsEntity(url = "file:local.properties")
 public class Test1 {
+
+    static boolean localPropertiesExists() {
+        return Files.exists(Paths.get("local.properties"));
+    }
+
+    @Property
+    String mp4 = "src/test/resources/test.m4a";
+
+    @BeforeEach
+    void setup() throws Exception {
+        if (localPropertiesExists()) {
+            PropsEntity.Util.bind(this);
+        }
+    }
 
     static long time;
 
     static {
-        time = Boolean.valueOf(System.getProperty("vavi.test", "false")) ? 10 * 1000 : 1000 * 1000;
+        time = System.getProperty("vavi.test", "").equals("ide") ? 10 * 1000 : 1000 * 1000;
     }
 
     @Test
     void decodeMP4() throws Exception {
-        InputStream in = Test1.class.getResourceAsStream("/test.m4a");
+        InputStream in = Files.newInputStream(Paths.get(mp4));
         SourceDataLine line = null;
         // create container
-        MP4Container cont = new MP4Container(in);
+        MP4Input is = MP4Input.open(in);
+        MP4Container cont = new MP4Container(is);
         Movie movie = cont.getMovie();
         // find AAC track
         List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
@@ -63,11 +86,11 @@ public class Test1 {
         line.start();
 
         // create AAC decoder
-        final Decoder dec = new Decoder(track.getDecoderSpecificInfo());
+        Decoder dec = Decoder.create(track.getDecoderSpecificInfo().getData());
 
         // decode
         Frame frame;
-        final SampleBuffer buf = new SampleBuffer();
+        SampleBuffer buf = new SampleBuffer();
         while (track.hasMoreFrames() && !later(time).come()) {
             frame = track.readNextFrame();
             dec.decodeFrame(frame.getData(), buf);
@@ -81,7 +104,7 @@ public class Test1 {
         InputStream in = Test1.class.getResourceAsStream("/test.aac");
         SourceDataLine line = null;
         ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
-        Decoder dec = new Decoder(adts.getDecoderSpecificInfo());
+        Decoder dec = Decoder.create(adts.getDecoderInfo());
         SampleBuffer buf = new SampleBuffer();
         while (!later(time).come()) {
             try {
@@ -104,6 +127,11 @@ Debug.println("IN: " + aufmt);
                 break;
             }
         }
+    }
+
+    @Test
+    void testX() {
+        assertArrayEquals(new byte[4], "\0\0\0\0".getBytes());
     }
 }
 

@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
-import net.sourceforge.jaad.mp4.boxes.FullBox;
-import net.sourceforge.jaad.mp4.MP4InputStream;
 import java.io.IOException;
+
+import net.sourceforge.jaad.mp4.MP4Input;
+import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * This box contains a compact version of a table that allows indexing from
@@ -20,36 +22,36 @@ import java.io.IOException;
  * to the overall timescale, and not considering any edit list).
  * The Edit List Box provides the initial CT value if it is non-empty
  * (non-zero).
- * 
+ *
  * @author in-somnia
  */
 public class DecodingTimeToSampleBox extends FullBox {
 
-	private long[] sampleCounts, sampleDeltas;
+    private long[] sampleCounts, sampleDeltas;
 
-	public DecodingTimeToSampleBox() {
-		super("Time To Sample Box");
-	}
+    public DecodingTimeToSampleBox() {
+        super("Time To Sample Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
-		
-		final int entryCount = (int) in.readBytes(4);
-		sampleCounts = new long[entryCount];
-		sampleDeltas = new long[entryCount];
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        super.decode(in);
 
-		for(int i = 0; i<entryCount; i++) {
-			sampleCounts[i] = in.readBytes(4);
-			sampleDeltas[i] = in.readBytes(4);
-		}
-	}
+        int entryCount = (int) in.readBytes(4);
+        sampleCounts = new long[entryCount];
+        sampleDeltas = new long[entryCount];
 
-	public long[] getSampleCounts() {
-		return sampleCounts;
-	}
+        for (int i = 0; i < entryCount; i++) {
+            sampleCounts[i] = in.readBytes(4);
+            sampleDeltas[i] = in.readBytes(4);
+        }
+    }
 
-	public long[] getSampleDeltas() {
-		return sampleDeltas;
-	}
+    public long[] getSampleCounts() {
+        return sampleCounts;
+    }
+
+    public long[] getSampleDeltas() {
+        return sampleDeltas;
+    }
 }

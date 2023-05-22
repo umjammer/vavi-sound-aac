@@ -5,10 +5,10 @@
 
   <groupId>net.sourceforge.jaadec</groupId>
   <artifactId>jaad</artifactId>
-  <version>0.8.8</version>
+  <version>0.8.9</version>
 
   <description>JAAD is an AAC decoder and MP4 demultiplexer library written completely in Java. It uses no native libraries, is platform-independent and portable. It can read MP4 container from almost every input-stream (files, network sockets etc.) and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).</description>
-  <url>https://github.com/DV8FromTheWorld/JAADec</url>
+  <url>https://github.com/umjammer/JAADec</url>
   <licenses>
     <license>
       <name>Public Domain</name>
@@ -33,15 +33,17 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:DV8FromTheWorld/JAADec.git</connection>
-    <developerConnection>scm:git:git@github.com:DV8FromTheWorld/JAADec.git</developerConnection>
-    <url>scm:git:git@github.com:DV8FromTheWorld/JAADec.git</url>
+    <connection>scm:git:git@github.com:umjammer/JAADec.git</connection>
+    <developerConnection>scm:git:git@github.com:umjammer/JAADec.git</developerConnection>
+    <url>scm:git:git@github.com:umjammer/JAADec.git</url>
   </scm>
 
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.10.1</version>
         <configuration>
           <source>8</source>
           <target>8</target>
@@ -49,12 +51,12 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M7</version>
         <configuration>
           <argLine>
             -Djava.util.logging.config.file=${project.build.testOutputDirectory}/logging.properties
-            -Dvavi.test=true
           </argLine>
           <trimStackTrace>false</trimStackTrace>
           <forkMode>always</forkMode>
@@ -75,7 +77,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.8.1</version>
+        <version>5.9.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -86,8 +88,18 @@
     <dependency>
       <groupId>com.github.umjammer</groupId>
       <artifactId>vavi-sound</artifactId>
-      <version>1.0.12</version>
+      <version>1.0.15</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.apache.ant</groupId>
+          <artifactId>ant</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
     <dependency>

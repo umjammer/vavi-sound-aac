@@ -3,8 +3,10 @@ package net.sourceforge.jaad.mp4.boxes.impl;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import net.sourceforge.jaad.mp4.MP4InputStream;
+
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The chapter box allows to specify individual chapters along the main timeline
@@ -15,38 +17,38 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class ChapterBox extends FullBox {
 
-	private final Map<Long, String> chapters;
+    private final Map<Long, String> chapters;
 
-	public ChapterBox() {
-		super("Chapter Box");
-		chapters = new HashMap<Long, String>();
-	}
+    public ChapterBox() {
+        super("Chapter Box");
+        chapters = new HashMap<>();
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        super.decode(in);
 
-		in.skipBytes(4); //??
+        in.skipBytes(4); //??
 
-		final int count = in.read();
+        int count = in.readByte();
 
-		long timestamp;
-		int len;
-		String name;
-		for(int i = 0; i<count; i++) {
-			timestamp = in.readBytes(8);
-			len = in.read();
-			name = in.readString(len);
-			chapters.put(timestamp, name);
-		}
-	}
+        long timestamp;
+        int len;
+        String name;
+        for (int i = 0; i < count; i++) {
+            timestamp = in.readBytes(8);
+            len = in.readByte();
+            name = in.readString(len);
+            chapters.put(timestamp, name);
+        }
+    }
 
-	/**
-	 * Returns a map that maps the timestamp of each chapter to its name.
-	 *
-	 * @return the chapters
-	 */
-	public Map<Long, String> getChapters() {
-		return chapters;
-	}
+    /**
+     * Returns a map that maps the timestamp of each chapter to its name.
+     *
+     * @return the chapters
+     */
+    public Map<Long, String> getChapters() {
+        return chapters;
+    }
 }

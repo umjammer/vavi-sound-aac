@@ -1,29 +1,31 @@
 package net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec;
 
 import java.io.IOException;
-import net.sourceforge.jaad.mp4.MP4InputStream;
+
+import net.sourceforge.jaad.mp4.MP4Input;
+
 
 public class H263SpecificBox extends CodecSpecificBox {
 
-	private int level, profile;
+    private int level, profile;
 
-	public H263SpecificBox() {
-		super("H.263 Specific Box");
-	}
+    public H263SpecificBox() {
+        super("H.263 Specific Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		decodeCommon(in);
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        decodeCommon(in);
 
-		level = in.read();
-		profile = in.read();
-	}
+        level = in.readByte();
+        profile = in.readByte();
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public int getProfile() {
-		return profile;
-	}
+    public int getProfile() {
+        return profile;
+    }
 }

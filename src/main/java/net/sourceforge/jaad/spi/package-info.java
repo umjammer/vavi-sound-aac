@@ -1,5 +1,5 @@
-package net.sourceforge.jaad.spi;
-
 /**
-* Contains implementations for several SPIs.
-*/
+ * Contains implementations for several SPIs.
+ */
+
+package net.sourceforge.jaad.spi;

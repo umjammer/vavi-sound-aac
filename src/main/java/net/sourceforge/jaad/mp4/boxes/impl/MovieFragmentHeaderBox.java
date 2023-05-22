@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
 import java.io.IOException;
-import net.sourceforge.jaad.mp4.MP4InputStream;
+
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The movie fragment header contains a sequence number, as a safety check. The
@@ -13,23 +15,23 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class MovieFragmentHeaderBox extends FullBox {
 
-	private long sequenceNumber;
+    private long sequenceNumber;
 
-	public MovieFragmentHeaderBox() {
-		super("Movie Fragment Header Box");
-	}
+    public MovieFragmentHeaderBox() {
+        super("Movie Fragment Header Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        super.decode(in);
 
-		sequenceNumber = in.readBytes(4);
-	}
+        sequenceNumber = in.readBytes(4);
+    }
 
-	/**
-	 * The ordinal number of this fragment, in increasing order.
-	 */
-	public long getSequenceNumber() {
-		return sequenceNumber;
-	}
+    /**
+     * The ordinal number of this fragment, in increasing order.
+     */
+    public long getSequenceNumber() {
+        return sequenceNumber;
+    }
 }

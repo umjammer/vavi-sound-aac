@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl.fd;
 
 import java.io.IOException;
-import net.sourceforge.jaad.mp4.MP4InputStream;
+
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
+
 
 /**
  * The FEC reservoir box associates the source file identified in the file
@@ -15,43 +17,43 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class FECReservoirBox extends FullBox {
 
-	private int[] itemIDs;
-	private long[] symbolCounts;
+    private int[] itemIDs;
+    private long[] symbolCounts;
 
-	public FECReservoirBox() {
-		super("FEC Reservoir Box");
-	}
+    public FECReservoirBox() {
+        super("FEC Reservoir Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		super.decode(in);
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        super.decode(in);
 
-		final int entryCount = (int) in.readBytes(2);
-		itemIDs = new int[entryCount];
-		symbolCounts = new long[entryCount];
-		for(int i = 0; i<entryCount; i++) {
-			itemIDs[i] = (int) in.readBytes(2);
-			symbolCounts[i] = in.readBytes(4);
-		}
-	}
+        int entryCount = (int) in.readBytes(2);
+        itemIDs = new int[entryCount];
+        symbolCounts = new long[entryCount];
+        for (int i = 0; i < entryCount; i++) {
+            itemIDs[i] = (int) in.readBytes(2);
+            symbolCounts[i] = in.readBytes(4);
+        }
+    }
 
-	/**
-	 * The item ID indicates the location of the FEC reservoir associated with a
-	 * source block.
-	 *
-	 * @return all item IDs
-	 */
-	public int[] getItemIDs() {
-		return itemIDs;
-	}
+    /**
+     * The item ID indicates the location of the FEC reservoir associated with a
+     * source block.
+     *
+     * @return all item IDs
+     */
+    public int[] getItemIDs() {
+        return itemIDs;
+    }
 
-	/**
-	 * The symbol count indicates the number of repair symbols contained in the
-	 * FEC reservoir.
-	 *
-	 * @return all symbol counts
-	 */
-	public long[] getSymbolCounts() {
-		return symbolCounts;
-	}
+    /**
+     * The symbol count indicates the number of repair symbols contained in the
+     * FEC reservoir.
+     *
+     * @return all symbol counts
+     */
+    public long[] getSymbolCounts() {
+        return symbolCounts;
+    }
 }

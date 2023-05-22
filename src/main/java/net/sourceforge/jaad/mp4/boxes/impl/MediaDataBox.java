@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl;
 
-import net.sourceforge.jaad.mp4.boxes.BoxImpl;
-import net.sourceforge.jaad.mp4.MP4InputStream;
 import java.io.IOException;
+
+import net.sourceforge.jaad.mp4.MP4Input;
+import net.sourceforge.jaad.mp4.boxes.BoxImpl;
+
 
 /**
  * The Media Data Box contains the media data. In video tracks, this box would
@@ -12,16 +14,17 @@ import java.io.IOException;
  * There may be any number of these boxes in the file (including zero, if all
  * the media data is in other files). The metadata refers to media data by its
  * absolute offset within the file.
+ *
  * @author in-somnia
  */
 public class MediaDataBox extends BoxImpl {
 
-	public MediaDataBox() {
-		super("Media Data Box");
-	}
+    public MediaDataBox() {
+        super("Media Data Box");
+    }
 
-	@Override
-	public void decode(MP4InputStream in) throws IOException {
-		//if random access: skip, else: do nothing
-	}
+    @Override
+    public void decode(MP4Input in) throws IOException {
+        //if random access: skip, else: do nothing
+    }
 }

@@ -1,8 +1,10 @@
 package net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec;
 
 import java.io.IOException;
-import net.sourceforge.jaad.mp4.MP4InputStream;
+
+import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.BoxImpl;
+
 
 /**
  * The <code>CodecSpecificBox</code> can be used instead of an <code>ESDBox</code>
@@ -12,23 +14,23 @@ import net.sourceforge.jaad.mp4.boxes.BoxImpl;
  */
 public abstract class CodecSpecificBox extends BoxImpl {
 
-	private long vendor;
-	private int decoderVersion;
+    private long vendor;
+    private int decoderVersion;
 
-	public CodecSpecificBox(String name) {
-		super(name);
-	}
+    public CodecSpecificBox(String name) {
+        super(name);
+    }
 
-	protected void decodeCommon(MP4InputStream in) throws IOException {
-		vendor = in.readBytes(4);
-		decoderVersion = in.read();
-	}
+    protected void decodeCommon(MP4Input in) throws IOException {
+        vendor = in.readBytes(4);
+        decoderVersion = in.readByte();
+    }
 
-	public long getVendor() {
-		return vendor;
-	}
+    public long getVendor() {
+        return vendor;
+    }
 
-	public int getDecoderVersion() {
-		return decoderVersion;
-	}
+    public int getDecoderVersion() {
+        return decoderVersion;
+    }
 }
