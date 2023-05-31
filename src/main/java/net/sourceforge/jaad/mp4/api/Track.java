@@ -129,7 +129,7 @@ public abstract class Track {
                 timeOffsets[off + j] = tmp;
                 tmp += sampleDeltas[i];
             }
-            off += sampleCounts[i];
+            off = (int) (off + sampleCounts[i]);
         }
 
         //create samples
