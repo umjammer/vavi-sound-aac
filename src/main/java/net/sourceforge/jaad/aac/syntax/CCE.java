@@ -168,7 +168,7 @@ class CCE implements Element {
         double g = gain[index][0];
         float[] iqData = ics.getInvQuantData();
         for (int i = 0; i < data.length; i++) {
-            data[i] += g * iqData[i];
+            data[i] = (float) (data[i] + g * iqData[i]);
         }
     }
 
