@@ -318,7 +318,7 @@ class NoiseEnvelope {
                 } else {
                     float tmp = E_deq_tab[exp0];
                     if (amp0 != 0 && (sbr.ch0.E[k][l] & 1) != 0) {
-                        tmp *= 1.414213562;
+                        tmp = (float) (tmp * 1.414213562);
                     }
 
                     /* panning */
