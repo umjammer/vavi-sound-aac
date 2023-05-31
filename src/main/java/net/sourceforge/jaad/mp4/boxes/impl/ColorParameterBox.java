@@ -6,7 +6,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
-//TODO: check decoding, add get-methods
+// TODO: check decoding, add get-methods
 public class ColorParameterBox extends FullBox {
 
     private long colorParameterType;

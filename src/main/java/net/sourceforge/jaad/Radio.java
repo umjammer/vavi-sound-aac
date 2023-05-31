@@ -64,8 +64,7 @@ public class Radio {
             String x;
             do {
                 x = in.readLine();
-            }
-            while (x != null && !x.trim().equals(""));
+            } while (x != null && !x.trim().equals(""));
 
             ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
             AudioFormat aufmt = new AudioFormat(adts.getSampleFrequency(), 16, adts.getChannelCount(), true, true);

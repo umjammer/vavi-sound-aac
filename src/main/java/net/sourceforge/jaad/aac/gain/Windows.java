@@ -1,6 +1,6 @@
 package net.sourceforge.jaad.aac.gain;
 
-//sine and kbd windows
+// sine and kbd windows
 interface Windows {
 
     float[] SINE_256 = {

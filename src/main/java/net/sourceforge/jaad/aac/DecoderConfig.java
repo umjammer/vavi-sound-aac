@@ -30,8 +30,10 @@ public class DecoderConfig {
     // extension: SBR
     private final boolean sbrEnabled;
     private boolean sbrPresent = false;
-    // in case of SBR this may be twice the SampleFrequency.
-    // it remains null without SBR
+    /**
+     * in case of SBR this may be twice the SampleFrequency.
+     * it remains null without SBR
+     */
     private SampleRate outputFrequency;
 
     private boolean psEnabled = true;
@@ -43,6 +45,7 @@ public class DecoderConfig {
     }
 
     // extension: error resilience
+
     private boolean sectionDataResilience = false, scalefactorResilience = false, spectralDataResilience = false;
 
     DecoderConfig(boolean sbrEnabled) {
@@ -53,7 +56,8 @@ public class DecoderConfig {
         this(true);
     }
 
-    /* ========== gets/sets ========== */
+    // gets/sets
+
     public ChannelConfiguration getChannelConfiguration() {
         return channelConfiguration;
     }
@@ -94,7 +98,7 @@ public class DecoderConfig {
     }
 
     public int getSampleLength() {
-        int upsampled = outputFrequency!= null && sampleFrequency != outputFrequency ? 2 : 1;
+        int upsampled = outputFrequency != null && sampleFrequency != outputFrequency ? 2 : 1;
         return upsampled * getFrameLength();
     }
 
@@ -131,7 +135,7 @@ public class DecoderConfig {
         return channelConfiguration.getChannelCount();
     }
 
-    //=========== SBR =============
+    // SBR ----
 
     /**
      * Setup SBR and try to duplicate the output frequency if possible.
@@ -163,7 +167,7 @@ public class DecoderConfig {
         return psEnabled;
     }
 
-    //=========== ER =============
+    // ER ----
 
     public boolean isScalefactorResilienceUsed() {
         return scalefactorResilience;
@@ -177,8 +181,7 @@ public class DecoderConfig {
         return spectralDataResilience;
     }
 
-    /* ======== static builder ========= */
-
+    /** static builder */
     public static DecoderConfig create(AudioDecoderInfo info) {
         return new DecoderConfig().setAudioDecoderInfo(info);
     }
@@ -223,10 +226,10 @@ public class DecoderConfig {
         case ER_AAC_LC:
         case ER_AAC_LTP:
         case ER_AAC_LD:
-            //ga-specific info:
+            // ga-specific info:
             frameLengthFlag = in.readBool();
             if (frameLengthFlag)
-                throw new AACException("config uses 960-sample frames, not yet supported"); //TODO: are 960-frames working yet?
+                throw new AACException("config uses 960-sample frames, not yet supported"); // TODO: are 960-frames working yet?
 
             dependsOnCoreCoder = in.readBool();
 
@@ -243,13 +246,13 @@ public class DecoderConfig {
                     scalefactorResilience = in.readBool();
                     spectralDataResilience = in.readBool();
                 }
-                //extensionFlag3
+                // extensionFlag3
                 in.skipBit();
             }
 
             if (channelConfiguration == ChannelConfiguration.NONE) {
-                //TODO: is this working correct? -> ISO 14496-3 part 1: 1.A.4.3
-                //in.skipBits(3); //PCE
+                // TODO: is this working correct? -> ISO 14496-3 part 1: 1.A.4.3
+                // in.skipBits(3); // PCE
                 PCE pce = PCE.read(in);
                 setAudioDecoderInfo(pce);
             }
@@ -265,9 +268,9 @@ public class DecoderConfig {
 
         // expect implicit SBR for low frequencies
         // see 4.6.18.2.6
-        // if(sbrEnabled && !sbrPresent && sampleFrequency.duplicated() != SF_NONE) {
-        //  setSBRPresent();
-        // }
+//        if (sbrEnabled && !sbrPresent && sampleFrequency.duplicated() != SF_NONE) {
+//            setSBRPresent();
+//        }
 
         return this;
     }

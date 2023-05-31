@@ -29,8 +29,8 @@ public class FDItemInformationBox extends FullBox {
         super.decode(in);
 
         int entryCount = (int) in.readBytes(2);
-        readChildren(in, entryCount); //partition entries
+        readChildren(in, entryCount); // partition entries
 
-        readChildren(in); //FDSessionGroupBox and GroupIDToNameBox
+        readChildren(in); // FDSessionGroupBox and GroupIDToNameBox
     }
 }

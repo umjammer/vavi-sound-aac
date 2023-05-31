@@ -33,7 +33,7 @@ public class TrackFragmentHeaderBox extends FullBox {
 
         trackID = in.readBytes(4);
 
-        //optional fields
+        // optional fields
         baseDataOffsetPresent = ((flags & 1) == 1);
         baseDataOffset = baseDataOffsetPresent ? in.readBytes(8) : 0;
 

@@ -33,11 +33,11 @@ public class PaddingBitBox extends FullBox {
         byte b;
         for (int i = 0; i < sampleCount; i++) {
             b = (byte) in.readByte();
-            //1 bit reserved
-            //3 bits pad1
+            // 1 bit reserved
+            // 3 bits pad1
             pad1[i] = (b >> 4) & 7;
-            //1 bit reserved
-            //3 bits pad2
+            // 1 bit reserved
+            // 3 bits pad2
             pad2[i] = b & 7;
         }
     }

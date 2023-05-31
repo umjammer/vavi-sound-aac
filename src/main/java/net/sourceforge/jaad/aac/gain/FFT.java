@@ -1,6 +1,6 @@
 package net.sourceforge.jaad.aac.gain;
 
-//complex FFT of length 128/16, inplace
+// complex FFT of length 128/16, inplace
 class FFT {
 
     private static final float[][] FFT_TABLE_128 = {

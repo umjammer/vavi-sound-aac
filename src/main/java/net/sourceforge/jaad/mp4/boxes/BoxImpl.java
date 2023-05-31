@@ -42,22 +42,27 @@ public class BoxImpl implements Box {
     public void decode(MP4Input in) throws IOException {
     }
 
+    @Override
     public long getType() {
         return type;
     }
 
+    @Override
     public long getSize() {
         return size;
     }
 
+    @Override
     public long getOffset() {
         return offset;
     }
 
+    @Override
     public Box getParent() {
         return parent;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -67,11 +72,13 @@ public class BoxImpl implements Box {
         return name + " [" + BoxFactory.typeToString(type) + "]";
     }
 
-    //container methods
+    // container methods
+    @Override
     public boolean hasChildren() {
         return children.size() > 0;
     }
 
+    @Override
     public boolean hasChild(long type) {
         boolean b = false;
         for (Box box : children) {
@@ -83,6 +90,7 @@ public class BoxImpl implements Box {
         return b;
     }
 
+    @Override
     public Box getChild(long type) {
         Box box = null, b = null;
         int i = 0;
@@ -94,10 +102,12 @@ public class BoxImpl implements Box {
         return box;
     }
 
+    @Override
     public List<Box> getChildren() {
         return Collections.unmodifiableList(children);
     }
 
+    @Override
     public List<Box> getChildren(long type) {
         List<Box> l = new ArrayList<>();
         for (Box box : children) {

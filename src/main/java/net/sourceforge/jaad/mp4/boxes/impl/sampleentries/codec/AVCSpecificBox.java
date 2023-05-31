@@ -5,7 +5,7 @@ import java.io.IOException;
 import net.sourceforge.jaad.mp4.MP4Input;
 
 
-//defined in ISO 14496-15 as 'AVC Configuration Record'
+// defined in ISO 14496-15 as 'AVC Configuration Record'
 public class AVCSpecificBox extends CodecSpecificBox {
 
     private int configurationVersion, profile, level, lengthSize;
@@ -22,11 +22,11 @@ public class AVCSpecificBox extends CodecSpecificBox {
         profile = in.readByte();
         profileCompatibility = (byte) in.readByte();
         level = in.readByte();
-        //6 bits reserved, 2 bits 'length size minus one'
+        // 6 bits reserved, 2 bits 'length size minus one'
         lengthSize = (in.readByte() & 3) + 1;
 
         int len;
-        //3 bits reserved, 5 bits number of sequence parameter sets
+        // 3 bits reserved, 5 bits number of sequence parameter sets
         int sequenceParameterSets = in.readByte() & 31;
 
         sequenceParameterSetNALUnit = new byte[sequenceParameterSets][];

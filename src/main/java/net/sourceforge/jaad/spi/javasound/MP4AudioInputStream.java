@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.List;
 import javax.sound.sampled.AudioFormat;
 
-import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.SampleBuffer;
+import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.mp4.MP4Container;
 import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
@@ -42,7 +42,7 @@ class MP4AudioInputStream extends AsynchronousAudioInputStream {
     @Override
     public AudioFormat getFormat() {
         if (audioFormat == null) {
-            //read first frame
+            // read first frame
             decodeFrame();
             audioFormat = new AudioFormat(sampleBuffer.getSampleRate(), sampleBuffer.getBitsPerSample(), sampleBuffer.getChannels(), true, true);
             saved = sampleBuffer.getData();
@@ -50,6 +50,7 @@ class MP4AudioInputStream extends AsynchronousAudioInputStream {
         return audioFormat;
     }
 
+    @Override
     public void execute() {
         if (saved == null) {
             decodeFrame();

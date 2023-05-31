@@ -78,7 +78,7 @@ public class MetaData {
         public static final Field<String> GAPLESS_PLAYBACK = new Field<>("Gapless Playback");
         public static final Field<Boolean> HD_VIDEO = new Field<>("HD Video");
         public static final Field<Locale> LANGUAGE = new Field<>("Language");
-        //sorting
+        // sorting
         public static final Field<String> ARTIST_SORT_TEXT = new Field<>("Artist Sort Text");
         public static final Field<String> TITLE_SORT_TEXT = new Field<>("Title Sort Text");
         public static final Field<String> ALBUM_SORT_TEXT = new Field<>("Album Sort Text");
@@ -95,7 +95,7 @@ public class MetaData {
 
     private static final String[] STANDARD_GENRES = {
             "undefined",
-            //IDv1 standard
+            // IDv1 standard
             "blues",
             "classic rock",
             "country",
@@ -175,7 +175,7 @@ public class MetaData {
             "retro",
             "musical",
             "rock and roll",
-            //winamp extension
+            // winamp extension
             "hard rock",
             "folk",
             "folk rock",
@@ -245,34 +245,34 @@ public class MetaData {
      * ---tshd
      */
     void parse(Box udta, Box meta) {
-        //standard boxes
+        // standard boxes
         if (meta.hasChild(BoxTypes.COPYRIGHT_BOX)) {
             CopyrightBox cprt = (CopyrightBox) meta.getChild(BoxTypes.COPYRIGHT_BOX);
             put(Field.LANGUAGE, new Locale(cprt.getLanguageCode()));
             put(Field.COPYRIGHT, cprt.getNotice());
         }
-        //3gpp user data
+        // 3gpp user data
         if (udta != null) parse3GPPData(udta);
-        //id3, TODO: can be present in different languages
+        // id3, TODO: can be present in different languages
         if (meta.hasChild(BoxTypes.ID3_TAG_BOX)) parseID3((ID3TagBox) meta.getChild(BoxTypes.ID3_TAG_BOX));
-        //itunes
+        // itunes
         if (meta.hasChild(BoxTypes.ITUNES_META_LIST_BOX))
             parseITunesMetaData(meta.getChild(BoxTypes.ITUNES_META_LIST_BOX));
-        //nero tags
+        // nero tags
         if (meta.hasChild(BoxTypes.NERO_METADATA_TAGS_BOX))
             parseNeroTags((NeroMetadataTagsBox) meta.getChild(BoxTypes.NERO_METADATA_TAGS_BOX));
     }
 
-    //parses specific children of 'udta': 3GPP
-    //TODO: handle language codes
+    // parses specific children of 'udta': 3GPP
+    // TODO: handle language codes
     private void parse3GPPData(Box udta) {
         if (udta.hasChild(BoxTypes.THREE_GPP_ALBUM_BOX)) {
             ThreeGPPAlbumBox albm = (ThreeGPPAlbumBox) udta.getChild(BoxTypes.THREE_GPP_ALBUM_BOX);
             put(Field.ALBUM, albm.getData());
             put(Field.TRACK_NUMBER, albm.getTrackNumber());
         }
-        //if(udta.hasChild(BoxTypes.THREE_GPP_AUTHOR_BOX));
-        //if(udta.hasChild(BoxTypes.THREE_GPP_CLASSIFICATION_BOX));
+//        if (udta.hasChild(BoxTypes.THREE_GPP_AUTHOR_BOX)) ;
+//        if (udta.hasChild(BoxTypes.THREE_GPP_CLASSIFICATION_BOX)) ;
         if (udta.hasChild(BoxTypes.THREE_GPP_DESCRIPTION_BOX))
             put(Field.DESCRIPTION, ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_DESCRIPTION_BOX)).getData());
         if (udta.hasChild(BoxTypes.THREE_GPP_KEYWORDS_BOX))
@@ -293,7 +293,7 @@ public class MetaData {
             put(Field.TITLE, ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_TITLE_BOX)).getData());
     }
 
-    //parses children of 'ilst': iTunes
+    // parses children of 'ilst': iTunes
     private void parseITunesMetaData(Box ilst) {
         List<Box> boxes = ilst.getChildren();
         long l;
@@ -309,7 +309,7 @@ public class MetaData {
             else if (l == BoxTypes.TRACK_NUMBER_BOX) {
                 byte[] b = data.getData();
                 put(Field.TRACK_NUMBER, (int) b[3]);
-                put(Field.TOTAL_TRACKS, new Integer(b[5]));
+                put(Field.TOTAL_TRACKS, (int) b[5]);
             } else if (l == BoxTypes.DISK_NUMBER_BOX) put(Field.DISK_NUMBER, data.getInteger());
             else if (l == BoxTypes.COMPOSER_NAME_BOX) put(Field.COMPOSER, data.getText());
             else if (l == BoxTypes.COMMENTS_BOX) put(Field.COMMENTS, data.getText());
@@ -358,7 +358,7 @@ public class MetaData {
         }
     }
 
-    //parses children of ID3
+    // parses children of ID3
     private void parseID3(ID3TagBox box) {
         try {
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(box.getID3Data()));
@@ -426,7 +426,7 @@ public class MetaData {
         }
     }
 
-    //parses children of 'tags': Nero
+    // parses children of 'tags': Nero
     private void parseNeroTags(NeroMetadataTagsBox tags) {
         Map<String, String> pairs = tags.getPairs();
         String val;
@@ -446,16 +446,16 @@ public class MetaData {
                 if (key.equals(NERO_TAGS[6])) put(Field.GENRE, val);
                 if (key.equals(NERO_TAGS[7])) put(Field.DISK_NUMBER, Integer.parseInt(val));
                 if (key.equals(NERO_TAGS[8])) put(Field.TOTAL_DISKS, Integer.parseInt(val));
-                if (key.equals(NERO_TAGS[9])) ; //url
+                if (key.equals(NERO_TAGS[9])) ; // url
                 if (key.equals(NERO_TAGS[10])) put(Field.COPYRIGHT, val);
                 if (key.equals(NERO_TAGS[11])) put(Field.COMMENTS, val);
                 if (key.equals(NERO_TAGS[12])) put(Field.LYRICS, val);
-                if (key.equals(NERO_TAGS[13])) ; //credits
+                if (key.equals(NERO_TAGS[13])) ; // credits
                 if (key.equals(NERO_TAGS[14])) put(Field.RATING, Integer.parseInt(val));
                 if (key.equals(NERO_TAGS[15])) put(Field.PUBLISHER, val);
                 if (key.equals(NERO_TAGS[16])) put(Field.COMPOSER, val);
-                if (key.equals(NERO_TAGS[17])) ; //isrc
-                if (key.equals(NERO_TAGS[18])) ; //mood
+                if (key.equals(NERO_TAGS[17])) ; // isrc
+                if (key.equals(NERO_TAGS[18])) ; // mood
                 if (key.equals(NERO_TAGS[19])) put(Field.TEMPO, Integer.parseInt(val));
             } catch (NumberFormatException e) {
                 Logger.getLogger("MP4 API").log(Level.SEVERE, "Exception in MetaData.parseNeroTags: {0}", e.toString());

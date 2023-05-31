@@ -23,7 +23,7 @@ public class Decoder {
 
     private final DecoderConfig config;
     private final SyntacticElements syntacticElements;
-    public int frames=0;
+    public int frames = 0;
     private ADIFHeader adifHeader;
 
     /**
@@ -52,7 +52,7 @@ public class Decoder {
     }
 
     public static Decoder create(DecoderConfig config) {
-        if(config==null)
+        if (config == null)
             throw new IllegalArgumentException("illegal MP4 decoder specific info");
         return new Decoder(config);
     }
@@ -73,9 +73,9 @@ public class Decoder {
 
         syntacticElements = new SyntacticElements(config);
 
-        LOGGER.log(Level.FINE, "profile: {0}", config.getProfile());
-        LOGGER.log(Level.FINE, "sf: {0}", config.getSampleFrequency().getFrequency());
-        LOGGER.log(Level.FINE, "channels: {0}", config.getChannelConfiguration().getDescription());
+        LOGGER.log(Level.FINER, "profile: {0}", config.getProfile());
+        LOGGER.log(Level.FINER, "sf: {0}", config.getSampleFrequency() != null ? config.getSampleFrequency().getFrequency() : null);
+        LOGGER.log(Level.FINER, "channels: {0}", config.getChannelConfiguration().getDescription());
     }
 
     public DecoderConfig getConfig() {
@@ -95,11 +95,11 @@ public class Decoder {
         BitStream in = BitStream.open(frame);
 
         try {
-            LOGGER.log(Level.FINE, () -> String.format("frame %d @%d", frames, 8 * frame.length));
+            LOGGER.log(Level.FINER, () -> String.format("frame %d @%d", frames, 8 * frame.length));
             decode(in, buffer);
             LOGGER.log(Level.FINEST, () -> String.format("left %d", in.getBitsLeft()));
         } catch (EOSException e) {
-            LOGGER.log(Level.WARNING,"unexpected end of frame",e);
+            LOGGER.log(Level.WARNING, "unexpected end of frame", e);
         } finally {
             ++frames;
         }

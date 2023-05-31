@@ -28,10 +28,10 @@ class ADTSFrame implements AudioDecoderInfo {
 
         if (!protectionAbsent) crcCheck = in.readUnsignedShort();
         if (rawDataBlockCount == 0) {
-            //raw_data_block();
+            // raw_data_block();
         } else {
             int i;
-            //header error check
+            // header error check
             if (!protectionAbsent) {
                 rawDataBlockPosition = new int[rawDataBlockCount];
                 for (i = 0; i < rawDataBlockCount; i++) {
@@ -39,38 +39,38 @@ class ADTSFrame implements AudioDecoderInfo {
                 }
                 crcCheck = in.readUnsignedShort();
             }
-            //raw data blocks
+            // raw data blocks
             for (i = 0; i < rawDataBlockCount; i++) {
-                //raw_data_block();
+                // raw_data_block();
                 if (!protectionAbsent) crcCheck = in.readUnsignedShort();
             }
         }
     }
 
     private void readHeader(DataInputStream in) throws IOException {
-        //fixed header:
-        //1 bit ID, 2 bits layer, 1 bit protection absent
+        // fixed header:
+        // 1 bit ID, 2 bits layer, 1 bit protection absent
         int i = in.read();
         id = ((i >> 3) & 0x1) == 1;
         layer = (i >> 1) & 0x3;
         protectionAbsent = (i & 0x1) == 1;
 
-        //2 bits profile, 4 bits sample frequency, 1 bit private bit
+        // 2 bits profile, 4 bits sample frequency, 1 bit private bit
         i = in.read();
         profile = ((i >> 6) & 0x3) + 1;
         sampleFrequency = (i >> 2) & 0xF;
         privateBit = ((i >> 1) & 0x1) == 1;
 
-        //3 bits channel configuration, 1 bit copy, 1 bit home
+        // 3 bits channel configuration, 1 bit copy, 1 bit home
         i = (i << 8) | in.read();
         channelConfiguration = ((i >> 6) & 0x7);
         copy = ((i >> 5) & 0x1) == 1;
         home = ((i >> 4) & 0x1) == 1;
-        //int emphasis = in.readBits(2);
+        // int emphasis = in.readBits(2);
 
-        //variable header:
-        //1 bit copyrightIDBit, 1 bit copyrightIDStart, 13 bits frame length,
-        //11 bits adtsBufferFullness, 2 bits rawDataBlockCount
+        // variable header:
+        // 1 bit copyrightIDBit, 1 bit copyrightIDStart, 13 bits frame length,
+        // 11 bits adtsBufferFullness, 2 bits rawDataBlockCount
         copyrightIDBit = ((i >> 3) & 0x1) == 1;
         copyrightIDStart = ((i >> 2) & 0x1) == 1;
         i = (i << 16) | in.readUnsignedShort();
@@ -84,14 +84,17 @@ class ADTSFrame implements AudioDecoderInfo {
         return frameLength - (protectionAbsent ? 7 : 9);
     }
 
+    @Override
     public Profile getProfile() {
         return Profile.forInt(profile);
     }
 
+    @Override
     public SampleFrequency getSampleFrequency() {
         return SampleFrequency.forInt(sampleFrequency);
     }
 
+    @Override
     public ChannelConfiguration getChannelConfiguration() {
         return ChannelConfiguration.forInt(channelConfiguration);
     }

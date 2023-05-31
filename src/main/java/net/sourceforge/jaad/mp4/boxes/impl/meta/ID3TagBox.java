@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
 import net.sourceforge.jaad.mp4.boxes.Utils;
 
 
-//TODO: use nio ByteBuffer instead of array
+// TODO: use nio ByteBuffer instead of array
 public class ID3TagBox extends FullBox {
 
     private String language;

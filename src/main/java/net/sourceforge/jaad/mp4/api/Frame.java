@@ -30,9 +30,10 @@ public class Frame implements Comparable<Frame> {
         return time;
     }
 
+    @Override
     public int compareTo(Frame f) {
         double d = time - f.time;
-        //0 should not happen, since frames don't have the same timestamps
+        // 0 should not happen, since frames don't have the same timestamps
         return (d < 0) ? -1 : ((d > 0) ? 1 : 0);
     }
 

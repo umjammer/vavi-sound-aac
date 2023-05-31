@@ -13,7 +13,7 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class SchemeTypeBox extends FullBox {
 
-    public static final long ITUNES_SCHEME = 1769239918; //itun
+    public static final long ITUNES_SCHEME = 1769239918; // itun
     private long schemeType, schemeVersion;
     private String schemeURI;
 

@@ -24,8 +24,11 @@ class FBT {
     public static final int LO_RES = 0;
 
     public static final int HI_RES = 1;
-    /* calculate the start QMF channel for the master frequency band table */
-    /* parameter is also called k0 */
+
+    /**
+     * calculate the start QMF channel for the master frequency band table
+     * parameter is also called k0
+     */
     public static int qmf_start_channel(int bs_start_freq, int bs_samplerate_mode, SampleFrequency sample_rate) {
 
         int startMin = startMinTable[sample_rate.getIndex()];
@@ -54,9 +57,11 @@ class FBT {
             {0, -1, -2, -3, -4, -5, -6, -6, -6, -6, -6, -6, -6, -6},
             {0, -3, -6, -9, -12, -15, -18, -20, -22, -24, -26, -28, -30, -32}
     };
-    /* calculate the stop QMF channel for the master frequency band table */
-    /* parameter is also called k2 */
 
+    /**
+     * calculate the stop QMF channel for the master frequency band table
+     * parameter is also called k2
+     */
     public static int qmf_stop_channel(int bs_stop_freq, SampleFrequency sample_rate, int k0) {
         if (bs_stop_freq == 15) {
             return Math.min(64, k0 * 3);
@@ -65,20 +70,21 @@ class FBT {
         } else {
             int stopMin = stopMinTable[sample_rate.getIndex()];
 
-            /* bs_stop_freq <= 13 */
+            // bs_stop_freq <= 13
             return Math.min(64, stopMin + STOP_OFFSET_TABLE[sample_rate.getIndex()][Math.min(bs_stop_freq, 13)]);
         }
     }
 
-    /* calculate the master frequency table from k0, k2, bs_freq_scale
-     and bs_alter_scale
-
-     version for bs_freq_scale = 0
+    /**
+     * calculate the master frequency table from k0, k2, bs_freq_scale
+     * and bs_alter_scale
+     *
+     * version for bs_freq_scale = 0
      */
     public static int master_frequency_table_fs0(SBR sbr, int k0, int k2, boolean bs_alter_scale) {
         int[] vDk = new int[64];
 
-        /* mft only defined for k2 > k0 */
+        // mft only defined for k2 > k0
         if (k2 <= k0) {
             sbr.N_master = 0;
             return 1;
@@ -144,7 +150,7 @@ class FBT {
         int[] vk0 = new int[64], vk1 = new int[64];
         int[] temp1 = {6, 5, 4};
 
-        /* mft only defined for k2 > k0 */
+        // mft only defined for k2 > k0
         if (k2 <= k0) {
             sbr.N_master = 0;
             return 1;
@@ -177,8 +183,8 @@ class FBT {
             vDk0[k] = A_1 - A_0;
         }
 
-        /* needed? */
-        //qsort(vDk0, nrBand0, sizeof(vDk0[0]), longcmp);
+        // needed?
+        // qsort(vDk0, nrBand0, sizeof(vDk0[0]), longcmp);
         Arrays.sort(vDk0, 0, nrBand0);
 
         vk0[0] = k0;
@@ -214,16 +220,16 @@ class FBT {
         if (vDk1[0] < vDk0[nrBand0 - 1]) {
             int change;
 
-            /* needed? */
-            //qsort(vDk1, nrBand1+1, sizeof(vDk1[0]), longcmp);
+            // needed?
+            // qsort(vDk1, nrBand1+1, sizeof(vDk1[0]), longcmp);
             Arrays.sort(vDk1, 0, nrBand1 + 1);
             change = vDk0[nrBand0 - 1] - vDk1[0];
             vDk1[0] = vDk0[nrBand0 - 1];
             vDk1[nrBand1 - 1] = vDk1[nrBand1 - 1] - change;
         }
 
-        /* needed? */
-        //qsort(vDk1, nrBand1, sizeof(vDk1[0]), longcmp);
+        // needed?
+        // qsort(vDk1, nrBand1, sizeof(vDk1[0]), longcmp);
         Arrays.sort(vDk1, 0, nrBand1);
         vk1[0] = k1;
         for (int k = 1; k <= nrBand1; k++) {
@@ -244,10 +250,10 @@ class FBT {
         return 0;
     }
 
-    /* calculate the derived frequency border tables from f_master */
+    /** calculate the derived frequency border tables from f_master */
     public static int derived_frequency_table(SBR sbr, int bs_xover_band, int k2) {
 
-        /* The following relation shall be satisfied: bs_xover_band < N_Master */
+        // The following relation shall be satisfied: bs_xover_band < N_Master
         if (sbr.N_master <= bs_xover_band)
             return 1;
 
@@ -289,13 +295,13 @@ class FBT {
             if (k == 0) {
                 i = 0;
             } else {
-                /* i = i + (int32_t)((sbr.N_low - i)/(sbr.N_Q + 1 - k)); */
+                // i = i + (int32_t)((sbr.N_low - i)/(sbr.N_Q + 1 - k));
                 i += (sbr.N_low - i) / (sbr.N_Q + 1 - k);
             }
             sbr.f_table_noise[k] = sbr.f_table_res[LO_RES][i];
         }
 
-        /* build table for mapping k to g in hf patching */
+        // build table for mapping k to g in hf patching
         for (int k = 0; k < 64; k++) {
             for (int g = 0; g < sbr.N_Q; g++) {
                 if ((sbr.f_table_noise[g] <= k)
@@ -308,10 +314,11 @@ class FBT {
         return 0;
     }
 
-    /* TODO: blegh, ugly */
-    /* Modified to calculate for all possible bs_limiter_bands always
+    /**
+     * Modified to calculate for all possible bs_limiter_bands always
      * This reduces the number calls to this functions needed (now only on
      * header reset)
+     * TODO blegh, ugly
      */
     private static final float[] limiterBandsCompare = {1.327152f,
             1.185093f, 1.119872f};
@@ -338,8 +345,8 @@ class FBT {
                 limTable[k + sbr.N_low] = patchBorders[k];
             }
 
-            /* needed */
-            //qsort(limTable, sbr.noPatches+sbr.N_low, sizeof(limTable[0]), longcmp);
+            // needed
+            // qsort(limTable, sbr.noPatches+sbr.N_low, sizeof(limTable[0]), longcmp);
             Arrays.sort(limTable, 0, sbr.noPatches + sbr.N_low);
             int k = 1;
             int nrLim = sbr.noPatches + sbr.N_low - 1;
@@ -373,24 +380,24 @@ class FBT {
                                 k++;
                                 continue;
                             } else {
-                                /* remove (k-1)th element */
+                                // remove (k-1)th element
                                 limTable[k - 1] = sbr.f_table_res[LO_RES][sbr.N_low];
-                                //qsort(limTable, sbr.noPatches+sbr.N_low, sizeof(limTable[0]), longcmp);
+                                // qsort(limTable, sbr.noPatches+sbr.N_low, sizeof(limTable[0]), longcmp);
                                 Arrays.sort(limTable, 0, sbr.noPatches + sbr.N_low);
                                 nrLim--;
                                 continue;
                             }
                         }
                     }
-                    /* remove kth element */
+                    // remove kth element
                     limTable[k] = sbr.f_table_res[LO_RES][sbr.N_low];
-                    //qsort(limTable, nrLim, sizeof(limTable[0]), longcmp);
+                    // qsort(limTable, nrLim, sizeof(limTable[0]), longcmp);
                     Arrays.sort(limTable, 0, nrLim);
                     nrLim--;
-                    //continue;
+                    // continue;
                 } else {
                     k++;
-                    //continue;
+                    // continue;
                 }
             }
 

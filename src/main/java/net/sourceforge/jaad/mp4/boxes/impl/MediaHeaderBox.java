@@ -32,7 +32,7 @@ public class MediaHeaderBox extends FullBox {
 
         language = Utils.getLanguageCode(in.readBytes(2));
 
-        in.skipBytes(2); //pre-defined: 0
+        in.skipBytes(2); // pre-defined: 0
     }
 
     /**

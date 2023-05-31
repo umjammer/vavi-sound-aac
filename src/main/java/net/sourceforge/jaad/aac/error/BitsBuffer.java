@@ -18,8 +18,8 @@ public class BitsBuffer {
     public int showBits(int bits) {
         if (bits == 0) return 0;
         if (len <= 32) {
-            //huffman_spectral_data_2 needs to read more than may be available,
-            //bits maybe > len, deliver 0 than
+            // huffman_spectral_data_2 needs to read more than may be available,
+            // bits maybe > len, deliver 0 than
             if (len >= bits) return ((bufa >> (len - bits)) & (0xFFFFFFFF >> (32 - bits)));
             else return ((bufa << (bits - len)) & (0xFFFFFFFF >> (32 - bits)));
         } else {
@@ -59,7 +59,7 @@ public class BitsBuffer {
         bufa = i[1];
     }
 
-    //merge bits of a to b
+    // merge bits of a to b
     public void concatBits(BitsBuffer a) {
         if (a.len == 0) return;
         int al = a.bufa;
@@ -67,10 +67,10 @@ public class BitsBuffer {
 
         int bl, bh;
         if (len > 32) {
-            //mask off superfluous high b bits
+            // mask off superfluous high b bits
             bl = bufa;
             bh = bufb & ((1 << (len - 32)) - 1);
-            //left shift a len bits
+            // left shift a len bits
             ah = al << (len - 32);
             al = 0;
         } else {
@@ -80,7 +80,7 @@ public class BitsBuffer {
             al = al << len;
         }
 
-        //merge
+        // merge
         bufa = bl | al;
         bufb = bh | ah;
 

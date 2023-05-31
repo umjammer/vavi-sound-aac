@@ -15,7 +15,7 @@ import net.sourceforge.jaad.aac.huffman.Huffman;
 import net.sourceforge.jaad.aac.tools.TNS;
 
 
-//TODO: apply pulse data
+// TODO: apply pulse data
 public class ICStream implements HCB, ScaleFactorTable, IQTable {
 
     static final Logger LOGGER = Logger.getLogger(ICStream.class.getName());
@@ -57,7 +57,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
         this.overlap = new float[frameLength];
     }
 
-    /* ========= decoding ========== */
+    /** decoding */
     public void decode(BitStream in, boolean commonWindow, DecoderConfig conf) throws AACException {
         if (conf.isScalefactorResilienceUsed() && rvlc == null) rvlc = new RVLC();
         boolean er = conf.getProfile().isErrorResilientProfile();
@@ -68,7 +68,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
 
         decodeSectionData(in, conf.isSectionDataResilienceUsed());
 
-        //if(conf.isScalefactorResilienceUsed()) rvlc.decode(in, this, scaleFactors);
+        // if(conf.isScalefactorResilienceUsed()) rvlc.decode(in, this, scaleFactors);
         /*else*/
         decodeScaleFactors(in);
 
@@ -92,14 +92,14 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
             gainControl.decode(in, info.getWindowSequence());
         }
 
-        //RVLC spectral data
-        //if(conf.isScalefactorResilienceUsed()) rvlc.decodeScalefactors(this, in, scaleFactors);
+        // RVLC spectral data
+        // if(conf.isScalefactorResilienceUsed()) rvlc.decodeScalefactors(this, in, scaleFactors);
 
         if (conf.isSpectralDataResilienceUsed()) {
             int max = (conf.getChannelConfiguration() == ChannelConfiguration.STEREO) ? 6144 : 12288;
             reorderedSpectralDataLen = Math.max(in.readBits(14), max);
             longestCodewordLen = Math.max(in.readBits(6), 49);
-            //HCR.decodeReorderedSpectralData(this, in, data, conf.isSectionDataResilienceUsed());
+            // HCR.decodeReorderedSpectralData(this, in, data, conf.isSectionDataResilienceUsed());
         } else decodeSpectralData(in);
     }
 
@@ -141,7 +141,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
             throw new AACException("pulse SWB out of range: " + pulseStartSWB + " > " + info.getSWBCount());
 
         if (pulseOffset == null || pulseCount != pulseOffset.length) {
-            //only reallocate if needed
+            // only reallocate if needed
             pulseOffset = new int[pulseCount];
             pulseAmp = new int[pulseCount];
         }
@@ -159,7 +159,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
     public void decodeScaleFactors(BitStream in) throws AACException {
         int windowGroups = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
-        //0: spectrum, 1: noise, 2: intensity
+        // 0: spectrum, 1: noise, 2: intensity
         int[] offset = {globalGain, globalGain - 90, 0};
 
         int tmp;
@@ -224,7 +224,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
                         Arrays.fill(iqData, off, off + width, 0);
                     }
                 } else if (hcb == NOISE_HCB) {
-                    //apply PNS: fill with random values
+                    // apply PNS: fill with random values
                     for (int w = 0; w < groupLen; w++, off += 128) {
                         float energy = 0;
 
@@ -245,7 +245,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
                         for (int k = 0; k < width; k += num) {
                             Huffman.decodeSpectralData(in, hcb, buf, 0);
 
-                            //inverse quantization & scaling
+                            // inverse quantization & scaling
                             for (int j = 0; j < num; j++) {
                                 iqData[off + k + j] = (buf[j] > 0) ? IQ_TABLE[buf[j]] : -IQ_TABLE[-buf[j]];
                                 iqData[off + k + j] *= scaleFactors[idx];
@@ -258,7 +258,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
         }
     }
 
-    /* =========== gets ============ */
+    // =========== gets ============
 
     /**
      * Does inverse quantization and applies the scale factors on the decoded

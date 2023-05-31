@@ -22,9 +22,10 @@ public class DecoderConfigDescriptor extends Descriptor {
     private boolean upstream;
     private long maxBitRate, averageBitRate;
 
+    @Override
     void decode(MP4Input in) throws IOException {
         objectProfile = in.readByte();
-        //6 bits stream type, 1 bit upstream flag, 1 bit reserved
+        // 6 bits stream type, 1 bit upstream flag, 1 bit reserved
         int x = in.readByte();
         streamType = (x >> 2) & 0x3F;
         upstream = ((x >> 1) & 1) == 1;

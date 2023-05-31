@@ -18,7 +18,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
  */
 public abstract class Descriptor {
 
-	static final Logger LOGGER = Logger.getLogger(Descriptor.class.getName());
+    static final Logger LOGGER = Logger.getLogger(Descriptor.class.getName());
 
     public static final int TYPE_OBJECT_DESCRIPTOR = 1;
     public static final int TYPE_INITIAL_OBJECT_DESCRIPTOR = 2;
@@ -30,7 +30,7 @@ public abstract class Descriptor {
     public static final int TYPE_MP4_INITIAL_OBJECT_DESCRIPTOR = 16;
 
     public static Descriptor createDescriptor(MP4Input in) throws IOException {
-        //read tag and size
+        // read tag and size
         int type = in.readByte();
         int read = 1;
         int size = 0;
@@ -43,21 +43,21 @@ public abstract class Descriptor {
         }
         while ((b & 0x80) == 0x80);
 
-        //create descriptor
+        // create descriptor
         Descriptor desc = forTag(type);
         desc.type = type;
         desc.size = size;
         desc.start = in.getOffset();
 
-        //decode
+        // decode
         desc.decode(in);
-        //skip remaining bytes
+        // skip remaining bytes
         long remaining = size - (in.getOffset() - desc.start);
         if (remaining > 0) {
             Logger.getLogger("MP4 Boxes").log(Level.FINE, "Descriptor: bytes left: {0}, offset: {1}", new Long[] {remaining, in.getOffset()});
             in.skipBytes(remaining);
         }
-        desc.size += read; //include type and size fields
+        desc.size += read; // include type and size fields
 
         return desc;
     }
@@ -82,8 +82,8 @@ public abstract class Descriptor {
             desc = new DecoderSpecificInfo();
             break;
         case TYPE_SL_CONFIG_DESCRIPTOR:
-            //desc = new SLConfigDescriptor();
-            //break;
+//            desc = new SLConfigDescriptor();
+//            break;
         default:
             Logger.getLogger("MP4 Boxes").log(Level.FINE, "Unknown descriptor type: {0}", tag);
             desc = new UnknownDescriptor();
@@ -101,7 +101,7 @@ public abstract class Descriptor {
 
     abstract void decode(MP4Input in) throws IOException;
 
-    //children
+    // children
     protected void readChildren(MP4Input in) throws IOException {
         Descriptor desc;
         while ((size - (in.getOffset() - start)) > 0) {
@@ -114,7 +114,7 @@ public abstract class Descriptor {
         return Collections.unmodifiableList(children);
     }
 
-    //getter
+    // getter
     public int getType() {
         return type;
     }

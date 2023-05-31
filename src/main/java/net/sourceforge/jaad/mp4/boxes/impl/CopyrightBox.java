@@ -26,7 +26,7 @@ public class CopyrightBox extends FullBox {
     public void decode(MP4Input in) throws IOException {
         if (parent.getType() == BoxTypes.USER_DATA_BOX) {
             super.decode(in);
-            //1 bit padding, 5*3 bits language code (ISO-639-2/T)
+            // 1 bit padding, 5*3 bits language code (ISO-639-2/T)
             languageCode = Utils.getLanguageCode(in.readBytes(2));
 
             notice = in.readUTFString((int) getLeft(in));

@@ -100,6 +100,7 @@ public class ByteArrayBitStream implements BitStream {
         return new ByteArrayBitStream(this, n);
     }
 
+    @Override
     public void byteAlign() {
         LOGGER.log(Level.FINER, "@%d byteAlign: %d", position);
         int toFlush = bitsCached & 7;
@@ -115,10 +116,12 @@ public class ByteArrayBitStream implements BitStream {
         position = 0;
     }
 
+    @Override
     public int getPosition() {
         return position;
     }
 
+    @Override
     public int getBitsLeft() {
         return length - position;
     }
@@ -142,6 +145,7 @@ public class ByteArrayBitStream implements BitStream {
         return i;
     }
 
+    @Override
     public int readBits(int n) {
         LOGGER.log(n == 0 ? Level.FINEST : Level.FINER, "@%d readBits: %d", n);
 
@@ -164,6 +168,7 @@ public class ByteArrayBitStream implements BitStream {
         return result;
     }
 
+    @Override
     public int readBit() {
         LOGGER.log(Level.FINER, "@%d readBit: %d", 1);
 
@@ -184,10 +189,12 @@ public class ByteArrayBitStream implements BitStream {
         return i;
     }
 
+    @Override
     public boolean readBool() {
         return (readBit() & 0x1) != 0;
     }
 
+    @Override
     public int peekBits(int n) {
         LOGGER.log(Level.FINER, "@%d peekBits: %d", n);
 
@@ -198,10 +205,10 @@ public class ByteArrayBitStream implements BitStream {
         if (bitsCached >= n) {
             ret = (cache >> (bitsCached - n)) & maskBits(n);
         } else {
-            //old cache
+            // old cache
             int c = cache & maskBits(bitsCached);
             n -= bitsCached;
-            //read next & combine
+            // read next & combine
             ret = ((readCache(true) >> WORD_BITS - n) & maskBits(n)) | (c << n);
         }
         return ret;
@@ -223,6 +230,7 @@ public class ByteArrayBitStream implements BitStream {
         return ret;
     }
 
+    @Override
     public void skipBits(int n) {
         LOGGER.log(Level.FINER, "@%d skipBits: %d", n);
 
@@ -248,6 +256,7 @@ public class ByteArrayBitStream implements BitStream {
         }
     }
 
+    @Override
     public void skipBit() {
         LOGGER.log(Level.FINER, "@%d skipBit: %d", 1);
 

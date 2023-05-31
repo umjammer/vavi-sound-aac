@@ -2,8 +2,22 @@ package net.sourceforge.jaad.aac.ps;
 
 import net.sourceforge.jaad.aac.tools.Utils;
 
-import static net.sourceforge.jaad.aac.ps.Huffman.*;
-import static net.sourceforge.jaad.aac.ps.PSTables.*;
+import static net.sourceforge.jaad.aac.ps.Huffman.f_huff_iid_def;
+import static net.sourceforge.jaad.aac.ps.Huffman.f_huff_iid_fine;
+import static net.sourceforge.jaad.aac.ps.Huffman.t_huff_iid_def;
+import static net.sourceforge.jaad.aac.ps.Huffman.t_huff_iid_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.cos_betas_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.cos_betas_normal;
+import static net.sourceforge.jaad.aac.ps.PSTables.cos_gammas_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.cos_gammas_normal;
+import static net.sourceforge.jaad.aac.ps.PSTables.sf_iid_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.sf_iid_normal;
+import static net.sourceforge.jaad.aac.ps.PSTables.sin_betas_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.sin_betas_normal;
+import static net.sourceforge.jaad.aac.ps.PSTables.sin_gammas_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.sin_gammas_normal;
+import static net.sourceforge.jaad.aac.ps.PSTables.sincos_alphas_B_fine;
+import static net.sourceforge.jaad.aac.ps.PSTables.sincos_alphas_B_normal;
 
 
 /**

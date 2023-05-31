@@ -29,7 +29,7 @@ public class ItemInformationEntry extends FullBox {
             contentEncoding = in.readUTFString((int) getLeft(in), MP4Input.UTF8); // optional
         }
         if (version == 1 && getLeft(in) > 0) {
-            //optional
+            // optional
             extensionType = in.readBytes(4);
             if (getLeft(in) > 0) {
                 extension = Extension.forType((int) extensionType);
@@ -116,7 +116,7 @@ public class ItemInformationEntry extends FullBox {
 
     public abstract static class Extension {
 
-        private static final int TYPE_FDEL = 1717855596; //fdel
+        private static final int TYPE_FDEL = 1717855596; // fdel
 
         static Extension forType(int type) {
             Extension ext;

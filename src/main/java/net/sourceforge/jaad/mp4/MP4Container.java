@@ -60,7 +60,7 @@ public class MP4Container {
     }
 
     private void readContent() throws IOException {
-        //read all boxes
+        // read all boxes
         Box box = null;
         long type;
         boolean moovFound = false;

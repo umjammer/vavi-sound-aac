@@ -64,7 +64,7 @@ public class BoxFactory implements BoxTypes {
     private static final Map<Long, String[]> PARAMETER = new HashMap<>();
 
     static {
-        //classes
+        // classes
         BOX_CLASSES.put(ADDITIONAL_METADATA_CONTAINER_BOX, BoxImpl.class);
         BOX_CLASSES.put(APPLE_LOSSLESS_BOX, AppleLosslessBox.class);
         BOX_CLASSES.put(BINARY_XML_BOX, BinaryXMLBox.class);
@@ -266,7 +266,7 @@ public class BoxFactory implements BoxTypes {
         BOX_CLASSES.put(FAIRPLAY_USER_KEY_BOX, FairPlayDataBox.class);
         BOX_CLASSES.put(FAIRPLAY_IV_BOX, FairPlayDataBox.class);
         BOX_CLASSES.put(FAIRPLAY_PRIVATE_KEY_BOX, FairPlayDataBox.class);
-        //parameter
+        // parameter
         PARAMETER.put(ADDITIONAL_METADATA_CONTAINER_BOX, new String[] {"Additional Metadata Container Box"});
         PARAMETER.put(DATA_INFORMATION_BOX, new String[] {"Data Information Box"});
         PARAMETER.put(EDIT_BOX, new String[] {"Edit Box"});
@@ -377,9 +377,9 @@ public class BoxFactory implements BoxTypes {
         if (type == EXTENDED_TYPE)
             in.skipBytes(16);
 
-LOGGER.finest("type: " + typeToString(type) + ", " + size);
+        LOGGER.finest("type: " + typeToString(type) + ", " + size);
 
-        //error protection
+        // error protection
         if (parent != null) {
             long parentLeft = (parent.getOffset() + parent.getSize()) - offset;
             if (size > parentLeft)
@@ -391,11 +391,11 @@ LOGGER.finest("type: " + typeToString(type) + ", " + size);
         box.setParams(parent, size, type, offset);
         box.decode(in);
 
-        //if box doesn't contain data it only contains children
+        // if box doesn't contain data it only contains children
         Class<?> cl = box.getClass();
         if (cl == BoxImpl.class || cl == FullBox.class) box.readChildren(in);
 
-        //check bytes left
+        // check bytes left
         long left = (box.getOffset() + box.getSize()) - in.getOffset();
         if (left > 0
                 && !(box instanceof MediaDataBox)
@@ -405,7 +405,7 @@ LOGGER.finest("type: " + typeToString(type) + ", " + size);
         else if (left < 0)
             LOGGER.log(Level.SEVERE, "box {0} overread: {1} bytes, offset: {2}", new Object[] {typeToString(type), -left, in.getOffset()});
 
-        //if mdat found and no random access, don't skip
+        // if mdat found and no random access, don't skip
         if (box.getType() != MEDIA_DATA_BOX || in.hasRandomAccess()) in.skipBytes(left);
         return box;
     }

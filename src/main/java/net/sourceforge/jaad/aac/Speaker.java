@@ -7,7 +7,7 @@
 package net.sourceforge.jaad.aac;
 
 /**
- * @see "https://en.wikipedia.org/wiki/Surround_sound"
+ * @see "https:// en.wikipedia.org/wiki/Surround_sound"
  */
 public enum Speaker {
 

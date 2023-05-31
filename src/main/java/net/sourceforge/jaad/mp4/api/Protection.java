@@ -39,10 +39,10 @@ public abstract class Protection {
     private final Codec originalFormat;
 
     protected Protection(Box sinf) {
-        //original format
+        // original format
         long type = ((OriginalFormatBox) sinf.getChild(BoxTypes.ORIGINAL_FORMAT_BOX)).getOriginalFormat();
         Codec c;
-        //TODO: currently it tests for audio and video codec, can do this any other way?
+        // TODO: currently it tests for audio and video codec, can do this any other way?
         if (!(c = AudioTrack.AudioCodec.forType(type)).equals(AudioTrack.AudioCodec.UNKNOWN_AUDIO_CODEC))
             originalFormat = c;
         else if (!(c = VideoTrack.VideoCodec.forType(type)).equals(VideoTrack.VideoCodec.UNKNOWN_VIDEO_CODEC))
@@ -56,7 +56,7 @@ public abstract class Protection {
 
     public abstract Scheme getScheme();
 
-    //default implementation for unknown protection schemes
+    // default implementation for unknown protection schemes
     private static class UnknownProtection extends Protection {
 
         UnknownProtection(Box sinf) {

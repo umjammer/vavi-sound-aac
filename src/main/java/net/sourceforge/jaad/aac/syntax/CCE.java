@@ -20,11 +20,11 @@ class CCE implements Element {
 
         @Override
         public int getId() {
-            return super.getId()%16;
+            return super.getId() % 16;
         }
 
         public boolean isIsIndSW() {
-            return id>=16;
+            return id >= 16;
         }
 
         @Override
@@ -98,6 +98,7 @@ class CCE implements Element {
         return chSelect[index];
     }
 
+    @Override
     public void decode(BitStream in) throws AACException {
         couplingPoint = 2 * in.readBit();
         coupledCount = in.readBits(3);

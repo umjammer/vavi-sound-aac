@@ -1,10 +1,11 @@
 package net.sourceforge.jaad.aac.ps;
 
-import net.sourceforge.jaad.aac.syntax.BitStream;
-
 import java.util.Arrays;
 
+import net.sourceforge.jaad.aac.syntax.BitStream;
+
 import static net.sourceforge.jaad.aac.ps.PSConstants.MAX_PS_ENVELOPES;
+
 
 /**
  * Created by IntelliJ IDEA.
@@ -28,7 +29,7 @@ abstract public class EnvData<Mode extends EnvMode> {
          * The first envelop refers to prev.
          */
         int[] prev = first;
-        for(int l=0; l<envs.length; ++l) {
+        for (int l = 0; l < envs.length; ++l) {
             Envelope e = new Envelope(prev);
             envs[l] = e;
             prev = e.index;
@@ -42,16 +43,16 @@ abstract public class EnvData<Mode extends EnvMode> {
     abstract protected Mode mode(int id);
 
     void readData(BitStream ld, int num_env) {
-        if(mode!=null) {
-            for(int n = 0; n<num_env; n++)
+        if (mode != null) {
+            for (int n = 0; n < num_env; n++)
                 envs[n].read(ld, mode.tables(), mode.nr_par);
         }
     }
 
     void decode(int num_env) {
         /* handle error case and restore or reset envs[0]*/
-        if(num_env==0) {
-            if(mode!=null)
+        if (num_env == 0) {
+            if (mode != null)
                 envs[0].restore();
             else
                 envs[0].reset();
@@ -63,10 +64,10 @@ abstract public class EnvData<Mode extends EnvMode> {
     }
 
     void update(int num_env) {
-        if(num_env==0)
+        if (num_env == 0)
             Arrays.fill(first, 0);
         else
-            System.arraycopy(envs[num_env-1].index, 0, first, 0, first.length);
+            System.arraycopy(envs[num_env - 1].index, 0, first, 0, first.length);
     }
 
     void restore(int num_env) {
@@ -74,7 +75,7 @@ abstract public class EnvData<Mode extends EnvMode> {
     }
 
     void mapTo34(int num_env) {
-        if(mode!=null && (mode.id%3)!=2) {
+        if (mode != null && (mode.id % 3) != 2) {
             for (int env = 0; env < num_env; env++)
                 envs[env].map20To34();
         }

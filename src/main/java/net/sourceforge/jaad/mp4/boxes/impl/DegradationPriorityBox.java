@@ -26,7 +26,7 @@ public class DegradationPriorityBox extends FullBox {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        //get number of samples from SampleSizeBox
+        // get number of samples from SampleSizeBox
         int sampleCount = ((SampleSizeBox) parent.getChild(BoxTypes.SAMPLE_SIZE_BOX)).getSampleCount();
 
         priorities = new int[sampleCount];

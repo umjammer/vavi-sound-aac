@@ -8,8 +8,8 @@ import net.sourceforge.jaad.mp4.MP4Input;
 /**
  * This box contains parameters for AC-3 decoders. For more information see the
  * AC-3 specification "<code>ETSI TS 102 366 V1.2.1 (2008-08)</code>" at
- * <a href="http://www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf>
- * http://www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf</a>.
+ * <a href="http:// www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf>
+ * http:// www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf</a>.
  *
  * @author in-somnia
  */
@@ -26,19 +26,19 @@ public class AC3SpecificBox extends CodecSpecificBox {
     public void decode(MP4Input in) throws IOException {
         long l = in.readBytes(3);
 
-        //2 bits fscod
+        // 2 bits fscod
         fscod = (int) ((l >> 22) & 0x3);
-        //5 bits bsid
+        // 5 bits bsid
         bsid = (int) ((l >> 17) & 0x1F);
-        //3 bits bsmod
+        // 3 bits bsmod
         bsmod = (int) ((l >> 14) & 0x7);
-        //3 bits acmod
+        // 3 bits acmod
         acmod = (int) ((l >> 11) & 0x7);
-        //1 bit lfeon
+        // 1 bit lfeon
         lfeon = ((l >> 10) & 0x1) == 1;
-        //5 bits bitRateCode
+        // 5 bits bitRateCode
         bitRateCode = (int) ((l >> 5) & 0x1F);
-        //5 bits reserved
+        // 5 bits reserved
     }
 
     /**

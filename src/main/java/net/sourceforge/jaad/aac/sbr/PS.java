@@ -2,6 +2,7 @@ package net.sourceforge.jaad.aac.sbr;
 
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -14,6 +15,6 @@ public interface PS {
 
     void decode(BitStream ld);
 
-    /* main Parametric Stereo decoding function */
+    /** main Parametric Stereo decoding function */
     void process(float[][][] X_left, float[][][] X_right);
 }

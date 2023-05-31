@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -13,125 +14,127 @@ import java.util.Arrays;
  */
 abstract public class MP4InputReader implements MP4Input {
 
-	private static final int BYTE_ORDER_MASK = 0xFEFF;
+    private static final int BYTE_ORDER_MASK = 0xFEFF;
 
-	// to be implemented
-	abstract protected int read() throws IOException;
-	abstract protected int read(byte[] b, int off, int len) throws IOException;
-	abstract protected long skip(int n) throws IOException;
+    // to be implemented
+    abstract protected int read() throws IOException;
 
-	@Override
-	public int readByte() throws IOException {
-		int i = read();
+    abstract protected int read(byte[] b, int off, int len) throws IOException;
 
-		if(i==-1){
-			throw new EOFException();
-		}
+    abstract protected long skip(int n) throws IOException;
 
-		return i;
-	}
+    @Override
+    public int readByte() throws IOException {
+        int i = read();
 
-	@Override
-	public void readBytes(byte[] b, int off, int len) throws IOException {
-		int read = 0;
+        if (i == -1) {
+            throw new EOFException();
+        }
 
-		while(read<len) {
-			int i = read(b, off+read, len-read);
-			if(i<0)
-				throw new EOFException();
-			else
-				read += i;
-		}
-	}
+        return i;
+    }
 
-		@Override
-		public long readBytes(int n) throws IOException {
-			if(n<1||n>8)
-				throw new IndexOutOfBoundsException("invalid number of bytes to read: "+n);
+    @Override
+    public void readBytes(byte[] b, int off, int len) throws IOException {
+        int read = 0;
 
-			byte[] b = new byte[n];
-			readBytes(b, 0, n);
+        while (read < len) {
+            int i = read(b, off + read, len - read);
+            if (i < 0)
+                throw new EOFException();
+            else
+                read += i;
+        }
+    }
 
-			long result = 0;
-			for(int i = 0; i<n; i++) {
-				result = (result<<8)|(b[i]&0xFF);
-			}
-			return result;
-		}
+    @Override
+    public long readBytes(int n) throws IOException {
+        if (n < 1 || n > 8)
+            throw new IndexOutOfBoundsException("invalid number of bytes to read: " + n);
 
-	@Override
-		public void readBytes(byte[] b) throws IOException {
-			readBytes(b, 0, b.length);
-		}
+        byte[] b = new byte[n];
+        readBytes(b, 0, n);
 
-		@Override
-		public String readString(int n) throws IOException {
-			int i = -1;
-			int pos = 0;
-			char[] c = new char[n];
-			while(pos<n) {
-				i = readByte();
-				c[pos] = (char) i;
-				pos++;
-			}
-			return new String(c, 0, pos);
-		}
+        long result = 0;
+        for (int i = 0; i < n; i++) {
+            result = (result << 8) | (b[i] & 0xFF);
+        }
+        return result;
+    }
 
-		@Override
-		public String readUTFString(int max, String encoding) throws IOException {
-			return new String(readTerminated(max, 0), Charset.forName(encoding));
-		}
+    @Override
+    public void readBytes(byte[] b) throws IOException {
+        readBytes(b, 0, b.length);
+    }
 
-		@Override
-		public String readUTFString(int max) throws IOException {
-			//read byte order mask
-			byte[] bom = new byte[2];
-			readBytes(bom, 0, 2);
-			if(bom[0]==0||bom[1]==0)
-				return "";
-			int i = (bom[0]<<8)|bom[1];
+    @Override
+    public String readString(int n) throws IOException {
+        int i = -1;
+        int pos = 0;
+        char[] c = new char[n];
+        while (pos < n) {
+            i = readByte();
+            c[pos] = (char) i;
+            pos++;
+        }
+        return new String(c, 0, pos);
+    }
 
-			//read null-terminated
-			byte[] b = readTerminated(max-2, 0);
-			//copy bom
-			byte[] b2 = new byte[b.length+bom.length];
-			System.arraycopy(bom, 0, b2, 0, bom.length);
-			System.arraycopy(b, 0, b2, bom.length, b.length);
+    @Override
+    public String readUTFString(int max, String encoding) throws IOException {
+        return new String(readTerminated(max, 0), Charset.forName(encoding));
+    }
 
-			return new String(b2, Charset.forName((i==BYTE_ORDER_MASK) ? UTF16 : UTF8));
-		}
+    @Override
+    public String readUTFString(int max) throws IOException {
+        // read byte order mask
+        byte[] bom = new byte[2];
+        readBytes(bom, 0, 2);
+        if (bom[0] == 0 || bom[1] == 0)
+            return "";
+        int i = (bom[0] << 8) | bom[1];
 
-		@Override
-		public byte[] readTerminated(int max, int terminator) throws IOException {
-			byte[] b = new byte[max];
-			int pos = 0;
-			int i = 0;
-			while(pos<max&&i!=-1) {
-				i = readByte();
-				if(i!=-1)
-					b[pos++] = (byte) i;
-			}
-			return Arrays.copyOf(b, pos);
-		}
+        // read null-terminated
+        byte[] b = readTerminated(max - 2, 0);
+        // copy bom
+        byte[] b2 = new byte[b.length + bom.length];
+        System.arraycopy(bom, 0, b2, 0, bom.length);
+        System.arraycopy(b, 0, b2, bom.length, b.length);
 
-		@Override
-		public double readFixedPoint(int m, int n) throws IOException {
-			int bits = m+n;
-			if((bits%8)!=0)
-				throw new IllegalArgumentException("number of bits is not a multiple of 8: "+(m+n));
+        return new String(b2, Charset.forName((i == BYTE_ORDER_MASK) ? UTF16 : UTF8));
+    }
 
-			long l = readBytes(bits/8);
-			double x = Math.pow(2, n);
-			double d = ((double) l)/x;
-			return d;
-		}
+    @Override
+    public byte[] readTerminated(int max, int terminator) throws IOException {
+        byte[] b = new byte[max];
+        int pos = 0;
+        int i = 0;
+        while (pos < max && i != -1) {
+            i = readByte();
+            if (i != -1)
+                b[pos++] = (byte) i;
+        }
+        return Arrays.copyOf(b, pos);
+    }
 
-	@Override
-	public void skipBytes(long n) throws IOException {
-		long l = 0;
+    @Override
+    public double readFixedPoint(int m, int n) throws IOException {
+        int bits = m + n;
+        if ((bits % 8) != 0)
+            throw new IllegalArgumentException("number of bits is not a multiple of 8: " + (m + n));
 
-		while(l<n) {
-			 l += skip((int)(n-l));
-		}
-	}
+        long l = readBytes(bits / 8);
+        double x = Math.pow(2, n);
+        double d = ((double) l) / x;
+        return d;
+    }
+
+    @Override
+    public void skipBytes(long n) throws IOException {
+        long l = 0;
+
+        while (l < n) {
+            l += skip((int) (n - l));
+        }
+    }
 }

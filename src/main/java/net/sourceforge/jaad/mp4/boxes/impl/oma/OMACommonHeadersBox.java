@@ -8,7 +8,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
-//TODO: add remaining javadoc
+// TODO: add remaining javadoc
 public class OMACommonHeadersBox extends FullBox {
 
     private int encryptionMethod, paddingScheme;

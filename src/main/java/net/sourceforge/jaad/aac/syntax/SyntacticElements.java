@@ -15,19 +15,19 @@ public class SyntacticElements {
 
     static final Logger LOGGER = Logger.getLogger(SyntacticElements.class.getName());
 
-    //global properties
+    // global properties
 
     private DecoderConfig config;
 
     private final FilterBank filterBank;
 
-    //elements
+    // elements
 
     private List<CCE> cces = new ArrayList<>();
 
     private final Map<Element.InstanceTag, Element> elements = new HashMap<>();
 
-    private final List<ChannelElement> audioElements = new ArrayList<>(); //SCE, LFE and CPE
+    private final List<ChannelElement> audioElements = new ArrayList<>(); // SCE, LFE and CPE
 
     private List<float[]> channels = new ArrayList<>();
 
@@ -55,7 +55,7 @@ public class SyntacticElements {
     public void decode(BitStream in) {
         if (!config.getProfile().isErrorResilientProfile()) {
 
-loop:
+            loop:
             do {
                 switch (Element.readType(in)) {
                 case SCE:
@@ -84,7 +84,7 @@ loop:
                 }
             } while (true);
         } else {
-            //error resilient raw data block
+            // error resilient raw data block
             switch (config.getChannelConfiguration()) {
             case MONO:
                 decode(SCE.TAGS, in);

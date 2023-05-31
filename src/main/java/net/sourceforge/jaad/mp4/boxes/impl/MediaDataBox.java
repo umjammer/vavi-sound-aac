@@ -25,6 +25,6 @@ public class MediaDataBox extends BoxImpl {
 
     @Override
     public void decode(MP4Input in) throws IOException {
-        //if random access: skip, else: do nothing
+        // if random access: skip, else: do nothing
     }
 }

@@ -35,8 +35,8 @@ public class Filter12 implements Filter {
         return 12;
     }
 
+    /** real filter, size 2 */
     @Override
-    /* real filter, size 2 */
     public int filter(int frame_len, float[][] buffer, float[][][] result) {
         float[] input_re1 = new float[6], input_re2 = new float[6];
         float[] input_im1 = new float[6], input_im2 = new float[6];

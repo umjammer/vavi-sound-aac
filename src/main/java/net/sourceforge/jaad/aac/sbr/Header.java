@@ -2,6 +2,7 @@ package net.sourceforge.jaad.aac.sbr;
 
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -9,6 +10,7 @@ import net.sourceforge.jaad.aac.syntax.BitStream;
  * Time: 18:57
  */
 class Header {
+
     boolean bs_amp_res = true;
     int bs_start_freq = 5;
     int bs_stop_freq;
@@ -31,7 +33,7 @@ class Header {
         this.bs_stop_freq = ld.readBits(4);
         this.bs_xover_band = ld.readBits(3);
 
-        ld.readBits(2); //reserved
+        ld.readBits(2); // reserved
 
         boolean bs_header_extra_1 = ld.readBool();
         boolean bs_header_extra_2 = ld.readBool();
@@ -41,7 +43,7 @@ class Header {
             this.bs_alter_scale = ld.readBool();
             this.bs_noise_bands = ld.readBits(2);
         } else {
-            /* Default values */
+            // Default values
             this.bs_freq_scale = 2;
             this.bs_alter_scale = true;
             this.bs_noise_bands = 2;
@@ -53,7 +55,7 @@ class Header {
             this.bs_interpol_freq = ld.readBool();
             this.bs_smoothing_mode = ld.readBool();
         } else {
-            /* Default values */
+            // Default values
             this.bs_limiter_bands = 2;
             this.bs_limiter_gains = 2;
             this.bs_interpol_freq = true;

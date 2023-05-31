@@ -13,7 +13,7 @@ class NoiseEnvelope {
             4.61169E+018f, 9.22337E+018f, 1.84467E+019f, 3.68935E+019f, 7.3787E+019f, 1.47574E+020f, 2.95148E+020f, 5.90296E+020f
     };
 
-    /* table for Q_div2 values when no coupling */
+    /** table for Q_div2 values when no coupling */
     private static final float[] Q_div2_tab = {
             0.984615f, 0.969697f,
             0.941176f, 0.888889f,
@@ -99,7 +99,7 @@ class NoiseEnvelope {
             {2.3836E-007f, 2.38186E-007f, 2.37491E-007f, 2.34751E-007f, 2.24394E-007f, 1.90735E-007f, 1.19209E-007f, 4.76837E-008f, 1.40246E-008f, 3.66798E-009f, 9.27699E-010f, 2.32603E-010f, 5.81935E-011f},
             {1.1918E-007f, 1.19093E-007f, 1.18745E-007f, 1.17375E-007f, 1.12197E-007f, 9.53674E-008f, 5.96046E-008f, 2.38419E-008f, 7.01231E-009f, 1.83399E-009f, 4.63849E-010f, 1.16302E-010f, 2.90967E-011f}
     };
-    /* table for Q_div values when no coupling */
+    /** table for Q_div values when no coupling */
     private static final float[] Q_div_tab = {
             0.0153846f, 0.030303f,
             0.0588235f, 0.111111f,
@@ -187,16 +187,18 @@ class NoiseEnvelope {
             {1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f}
     };
 
-    /* calculates 1/(1+Q) */
-    /* [0..1] */
+    /**
+     * calculates 1/(1+Q)
+     * [0..1]
+     */
     public static float calc_Q_div(SBR2 sbr, Channel ch, int m, int l) {
         if (sbr.bs_coupling) {
-            /* left channel */
+            // left channel
             if ((sbr.ch0.Q[m][l] < 0 || sbr.ch0.Q[m][l] > 30)
                     || (sbr.ch1.Q[m][l] < 0 || sbr.ch1.Q[m][l] > 24 /* 2*panOffset(1) */)) {
                 return 0;
             } else {
-                /* the pan parameter is always even */
+                // the pan parameter is always even
                 if (ch == sbr.ch0) {
                     return Q_div_tab_left[sbr.ch0.Q[m][l]][sbr.ch1.Q[m][l] >> 1];
                 } else {
@@ -209,7 +211,7 @@ class NoiseEnvelope {
     }
 
     public static float calc_Q_div(Channel ch, int m, int l) {
-        /* no coupling */
+        // no coupling
         if (ch.Q[m][l] < 0 || ch.Q[m][l] > 30) {
             return 0;
         } else {
@@ -217,15 +219,17 @@ class NoiseEnvelope {
         }
     }
 
-    /* calculates Q/(1+Q) */
-    /* [0..1] */
+    /**
+     * calculates Q/(1+Q)
+     * [0..1]
+     */
     public static float calc_Q_div2(SBR2 sbr, Channel ch, int m, int l) {
         if (sbr.bs_coupling) {
             if ((sbr.ch0.Q[m][l] < 0 || sbr.ch0.Q[m][l] > 30)
                     || (sbr.ch1.Q[m][l] < 0 || sbr.ch1.Q[m][l] > 24 /* 2*panOffset(1) */)) {
                 return 0;
             } else {
-                /* the pan parameter is always even */
+                // the pan parameter is always even
                 if (ch == sbr.ch0) {
                     return Q_div2_tab_left[sbr.ch0.Q[m][l]][sbr.ch1.Q[m][l] >> 1];
                 } else {
@@ -238,7 +242,7 @@ class NoiseEnvelope {
     }
 
     public static float calc_Q_div2(Channel ch, int m, int l) {
-        /* no coupling */
+        // no coupling
         if (ch.Q[m][l] < 0 || ch.Q[m][l] > 30) {
             return 0;
         } else {
@@ -251,10 +255,9 @@ class NoiseEnvelope {
 
         for (int l = 0; l < ch.L_E; l++) {
             for (int k = 0; k < sbr.n[ch.f[l]]; k++) {
-                /* +6 for the *64 and -10 for the /32 in the synthesis QMF (fixed)
-                 * since this is an energy value: (x/32)^2 = (x^2)/1024
-                 */
-                /* exp = (ch.E[k][l] >> amp) + 6; */
+                // +6 for the *64 and -10 for the /32 in the synthesis QMF (fixed)
+                // since this is an energy value: (x/32)^2 = (x^2)/1024
+                //exp = (ch.E[k][l] >> amp) + 6;
                 int exp = (ch.E[k][l] >> amp);
 
                 if ((exp < 0) || (exp >= 64)) {
@@ -262,7 +265,7 @@ class NoiseEnvelope {
                 } else {
                     ch.E_orig[k][l] = E_deq_tab[exp];
 
-                    /* save half the table size at the cost of 1 multiply */
+                    // save half the table size at the cost of 1 multiply
                     if (amp != 0 && (ch.E[k][l] & 1) != 0) {
                         ch.E_orig[k][l] = (ch.E_orig[k][l] * 1.414213562f);
                     }
@@ -301,14 +304,13 @@ class NoiseEnvelope {
 
         for (int l = 0; l < sbr.ch0.L_E; l++) {
             for (int k = 0; k < sbr.n[sbr.ch0.f[l]]; k++) {
-                /* +6: * 64 ; +1: * 2 ; */
+                // +6: * 64 ; +1: * 2 ;
                 int exp0 = (sbr.ch0.E[k][l] >> amp0) + 1;
 
-                /* UN_MAP removed: (x / 4096) same as (x >> 12) */
-                /* E[1] is always even so no need for compensating the divide by 2 with
-                 * an extra multiplication
-                 */
-                /* exp1 = (sbr.ch1.E[k][l] >> amp1) - 12; */
+                // UN_MAP removed: (x / 4096) same as (x >> 12)
+                // E[1] is always even so no need for compensating the divide by 2 with
+                // an extra multiplication
+                //exp1 = (sbr.ch1.E[k][l] >> amp1) - 12;
                 int exp1 = (sbr.ch1.E[k][l] >> amp1);
 
                 if ((exp0 < 0) || (exp0 >= 64)
@@ -321,7 +323,7 @@ class NoiseEnvelope {
                         tmp = (float) (tmp * 1.414213562);
                     }
 
-                    /* panning */
+                    // panning
                     sbr.ch0.E_orig[k][l] = (tmp * E_pan_tab[exp1]);
                     sbr.ch1.E_orig[k][l] = (tmp * E_pan_tab[24 - exp1]);
                 }

@@ -7,7 +7,7 @@ import net.sourceforge.jaad.aac.DecoderConfig;
 
 /**
  * data_stream_element Abbreviation DSE.
- *
+ * <p>
  * Syntactic element that contains data.
  * Again, there are 16 element_instance_tags.
  * There is, however, no restriction on the number
@@ -52,6 +52,7 @@ class DSE implements Element {
         this.tag = tag;
     }
 
+    @Override
     public void decode(BitStream in) {
         boolean byteAlign = in.readBool();
         int count = in.readBits(8);

@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
 
 /**
  * The <code>DecoderSpecificInfo</code> constitutes an opaque container with
- * information for a specific media decoder. Depending on the required amout of
+ * information for a specific media decoder. Depending on the required amount of
  * data, two classes with a maximum of 255 and 2<sup>32</sup>-1 bytes of data
  * are provided. The existence and semantics of the
  * <code>DecoderSpecificInfo</code> depends on the stream type and object

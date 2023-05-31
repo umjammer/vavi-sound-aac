@@ -77,7 +77,7 @@ public class ITunesMetadataBox extends FullBox {
 
         dataType = DataType.forInt(flags);
 
-        in.skipBytes(4); //padding?
+        in.skipBytes(4); // padding?
 
         data = new byte[(int) getLeft(in)];
         in.readBytes(data);
@@ -103,7 +103,7 @@ public class ITunesMetadataBox extends FullBox {
      * @return the metadata as text
      */
     public String getText() {
-        //first four bytes are padding (zero)
+        // first four bytes are padding (zero)
         return new String(data, StandardCharsets.UTF_8);
     }
 
@@ -113,7 +113,7 @@ public class ITunesMetadataBox extends FullBox {
      * @return the metadata as an integer
      */
     public long getNumber() {
-        //first four bytes are padding (zero)
+        // first four bytes are padding (zero)
         long l = 0;
         for (byte datum : data) {
             l <<= 8;
@@ -136,7 +136,7 @@ public class ITunesMetadataBox extends FullBox {
     }
 
     public Date getDate() {
-        //timestamp lengths: 4,7,9
+        // timestamp lengths: 4,7,9
         int i = (int) Math.floor(data.length / 3f) - 1;
         Date date;
         if (i >= 0 && i < TIMESTAMPS.length) {

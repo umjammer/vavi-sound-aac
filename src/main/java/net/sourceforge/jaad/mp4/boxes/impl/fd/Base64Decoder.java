@@ -24,7 +24,7 @@ class Base64Decoder {
     'w', 'x', 'y', 'z', '0', '1', '2', '3', // 6
     '4', '5', '6', '7', '8', '9', '+', '/' // 7
     };*/
-    //CHAR_CONVERT_ARRAY[CHAR_ARRAY[i]] = i;
+    // CHAR_CONVERT_ARRAY[CHAR_ARRAY[i]] = i;
     private static final byte[] CHAR_CONVERT_ARRAY = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

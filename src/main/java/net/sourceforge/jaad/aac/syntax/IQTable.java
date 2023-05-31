@@ -6,7 +6,7 @@ package net.sourceforge.jaad.aac.syntax;
  *
  * @author in-somnia
  */
-//TODO: list is too big, create at startup
+// TODO: list is too big, create at startup
 interface IQTable {
 
     float[] IQ_TABLE = {

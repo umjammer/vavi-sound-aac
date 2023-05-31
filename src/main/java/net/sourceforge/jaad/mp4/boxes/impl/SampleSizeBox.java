@@ -33,7 +33,7 @@ public class SampleSizeBox extends FullBox {
         sampleSizes = new long[(int) sampleCount];
 
         if (compact) {
-            //compact: sampleSize can be 4, 8 or 16 bits
+            // compact: sampleSize can be 4, 8 or 16 bits
             if (sampleSize == 4) {
                 int x;
                 for (int i = 0; i < sampleCount; i += 2) {

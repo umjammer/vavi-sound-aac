@@ -28,7 +28,7 @@ public class ChapterBox extends FullBox {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        in.skipBytes(4); //??
+        in.skipBytes(4); // ??
 
         int count = in.readByte();
 

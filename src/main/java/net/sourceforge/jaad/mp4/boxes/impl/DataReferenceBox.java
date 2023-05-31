@@ -28,6 +28,6 @@ public class DataReferenceBox extends FullBox {
 
         int entryCount = (int) in.readBytes(4);
 
-        readChildren(in, entryCount); //DataEntryUrlBox, DataEntryUrnBox
+        readChildren(in, entryCount); // DataEntryUrlBox, DataEntryUrnBox
     }
 }

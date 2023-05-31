@@ -24,7 +24,7 @@ public class FilePartitionBox extends FullBox {
 
         itemID = (int) in.readBytes(2);
         packetPayloadSize = (int) in.readBytes(2);
-        in.skipBytes(1); //reserved
+        in.skipBytes(1); // reserved
         fecEncodingID = in.readByte();
         fecInstanceID = (int) in.readBytes(2);
         maxSourceBlockLength = (int) in.readBytes(2);

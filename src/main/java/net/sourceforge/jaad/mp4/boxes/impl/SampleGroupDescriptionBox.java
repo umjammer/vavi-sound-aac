@@ -45,36 +45,36 @@ public class SampleGroupDescriptionBox extends FullBox {
 
         int entryCount = (int) in.readBytes(4);
 
-        //TODO!
-		/*final HandlerBox hdlr = (HandlerBox) parent.getParent().getParent().getChild(BoxTypes.HANDLER_BOX);
-		final int handlerType = (int) hdlr.getHandlerType();
-		
-		final Class<? extends BoxImpl> boxClass;
-		switch(handlerType) {
-		case HandlerBox.TYPE_VIDEO:
-		boxClass = VisualSampleGroupEntry.class;
-		break;
-		case HandlerBox.TYPE_SOUND:
-		boxClass = AudioSampleGroupEntry.class;
-		break;
-		case HandlerBox.TYPE_HINT:
-		boxClass = HintSampleGroupEntry.class;
-		break;
-		default:
-		boxClass = null;
-		}
-		
-		for(int i = 1; i<entryCount; i++) {
-		if(version==1&&defaultLength==0) {
-		descriptionLength = in.readBytes(4);
-		left -= 4;
-		}
-		if(boxClass!=null) {
-		entries[i] = (SampleGroupDescriptionEntry) BoxFactory.parseBox(in, boxClass);
-		if(entries[i]!=null)
-			left -= entries[i].getSize();
-		}
-		}*/
+        // TODO !
+//        final HandlerBox hdlr = (HandlerBox) parent.getParent().getParent().getChild(BoxTypes.HANDLER_BOX);
+//        final int handlerType = (int) hdlr.getHandlerType();
+//
+//        final Class<? extends BoxImpl> boxClass;
+//        switch (handlerType) {
+//        case HandlerBox.TYPE_VIDEO:
+//            boxClass = VisualSampleGroupEntry.class;
+//            break;
+//        case HandlerBox.TYPE_SOUND:
+//            boxClass = AudioSampleGroupEntry.class;
+//            break;
+//        case HandlerBox.TYPE_HINT:
+//            boxClass = HintSampleGroupEntry.class;
+//            break;
+//        default:
+//            boxClass = null;
+//        }
+//
+//        for (int i = 1; i < entryCount; i++) {
+//            if (version == 1 && defaultLength == 0) {
+//                descriptionLength = in.readBytes(4);
+//                left -= 4;
+//            }
+//            if (boxClass != null) {
+//                entries[i] = (SampleGroupDescriptionEntry) BoxFactory.parseBox(in, boxClass);
+//                if (entries[i] != null)
+//                    left -= entries[i].getSize();
+//            }
+//        }
     }
 
     /**

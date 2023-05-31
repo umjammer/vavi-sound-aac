@@ -2,9 +2,10 @@ package net.sourceforge.jaad.aac.ps;
 
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
+
 interface Huffman {
 
-    /* binary lookup huffman tables */
+    /** binary lookup huffman tables */
     int[][] f_huff_iid_def = {
             { /*0*/-31, 1}, /* index 0: 1 bits: x */
             {2, 3}, /* index 1: 2 bits: 1x */
@@ -258,6 +259,7 @@ interface Huffman {
             { /*4*/-27, /*3*/ -28} /* index 6: 5 bits: 0011x */};
 
     interface Table {
+
         int read(BitStream ld);
     }
 
@@ -265,12 +267,12 @@ interface Huffman {
         return ld -> {
             int index = 0;
 
-            while(index>=0) {
+            while (index >= 0) {
                 int bit = ld.readBit();
                 index = huff[index][bit];
             }
 
-            return index+31;
+            return index + 31;
         };
     }
 }

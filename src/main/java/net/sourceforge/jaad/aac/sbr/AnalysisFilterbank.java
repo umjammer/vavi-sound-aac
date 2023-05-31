@@ -12,20 +12,20 @@ class AnalysisFilterbank extends Filterbank {
         float[] in_real = new float[32], in_imag = new float[32];
         float[] out_real = new float[32], out_imag = new float[32];
 
-        /* qmf subsample l */
-        for (int l = 0, in=0; l < numTimeSlotsRate; l++) {
+        // qmf subsample l
+        for (int l = 0, in = 0; l < numTimeSlotsRate; l++) {
             int n;
 
-            /* shift input buffer x */
-            /* input buffer is not shifted anymore, x is implemented as double ringbuffer */
+            // shift input buffer x
+            // input buffer is not shifted anymore, x is implemented as double ringbuffer
             //memmove(qmfa.x + 32, qmfa.x, (320-32)*sizeof(real_t));
 
-            /* add new samples to input buffer x */
+            // add new samples to input buffer x
             for (n = 32 - 1; n >= 0; n--) {
                 this.v[this.v_index + n] = this.v[this.v_index + n + 320] = input[in++];
             }
 
-            /* window and summation to create array u */
+            // window and summation to create array u
             for (n = 0; n < 64; n++) {
                 u[n] = (this.v[this.v_index + n] * qmf_c[2 * n])
                         + (this.v[this.v_index + n + 64] * qmf_c[2 * (n + 64)])
@@ -34,12 +34,12 @@ class AnalysisFilterbank extends Filterbank {
                         + (this.v[this.v_index + n + 256] * qmf_c[2 * (n + 256)]);
             }
 
-            /* update ringbuffer index */
+            // update ringbuffer index
             this.v_index -= 32;
             if (this.v_index < 0)
                 this.v_index = (320 - 32);
 
-            /* calculate 32 subband samples by introducing X */
+            // calculate 32 subband samples by introducing X
             // Reordering of data moved from DCT_IV to here
             in_imag[31] = u[1];
             in_real[0] = u[0];

@@ -18,11 +18,11 @@ import net.sourceforge.jaad.aac.tools.MSMask;
 
 /**
  * channel_pair_element: abbreviation CPE.
- *
+ * <p>
  * Syntactic element of the bitstream payload containing data for a pair of channels.
  * A channel_pair_element consists of two individual_channel_streams and additional
  * joint channel coding information. The two channels may share common side information.
- *
+ * <p>
  * The channel_pair_element has the same restrictions as the single channel element
  * as far as element_instance_tag, and number of occurrences.
  */
@@ -70,18 +70,22 @@ public class CPE extends ChannelElement {
         icsR = new ICStream(config);
     }
 
+    @Override
     public boolean isChannelPair() {
         return true;
     }
 
+    @Override
     public boolean isStereo() {
         return true;
     }
 
+    @Override
     protected SBR openSBR() {
         return new SBR2(config);
     }
 
+    @Override
     public void decode(BitStream in) {
         super.decode(in);
 
@@ -89,31 +93,29 @@ public class CPE extends ChannelElement {
         ICSInfo infoL = icsL.getInfo();
         ICSInfo infoR = icsR.getInfo();
 
-        LOGGER.log(Level.FINE, ()->String.format("CPE %s", commonWindow? "common":""));
+        LOGGER.log(Level.FINER, () -> String.format("CPE %s", commonWindow ? "common" : ""));
 
         if (commonWindow) {
             infoL.decode(in, commonWindow);
             infoR.setCommonData(in, infoL);
 
             msMask = MSMask.forInt(in.readBits(2));
-            if(msMask.equals(MSMask.TYPE_USED)) {
+            if (msMask.equals(MSMask.TYPE_USED)) {
                 int maxSFB = infoL.getMaxSFB();
                 int windowGroupCount = infoL.getWindowGroupCount();
 
-                for(int idx = 0; idx<windowGroupCount*maxSFB; idx++) {
+                for (int idx = 0; idx < windowGroupCount * maxSFB; idx++) {
                     msUsed[idx] = in.readBool();
                 }
-            }
-            else if(msMask.equals(MSMask.TYPE_ALL_1))
+            } else if (msMask.equals(MSMask.TYPE_ALL_1))
                 Arrays.fill(msUsed, true);
 
-            else if(msMask.equals(MSMask.TYPE_ALL_0))
+            else if (msMask.equals(MSMask.TYPE_ALL_0))
                 Arrays.fill(msUsed, false);
 
             else
                 throw new AACException("reserved MS mask type used");
-        }
-        else {
+        } else {
             msMask = MSMask.TYPE_ALL_0;
             Arrays.fill(msUsed, false);
         }
@@ -146,6 +148,7 @@ public class CPE extends ChannelElement {
         return commonWindow;
     }
 
+    @Override
     public void process(FilterBank filterBank, List<CCE> cces, Consumer<float[]> target) {
 
         float[] dataL = getDataL();
@@ -175,7 +178,7 @@ public class CPE extends ChannelElement {
         icsL.processTNS();
         icsR.processTNS();
 
-        //dependent coupling
+        // dependent coupling
         processDependentCoupling(cces, CCE.AFTER_TNS, iqDataL, iqDataR);
 
         // filterbank

@@ -34,8 +34,8 @@ public class Filter2 implements Filter {
         return 2;
     }
 
+    /** real filter, size 2 */
     @Override
-    /* real filter, size 2 */
     public int filter(int frame_len, float[][] buffer, float[][][] result) {
 
         for (int i = 0; i < frame_len; i++) {
@@ -54,11 +54,11 @@ public class Filter2 implements Filter {
             float i5 = (filter[5] * (buffer[5 + i][1] + buffer[7 + i][1]));
             float i6 = (filter[6] * buffer[6 + i][1]);
 
-            /* q = 0 */
+            // q = 0
             result[i][0][0] = r0 + r1 + r2 + r3 + r4 + r5 + r6;
             result[i][0][1] = i0 + i1 + i2 + i3 + i4 + i5 + i6;
 
-            /* q = 1 */
+            // q = 1
             result[i][1][0] = r0 - r1 + r2 - r3 + r4 - r5 + r6;
             result[i][1][1] = i0 - i1 + i2 - i3 + i4 - i5 + i6;
         }

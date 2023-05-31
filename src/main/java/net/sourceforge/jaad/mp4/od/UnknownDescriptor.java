@@ -15,6 +15,6 @@ public class UnknownDescriptor extends Descriptor {
 
     @Override
     void decode(MP4Input in) throws IOException {
-        //content will be skipped
+        // content will be skipped
     }
 }

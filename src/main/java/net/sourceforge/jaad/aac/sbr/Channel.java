@@ -70,7 +70,7 @@ class Channel {
 
     final AnalysisFilterbank qmfa;
 
-    public static final int MAX_NTSRHFG = 40; //maximum of number_time_slots * rate + HFGen. 16*2+8
+    public static final int MAX_NTSRHFG = 40; // maximum of number_time_slots * rate + HFGen. 16*2+8
     float[][][] Xsbr = new float[MAX_NTSRHFG][64][2];
 
     FrameClass bs_frame_class;
@@ -91,7 +91,7 @@ class Channel {
         qmfa = new AnalysisFilterbank(32);
     }
 
-    /* table 8 */
+    /** table 8 */
     void sbr_dtdf(BitStream ld) {
 
         for (int i = 0; i < L_E; i++) {
@@ -103,7 +103,7 @@ class Channel {
         }
     }
 
-    /* table 9 */
+    /** table 9 */
     void invf_mode(BitStream ld) {
         for (int n = 0; n < sbr.N_Q; n++) {
             bs_invf_mode[n] = ld.readBits(2);
@@ -131,7 +131,7 @@ class Channel {
         }
     }
 
-    /* table 10 */
+    /** table 10 */
 
     void sbr_envelope(BitStream ld, boolean coupled) {
         int delta = 0;
@@ -202,7 +202,7 @@ class Channel {
                         E[k][l] = 0;
                 }
 
-            } else { /* bs_df_env == 1 */
+            } else { // bs_df_env == 1
 
                 int g = (l == 0) ? f_prev : f[l - 1];
 
@@ -239,7 +239,7 @@ class Channel {
         }
     }
 
-    /* table 11 */
+    /** table 11 */
     void sbr_noise(BitStream ld, boolean coupled) {
         int delta = 0;
         int[][] t_huff, f_huff;
@@ -306,7 +306,7 @@ class Channel {
         }
     }
 
-    /* table 7 */
+    /** table 7 */
     int sbr_grid(BitStream ld) {
         int result;
         int saved_L_E = L_E;
@@ -418,7 +418,7 @@ class Channel {
         else
             L_Q = 1;
 
-        /* TODO: this code can probably be integrated into the code above! */
+        // TODO: this code can probably be integrated into the code above!
         if ((result = envelope_time_border_vector()) > 0) {
             bs_frame_class = saved_frame_class;
             L_E = saved_L_E;
@@ -433,7 +433,7 @@ class Channel {
 
     private static final int[] log2tab = {0, 0, 1, 2, 2, 3, 3, 3, 3, 4};
 
-    /* integer log[2](x): input range [0,10) */
+    /** integer log[2](x): input range [0,10) */
     private static int sbr_log2(int val) {
 
         if (val < 10 && val >= 0)
@@ -442,11 +442,12 @@ class Channel {
             return 0;
     }
 
-
     private final int[] eTmp = new int[6];
 
-    /* function constructs new time border vector */
-    /* first build into temp vector to be able to use previous vector on error */
+    /**
+     * function constructs new time border vector
+     * first build into temp vector to be able to use previous vector on error
+     */
     int envelope_time_border_vector() {
 
         eTmp[0] = sbr.rate * abs_bord_lead;
@@ -530,7 +531,7 @@ class Channel {
             break;
         }
 
-        /* no error occured, we can safely use this t_E vector */
+        // no error occured, we can safely use this t_E vector
         System.arraycopy(eTmp, 0, t_E, 0, 6);
 
         return 0;
@@ -583,17 +584,17 @@ class Channel {
 
         boolean dont_process = sbr.hdr == null;
 
-        /* subband analysis */
+        // subband analysis
         qmfa.sbr_qmf_analysis_32(sbr.numTimeSlotsRate, channel_buf,
                 Xsbr, sbr.tHFGen, dont_process ? 32 : sbr.kx);
 
         if (!dont_process) {
-            /* insert high frequencies here */
-            /* hf generation using patching */
+            // insert high frequencies here
+            // hf generation using patching
             HFGeneration.hf_generation(Xsbr, Xsbr, this, reset);
 
 
-            /* hf adjustment */
+            // hf adjustment
             HFAdjustment.hf_adjustment(sbr, Xsbr, this);
         }
 

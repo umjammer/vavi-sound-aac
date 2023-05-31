@@ -18,7 +18,7 @@ public class PDData extends EnvData<PDMode> {
     }
 
     void setMode(IIDMode mode) {
-        this.mode = mode==null ? null : mode(mode.id);
+        this.mode = mode == null ? null : mode(mode.id);
     }
 
     @Override

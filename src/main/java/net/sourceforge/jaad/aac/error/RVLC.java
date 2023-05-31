@@ -7,7 +7,7 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
 
 
 /**
- * Reversable variable length coding
+ * Reversible variable length coding
  * Decodes scalefactors if error resilience is used.
  */
 public class RVLC implements RVLCTables {
@@ -23,7 +23,7 @@ public class RVLC implements RVLCTables {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
-        int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
+        int[][] sfbCB = null; // ics.getSectionData().getSfbCB();
 
         int sf = ics.getGlobalGain();
         int intensityPosition = 0;
@@ -70,7 +70,7 @@ public class RVLC implements RVLCTables {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
-        int[][] sfbCB = null; //ics.getSectionData().getSfbCB();
+        int[][] sfbCB = null; // ics.getSectionData().getSfbCB();
 
         int escapesLen = in.readBits(8);
 

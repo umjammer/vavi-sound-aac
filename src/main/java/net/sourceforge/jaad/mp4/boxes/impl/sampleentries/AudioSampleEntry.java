@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library.
- *  If not, see <http://www.gnu.org/licenses/>.
+ *  If not, see <http:// www.gnu.org/licenses/>.
  */
 
 package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
@@ -37,13 +37,13 @@ public class AudioSampleEntry extends SampleEntry {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        in.skipBytes(8); //reserved
+        in.skipBytes(8); // reserved
         channelCount = (int) in.readBytes(2);
         sampleSize = (int) in.readBytes(2);
-        in.skipBytes(2); //pre-defined: 0
-        in.skipBytes(2); //reserved
+        in.skipBytes(2); // pre-defined: 0
+        in.skipBytes(2); // reserved
         sampleRate = (int) in.readBytes(2);
-        in.skipBytes(2); //not used by samplerate
+        in.skipBytes(2); // not used by samplerate
 
         readChildren(in);
     }
