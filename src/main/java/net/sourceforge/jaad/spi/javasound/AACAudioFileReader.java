@@ -77,49 +77,44 @@ public class AACAudioFileReader extends AudioFileReader {
 
     @Override
     public AudioFileFormat getAudioFileFormat(InputStream in) throws UnsupportedAudioFileException, IOException {
-        try {
-            if (!in.markSupported()) in = new BufferedInputStream(in);
-            in.mark(1000);
-            return getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
-        } finally {
-            in.reset();
-        }
+        return getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
     }
 
     @Override
     public AudioFileFormat getAudioFileFormat(URL url) throws UnsupportedAudioFileException, IOException {
         try (InputStream in = url.openStream()) {
-            return getAudioFileFormat(in);
+            return getAudioFileFormat(in instanceof BufferedInputStream ? in : new BufferedInputStream(in, Integer.MAX_VALUE - 8));
         }
     }
 
     @Override
     public AudioFileFormat getAudioFileFormat(File file) throws UnsupportedAudioFileException, IOException {
-        InputStream in = null;
-        try {
-            in = new BufferedInputStream(Files.newInputStream(file.toPath()));
-            in.mark(1000);
-            AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), (int) file.length());
-            return aff;
-        } finally {
-            if (in != null) {
-                in.reset();
-                in.close();
-            }
+        try (InputStream in = Files.newInputStream(file.toPath())) {
+            return getAudioFileFormat(new BufferedInputStream(in, Integer.MAX_VALUE - 8), (int) file.length());
         }
     }
 
     private AudioFileFormat getAudioFileFormat(InputStream in, int mediaLength) throws UnsupportedAudioFileException, IOException {
         try {
+            if (!in.markSupported()) throw new IllegalArgumentException("mark not supported");
+
             byte[] head = new byte[12];
-            in.read(head);
-            boolean canHandle = false;
+            synchronized (this) {
+                in.mark(12);
+                in.read(head);
+                in.reset(); // (*a)
+            }
+
+            int whole = in.available();
+            in.mark(whole);
+logger.fine("mark: " + whole);
+            in = new LimitedInputStream(in);
+
+            boolean canHandle;
             AudioFileFormat.Type type = AAC;
             if (new String(head, 4, 4).equals("ftyp")) {
-                in.reset();
-                in.mark(1000);
 
-                // in position should be zero
+                // ⚠⚠⚠ in position must be zero ⚠⚠⚠
                 MP4Input is = MP4Input.open(in);
                 MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
@@ -162,40 +157,49 @@ public class AACAudioFileReader extends AudioFileReader {
             } else {
                 throw new UnsupportedAudioFileException("no match sequence");
             }
-        } catch (Exception e) {
-            logger.fine(e.getClass().getSimpleName() + ": " + e.getMessage());
-            throw (UnsupportedAudioFileException) new UnsupportedAudioFileException().initCause(e);
+
+        } catch (IOException e) {
+            if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
+                logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
+                throw new UnsupportedAudioFileException(e.getMessage());
+            } else if (e.getMessage().equals("no ADTS header found")) {
+                logger.fine("no ADTS header found");
+                throw new UnsupportedAudioFileException(e.getMessage());
+            } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
+                logger.fine(e.toString());
+                throw new UnsupportedAudioFileException(e.getMessage());
+            } else {
+                logger.info(e.toString());
+                throw e;
+            }
+        } finally {
+            try {
+                in.reset();
+logger.fine("reset");
+            } catch (IOException e) {
+                logger.info("FAIL TO RESET: " + e);
+            } finally {
+                logger.fine("finally available: " + in.available());
+            }
         }
     }
 
-    // ================================================
+    // ----
+
     @Override
     public AudioInputStream getAudioInputStream(InputStream in) throws UnsupportedAudioFileException, IOException {
-        boolean needReset = false;
         try {
-            if (!in.markSupported()) in = new BufferedInputStream(in);
-            synchronized (this) {
-                in.mark(1000);
-                logger.finer("mark: " + in.available());
-                needReset = true;
-            }
-            AudioFileFormat aff = getAudioFileFormat(new LimitedInputStream(in), AudioSystem.NOT_SPECIFIED);
-            synchronized (this) {
-                logger.finer("before reset: " + in.available());
-                in.reset();
-                logger.finer("after reset: " + in.available());
-                needReset = false;
-            }
-            synchronized (this) {
-                in.mark(in.available());
-                logger.finer("mark2: " + in.available());
-                needReset = true;
-            }
+            AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
+logger.fine("format: " + aff);
+
+            int whole = in.available();
+            in.mark(whole);
+logger.fine("mark: " + whole);
+            in = new LimitedInputStream(in);
+
             // in position should be zero
-            logger.fine("format: " + aff.getFormat());
             return new AudioInputStream(in, aff.getFormat(), aff.getFrameLength());
-        } catch (UnsupportedAudioFileException e) {
-            throw e;
+
         } catch (IOException e) {
             if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
                 logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
@@ -207,40 +211,36 @@ public class AACAudioFileReader extends AudioFileReader {
                 logger.info(e.toString());
                 throw e;
             }
-        } catch (Exception e) {
-            logger.info(e.toString());
-            throw e;
         } finally {
-            logger.fine("reset?: " + needReset + ", available: " + in.available());
             try {
-                if (needReset) {
-                    in.reset();
-                }
-                logger.fine("finally available: " + in.available());
+                in.reset();
+logger.fine("reset");
             } catch (IOException e) {
-                logger.info(e.toString());
+                logger.info("FAIL TO RESET: " + e);
+            } finally {
+                logger.fine("finally available: " + in.available());
             }
         }
     }
 
     @Override
     public AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
-        InputStream in = url.openStream();
+        InputStream inputStream = url.openStream();
         try {
-            return getAudioInputStream(in);
+            return getAudioInputStream(inputStream instanceof BufferedInputStream ? inputStream : new BufferedInputStream(inputStream, Integer.MAX_VALUE - 8));
         } catch (UnsupportedAudioFileException | IOException e) {
-            if (in != null) in.close();
+            inputStream.close();
             throw e;
         }
     }
 
     @Override
     public AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
-        InputStream in = Files.newInputStream(file.toPath());
+        InputStream inputStream = Files.newInputStream(file.toPath());
         try {
-            return getAudioInputStream(in);
+            return getAudioInputStream(new BufferedInputStream(inputStream, Integer.MAX_VALUE - 8));
         } catch (UnsupportedAudioFileException | IOException e) {
-            in.close();
+            inputStream.close();
             throw e;
         }
     }
