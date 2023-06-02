@@ -127,6 +127,7 @@ public class PCE implements Element, AudioDecoderInfo {
         sampleFrequency = SampleFrequency.SF_NONE;
     }
 
+    @Override
     public void decode(BitStream in) throws AACException {
 
         profile = Profile.forInt(in.readBits(2));
@@ -187,10 +188,12 @@ public class PCE implements Element, AudioDecoderInfo {
         }
     }
 
+    @Override
     public Profile getProfile() {
         return profile;
     }
 
+    @Override
     public SampleFrequency getSampleFrequency() {
         return sampleFrequency;
     }
@@ -216,6 +219,7 @@ public class PCE implements Element, AudioDecoderInfo {
      *
      * @return a matching ChannelConfiguration according its channel count.
      */
+    @Override
     public ChannelConfiguration getChannelConfiguration() {
         return ChannelConfiguration.forChannelCount(getChannelCount());
     }

@@ -8,9 +8,9 @@ import net.sourceforge.jaad.aac.syntax.BitStream;
 
 abstract public class SBR {
 
-    static final int MAX_NTSR = 32; //max number_time_slots * rate, ok for DRM and not DRM mode
-    static final int MAX_M = 49; //maximum value for M
-    public static final int MAX_L_E = 5; //maximum value for L_E
+    static final int MAX_NTSR = 32; // max number_time_slots * rate, ok for DRM and not DRM mode
+    static final int MAX_M = 49; // maximum value for M
+    public static final int MAX_L_E = 5; // maximum value for L_E
 
     static final int EXT_SBR_DATA = 13;
     static final int EXT_SBR_DATA_CRC = 14;
@@ -109,12 +109,11 @@ abstract public class SBR {
         this.bsco_prev = 0;
         this.M_prev = 0;
 
-        if(config.isSmallFrameUsed()) {
-            this.numTimeSlotsRate = RATE*NO_TIME_SLOTS_960;
+        if (config.isSmallFrameUsed()) {
+            this.numTimeSlotsRate = RATE * NO_TIME_SLOTS_960;
             this.numTimeSlots = NO_TIME_SLOTS_960;
-        }
-        else {
-            this.numTimeSlotsRate = RATE*NO_TIME_SLOTS;
+        } else {
+            this.numTimeSlotsRate = RATE * NO_TIME_SLOTS;
             this.numTimeSlots = NO_TIME_SLOTS;
         }
     }
@@ -122,18 +121,18 @@ abstract public class SBR {
     int calc_sbr_tables(Header hdr) {
         int result = 0;
 
-        /* calculate the Master Frequency Table */
+        // calculate the Master Frequency Table
         this.k0 = FBT.qmf_start_channel(hdr.bs_start_freq, this.bs_samplerate_mode, this.sample_rate);
         int k2 = FBT.qmf_stop_channel(hdr.bs_stop_freq, this.sample_rate, this.k0);
 
-        /* check k0 and k2 */
+        // check k0 and k2
         if (this.sample_rate.getFrequency() >= 48000) {
             if ((k2 - this.k0) > 32)
                 result += 1;
         } else if (this.sample_rate.getFrequency() <= 32000) {
             if ((k2 - this.k0) > 48)
                 result += 1;
-        } else { /* (sbr.sample_rate == 44100) */
+        } else { // (sbr.sample_rate == 44100)
 
             if ((k2 - this.k0) > 45)
                 result += 1;
@@ -151,7 +150,7 @@ abstract public class SBR {
         return result;
     }
 
-    /* table 2 */
+    /** table 2 */
     public void decode(BitStream ld, boolean crc) {
 
         if (crc) {
@@ -164,7 +163,7 @@ abstract public class SBR {
         if (reset) {
             int rt = calc_sbr_tables(this.hdr);
 
-            /* if an error occurred with the new header values revert to the old ones */
+            // if an error occurred with the new header values revert to the old ones
             if (rt > 0) {
                 calc_sbr_tables(swapHeaders());
             }
@@ -239,7 +238,7 @@ abstract public class SBR {
 
     }
 
-    /* table 12 */
+    /** table 12 */
     protected void sinusoidal_coding(BitStream ld, Channel ch) {
 
         for (int n = 0; n < this.N_high; n++) {
@@ -249,14 +248,14 @@ abstract public class SBR {
 
     protected void sbr_save_prev_data(Channel ch) {
 
-        /* save data for next frame */
+        // save data for next frame
         this.kx_prev = this.kx;
         this.M_prev = this.M;
         this.bsco_prev = this.bsco;
 
         ch.L_E_prev = ch.L_E;
 
-        /* sbr.L_E[ch] can become 0 on files with bit errors */
+        // sbr.L_E[ch] can become 0 on files with bit errors
         if (ch.L_E <= 0)
             throw new AACException("L_E<0");
 

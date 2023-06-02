@@ -9,7 +9,7 @@ import net.sourceforge.jaad.mp4.boxes.BoxTypes;
 import net.sourceforge.jaad.mp4.boxes.FullBox;
 
 
-//needs to be defined, because readChildren() is not called by factory
+// needs to be defined, because readChildren() is not called by factory
 /* TODO: this class shouldn't be needed. at least here, things become too
 complicated. change this!!! */
 public class MetaBox extends FullBox {
@@ -37,12 +37,12 @@ public class MetaBox extends FullBox {
         // Indication of it that size already contains the type.
         // Shift back all parameters by 4 bytes: type <- size <- version:flags <- 0
 
-        if(children.isEmpty() && size==BoxTypes.HANDLER_BOX) {
+        if (children.isEmpty() && size == BoxTypes.HANDLER_BOX) {
             offset -= 4;
             type = size;
-            size = (version&(2L*Integer.MAX_VALUE+1))<<24;
+            size = (version & (2L * Integer.MAX_VALUE + 1)) << 24;
             size += flags;
-            version=flags=0;
+            version = flags = 0;
         }
 
         return BoxFactory.parseBox(this, offset, size, type, in);

@@ -62,6 +62,7 @@ public enum SampleFrequency implements SampleRate {
                 return SampleFrequency.this;
             }
 
+            @Override
             public SampleRate duplicated() {
                 SampleFrequency duplicate = SampleFrequency.this.duplicated();
                 return duplicate == SF_NONE ? SF_NONE : duplicate.forFrequency(2 * frequency);
@@ -80,17 +81,17 @@ public enum SampleFrequency implements SampleRate {
             float d = sf.getDeviationTo(freq);
 
             // direct match
-            if(d==0)
+            if (d == 0)
                 return sf;
 
             // better match
-            if(d<dev) {
+            if (d < dev) {
                 result = sf;
                 dev = d;
             }
 
             // no better match to be expected as in decreasing order
-            if(sf.frequency<freq)
+            if (sf.frequency < freq)
                 break;
         }
 
@@ -100,13 +101,14 @@ public enum SampleFrequency implements SampleRate {
     private final int index, frequency;
     private final int[] prediction, maxTNS_SFB;
 
-    SampleFrequency(int index, int freqency, int[] prediction, int[] maxTNS_SFB) {
+    SampleFrequency(int index, int frequency, int[] prediction, int[] maxTNS_SFB) {
         this.index = index;
-        this.frequency = freqency;
+        this.frequency = frequency;
         this.prediction = prediction;
         this.maxTNS_SFB = maxTNS_SFB;
     }
 
+    @Override
     public SampleFrequency getNominal() {
         return this;
     }
@@ -132,22 +134,24 @@ public enum SampleFrequency implements SampleRate {
      *
      * @return the sample frequency
      */
+    @Override
     public int getFrequency() {
         return frequency;
     }
 
     @Override
     public SampleFrequency duplicated() {
-        return index<3 ? SF_NONE : TABLE.get(index-3);
+        return index < 3 ? SF_NONE : TABLE.get(index - 3);
     }
 
     /**
      * Return the relative deviation of a given frequency compared to this nominal frequency.
+     *
      * @param frequency to compare.
      * @return relative deviation.
      */
     public float getDeviationTo(int frequency) {
-        return ((float)frequency - this.frequency) / this.frequency;
+        return ((float) frequency - this.frequency) / this.frequency;
     }
 
     /**

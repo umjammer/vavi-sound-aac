@@ -113,7 +113,7 @@ public class FilterBank implements SineWindows, KBDWindows {
             for (int i = 0; i < mid; i++) {
                 out[mid + shortLen + i] = overlap[mid + shortLen + i] + buf[mid + shortLen + i];
             }
-            //window the second half and save as overlap for next frame
+            // window the second half and save as overlap for next frame
             for (int i = 0; i < length; i++) {
                 overlap[i] = buf[length + i] * LONG_WINDOWS[windowShape][length - 1 - i];
             }

@@ -63,7 +63,7 @@ public class MP4Info {
                     }
                 }
 
-                //print all boxes
+                // print all boxes
                 if (boxes) {
                     System.out.println("================================");
                     for (Box box : cont.getBoxes()) {

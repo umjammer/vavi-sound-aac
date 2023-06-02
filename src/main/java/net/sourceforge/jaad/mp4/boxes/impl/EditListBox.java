@@ -50,8 +50,8 @@ public class EditListBox extends FullBox {
             segmentDuration[i] = in.readBytes(len);
             mediaTime[i] = in.readBytes(len);
 
-            //int(16) mediaRate_integer;
-            //int(16) media_rate_fraction = 0;
+            // int(16) mediaRate_integer;
+            // int(16) media_rate_fraction = 0;
             mediaRate[i] = in.readFixedPoint(16, 16);
         }
     }

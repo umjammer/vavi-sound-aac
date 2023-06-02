@@ -3,6 +3,7 @@ package net.sourceforge.jaad.aac.ps;
 import static net.sourceforge.jaad.aac.ps.Huffman.f_huff_icc;
 import static net.sourceforge.jaad.aac.ps.Huffman.t_huff_icc;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -30,12 +31,12 @@ public class ICCMode extends ICMode {
     }
 
     static private final ICCMode[] ICC_MODES = {
-                new ICCMode(0, 10),
-                new ICCMode(1, 20),
-                new ICCMode(2, 34),
-                new ICCMode(3, 10),
-                new ICCMode(4, 20),
-                new ICCMode(5, 34)
+            new ICCMode(0, 10),
+            new ICCMode(1, 20),
+            new ICCMode(2, 34),
+            new ICCMode(3, 10),
+            new ICCMode(4, 20),
+            new ICCMode(5, 34)
     };
 
     static ICCMode mode(int id) {

@@ -81,7 +81,7 @@ public class Play {
         DecoderConfig conf = dec.getConfig();
         AudioFormat aufmt = new AudioFormat(conf.getOutputFrequency().getFrequency(), 16, conf.getChannelCount(), true, true);
 
-        try (SourceDataLine line =  AudioSystem.getSourceDataLine(aufmt)) {
+        try (SourceDataLine line = AudioSystem.getSourceDataLine(aufmt)) {
             line.open();
             line.start();
 

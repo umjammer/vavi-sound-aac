@@ -26,7 +26,7 @@ public class SoundMediaHeaderBox extends FullBox {
         super.decode(in);
 
         balance = in.readFixedPoint(8, 8);
-        in.skipBytes(2); //reserved
+        in.skipBytes(2); // reserved
     }
 
     /**

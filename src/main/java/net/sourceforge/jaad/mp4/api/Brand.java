@@ -1,14 +1,13 @@
 package net.sourceforge.jaad.mp4.api;
 
 /**
- * @see "https://www.ftyps.com"
- *
  * @author in-somnia
+ * @see "https:// www.ftyps.com"
  */
 public enum Brand {
 
     UNKNOWN_BRAND("\0\0\0\0", "unknown brand"),
-    //iso
+    // iso
     ISO_BASE_MEDIA("isom", "ISO base media file format v1"),
     ISO_BASE_MEDIA_2("iso2", "ISO base media file format v2"),
     ISO_BASE_MEDIA_3("iso3", "ISO base media file format v3"),
@@ -44,7 +43,7 @@ public enum Brand {
     MPEG_21("mp21", "MPEG-21"),
     MPPI_PHOTO_PLAYER("MPPI", "MPPI Photo Player"),
     JPSEARCH("jpsi", "JPSearch data interchange format"),
-    //3gpp
+    // 3gpp
     THREE_GPP_RELEASE_1("3gp1", "3GPP Release 1"),
     THREE_GPP_RELEASE_2("3gp2", "3GPP Release 2"),
     THREE_GPP_RELEASE_3("3gp3", "3GPP Release 3"),
@@ -72,13 +71,13 @@ public enum Brand {
     THREE_GPP2_C("3g2c", "3GPP2 compliant with 3GPP2 C.S0050-B v1.0"),
     THREE_GPP2_KDDI_3G_EZMOVIE("KDDI", "3GPP2 EZmovie for KDDI 3G cellphones"),
     MPEG_4_MOBILE_PROFILE_("mmp4", "MPEG-4/3GPP Mobile Profile"),
-    //others
+    // others
     DIRAC("drc1", "Dirac wavelet compression encapsulated in ISO base media"),
     DIGITAL_MEDIA_PROJECT("dmpf", "Digital Media Project"),
     DVB_OVER_RTP("dvr1", "DVB over RTP"),
     DVB_OVER_MPEG_2_TRANSPORT_STREAM("dvt1", "DVB over MPEG-2 Transport Stream"),
     SD_MEMORY_CARD_VIDEO("sdv ", "SD Memory Card Video"),
-    //producers
+    // producers
     ADOBE_FLASH_PLAYER_VIDEO("F4V ", "Video for Adobe Flash Player 9+"),
     ADOBE_FLASH_PLAYER_PROTECTED_VIDEO("F4P ", "Protected Video for Adobe Flash Player 9+"),
     ADOBE_FLASH_PLAYER_AUDIO("F4A ", "Audio for Adobe Flash Player 9+"),

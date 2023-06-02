@@ -37,11 +37,11 @@ import net.sourceforge.jaad.mp4.od.Descriptor;
  *
  * @author in-somnia
  */
-//TODO: expand javadoc; use generics for subclasses?
+// TODO: expand javadoc; use generics for subclasses?
 public abstract class Track {
 
     public interface Codec {
-        //TODO: currently only marker interface
+        // TODO: currently only marker interface
     }
 
     private final MP4Input in;
@@ -51,7 +51,7 @@ public abstract class Track {
     private final List<Frame> frames;
     private URL location;
     private int currentFrame;
-    //info structures
+    // info structures
     protected DecoderSpecificInfo decoderSpecificInfo;
     protected DecoderInfo decoderInfo;
     protected Protection protection;
@@ -67,7 +67,7 @@ public abstract class Track {
 
         Box dinf = minf.getChild(BoxTypes.DATA_INFORMATION_BOX);
         DataReferenceBox dref = (DataReferenceBox) dinf.getChild(BoxTypes.DATA_REFERENCE_BOX);
-        //TODO: support URNs
+        // TODO: support URNs
         if (dref.hasChild(BoxTypes.DATA_ENTRY_URL_BOX)) {
             DataEntryUrlBox url = (DataEntryUrlBox) dref.getChild(BoxTypes.DATA_ENTRY_URL_BOX);
             inFile = url.isInFile();
@@ -90,7 +90,7 @@ public abstract class Track {
             location = null;
         }
 
-        //sample table
+        // sample table
         Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
         if (stbl.hasChildren()) {
             frames = new ArrayList<>();
@@ -103,21 +103,21 @@ public abstract class Track {
         double timeScale = mdhd.getTimeScale();
         Type type = getType();
 
-        //sample sizes
+        // sample sizes
         long[] sampleSizes = ((SampleSizeBox) stbl.getChild(BoxTypes.SAMPLE_SIZE_BOX)).getSampleSizes();
 
-        //chunk offsets
+        // chunk offsets
         ChunkOffsetBox stco;
         if (stbl.hasChild(BoxTypes.CHUNK_OFFSET_BOX)) stco = (ChunkOffsetBox) stbl.getChild(BoxTypes.CHUNK_OFFSET_BOX);
         else stco = (ChunkOffsetBox) stbl.getChild(BoxTypes.CHUNK_LARGE_OFFSET_BOX);
         long[] chunkOffsets = stco.getChunks();
 
-        //samples to chunks
+        // samples to chunks
         SampleToChunkBox stsc = ((SampleToChunkBox) stbl.getChild(BoxTypes.SAMPLE_TO_CHUNK_BOX));
         long[] firstChunks = stsc.getFirstChunks();
         long[] samplesPerChunk = stsc.getSamplesPerChunk();
 
-        //sample durations/timestamps
+        // sample durations/timestamps
         DecodingTimeToSampleBox stts = (DecodingTimeToSampleBox) stbl.getChild(BoxTypes.DECODING_TIME_TO_SAMPLE_BOX);
         long[] sampleCounts = stts.getSampleCounts();
         long[] sampleDeltas = stts.getSampleDeltas();
@@ -129,26 +129,26 @@ public abstract class Track {
                 timeOffsets[off + j] = tmp;
                 tmp += sampleDeltas[i];
             }
-            off += sampleCounts[i];
+            off = (int) (off + sampleCounts[i]);
         }
 
-        //create samples
+        // create samples
         int current = 0;
         int lastChunk;
         double timeStamp;
         long offset = 0;
-        //iterate over all chunk groups
+        // iterate over all chunk groups
         for (int i = 0; i < firstChunks.length; i++) {
             if (i < firstChunks.length - 1) lastChunk = (int) firstChunks[i + 1] - 1;
             else lastChunk = chunkOffsets.length;
 
-            //iterate over all chunks in current group
+            // iterate over all chunks in current group
             for (int j = (int) firstChunks[i] - 1; j < lastChunk; j++) {
                 offset = chunkOffsets[j];
 
-                //iterate over all samples in current chunk
+                // iterate over all samples in current chunk
                 for (int k = 0; k < samplesPerChunk[i]; k++) {
-                    //create samples
+                    // create samples
                     timeStamp = ((double) timeOffsets[current]) / timeScale;
                     frames.add(new Frame(type, offset, sampleSizes[current], timeStamp));
                     offset += sampleSizes[current];
@@ -157,12 +157,12 @@ public abstract class Track {
             }
         }
 
-        //frames need not to be time-ordered: sort by timestamp
-        //TODO: is it possible to add them to the specific position?
+        // frames need not to be time-ordered: sort by timestamp
+        // TODO: is it possible to add them to the specific position?
         Collections.sort(frames);
     }
 
-    //TODO: implement other entry descriptors
+    // TODO: implement other entry descriptors
     protected void findDecoderSpecificInfo(ESDBox esds) {
         Descriptor ed = esds.getEntryDescriptor();
         List<Descriptor> children = ed.getChildren();
@@ -196,7 +196,7 @@ public abstract class Track {
 
     public abstract Codec getCodec();
 
-    //tkhd
+    // tkhd
 
     /**
      * Returns true if the track is enabled. A disabled track is treated as if
@@ -244,7 +244,7 @@ public abstract class Track {
         return Utils.getDate(tkhd.getModificationTime());
     }
 
-    //mdhd
+    // mdhd
 
     /**
      * Returns the language for this media.
@@ -277,7 +277,7 @@ public abstract class Track {
         return location;
     }
 
-    //info structures
+    // info structures
 
     /**
      * Returns the decoder specific info, if present. It contains configuration
@@ -315,7 +315,7 @@ public abstract class Track {
         return protection;
     }
 
-    //reading
+    // reading
 
     /**
      * Indicates if there are more frames to be read in this track.
@@ -370,7 +370,7 @@ public abstract class Track {
      * @return the frame's timestamp that the method seeked to
      */
     public double seek(double timestamp) {
-        //find first frame > timestamp
+        // find first frame > timestamp
         Frame frame = null;
         for (int i = 0; i < frames.size(); i++) {
             frame = frames.get(i++);

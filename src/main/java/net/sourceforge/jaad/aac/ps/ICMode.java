@@ -13,10 +13,11 @@ public abstract class ICMode extends EnvMode {
     }
 
     FBType fbType() {
-            return (id %3)==2 ? FBType.T34 : FBType.T20;
-        }
+        return (id % 3) == 2 ? FBType.T34 : FBType.T20;
+    }
 
+    @Override
     int stride() {
-        return (id%3)==0 ? 2 : 0;
+        return (id % 3) == 0 ? 2 : 0;
     }
 }

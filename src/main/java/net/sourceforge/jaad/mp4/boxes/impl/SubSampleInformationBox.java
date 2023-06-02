@@ -54,7 +54,7 @@ public class SubSampleInformationBox extends FullBox {
                 subsampleSize[i][j] = in.readBytes(len);
                 subsamplePriority[i][j] = in.readByte();
                 discardable[i][j] = (in.readByte() & 1) == 1;
-                in.skipBytes(4); //reserved
+                in.skipBytes(4); // reserved
             }
         }
     }

@@ -29,10 +29,11 @@ public class ESDescriptor extends Descriptor {
     private boolean streamDependency, urlPresent, ocrPresent;
     private String url;
 
+    @Override
     void decode(MP4Input in) throws IOException {
         esID = (int) in.readBytes(2);
 
-        //1 bit stream dependence flag, 1 it url flag, 1 reserved, 5 bits stream priority
+        // 1 bit stream dependence flag, 1 it url flag, 1 reserved, 5 bits stream priority
         int flags = in.readByte();
         streamDependency = ((flags >> 7) & 1) == 1;
         urlPresent = ((flags >> 6) & 1) == 1;

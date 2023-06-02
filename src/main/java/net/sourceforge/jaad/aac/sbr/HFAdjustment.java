@@ -52,18 +52,17 @@ class HFAdjustment implements NoiseTable {
         } else {
             int b, lb, ub;
 
-            /* in case of f_table_low we check if any of the HI_RES bands
-             * within this LO_RES band has bs_add_harmonic[l][k] turned on
-             * (note that borders in the LO_RES table are also present in
-             * the HI_RES table)
-             */
+            // in case of f_table_low we check if any of the HI_RES bands
+            // within this LO_RES band has bs_add_harmonic[l][k] turned on
+            // (note that borders in the LO_RES table are also present in
+            // the HI_RES table)
 
-            /* find first HI_RES band in current LO_RES band */
+            // find first HI_RES band in current LO_RES band
             lb = 2 * current_band - ((sbr.N_high & 1) != 0 ? 1 : 0);
-            /* find first HI_RES band in next LO_RES band */
+            // find first HI_RES band in next LO_RES band
             ub = 2 * (current_band + 1) - ((sbr.N_high & 1) != 0 ? 1 : 0);
 
-            /* check all HI_RES bands in current LO_RES band for sinusoid */
+            // check all HI_RES bands in current LO_RES band for sinusoid
             for (b = lb; b < ub; b++) {
                 if ((l >= ch.l_A)
                         || (ch.bs_add_harmonic_prev[b] != 0 && ch.bs_add_harmonic_flag_prev)) {
@@ -162,13 +161,13 @@ class HFAdjustment implements NoiseTable {
                     System.arraycopy(this.G_lim_boost[l], 0, ch.G_temp_prev[n], 0, sbr.M);
                     System.arraycopy(this.Q_M_lim_boost[l], 0, ch.Q_temp_prev[n], 0, sbr.M);
                 }
-                /* reset ringbuffer index */
+                // reset ringbuffer index
                 ch.GQ_ringbuf_index = 4;
                 assembly_reset = false;
             }
 
             for (int i = ch.t_E[l]; i < ch.t_E[l + 1]; i++) {
-                /* load new values into ringbuffer */
+                // load new values into ringbuffer
                 System.arraycopy(this.G_lim_boost[l], 0, ch.G_temp_prev[ch.GQ_ringbuf_index], 0, sbr.M);
                 System.arraycopy(this.Q_M_lim_boost[l], 0, ch.Q_temp_prev[ch.GQ_ringbuf_index], 0, sbr.M);
 
@@ -195,11 +194,11 @@ class HFAdjustment implements NoiseTable {
 
                     Q_filt = (this.S_M_boost[l][m] != 0 || no_noise) ? 0 : Q_filt;
 
-                    /* add noise to the output */
+                    // add noise to the output
                     fIndexNoise = (fIndexNoise + 1) & 511;
 
-                    /* the smoothed gain values are applied to Xsbr */
-                    /* V is defined, not calculated */
+                    // the smoothed gain values are applied to Xsbr
+                    // V is defined, not calculated
                     Xsbr[i + sbr.tHFAdj][m + sbr.kx][0] = G_filt * Xsbr[i + sbr.tHFAdj][m + sbr.kx][0]
                             + (Q_filt * NOISE_TABLE[fIndexNoise][0]);
 //                    if (sbr.bs_extension_id == 3 && sbr.bs_extension_data == 42)
@@ -219,7 +218,7 @@ class HFAdjustment implements NoiseTable {
 
                 fIndexSine = (fIndexSine + 1) & 3;
 
-                /* update the ringbuffer index used for filtering G and Q with h_smooth */
+                // update the ringbuffer index used for filtering G and Q with h_smooth
                 ch.GQ_ringbuf_index++;
                 if (ch.GQ_ringbuf_index >= 5)
                     ch.GQ_ringbuf_index = 0;
@@ -267,7 +266,7 @@ class HFAdjustment implements NoiseTable {
                 ml2 = sbr.f_table_lim[sbr.hdr.bs_limiter_bands][k + 1];
 
 
-                /* calculate the accumulated E_orig and E_curr over the limiter band */
+                // calculate the accumulated E_orig and E_curr over the limiter band
                 for (int m = ml1; m < ml2; m++) {
                     if ((m + sbr.kx) == sbr.f_table_res[ch.f[l]][current_res_band + 1]) {
                         current_res_band++;
@@ -276,11 +275,10 @@ class HFAdjustment implements NoiseTable {
                     acc2 += ch.E_curr[m][l];
                 }
 
+                // calculate the maximum gain
 
-                /* calculate the maximum gain */
-                /* ratio of the energy of the original signal and the energy
-                 * of the HF generated signal
-                 */
+                // ratio of the energy of the original signal and the energy
+                // of the HF generated signal
                 G_max = ((EPS + acc1) / (EPS + acc2)) * limGain[sbr.hdr.bs_limiter_gains];
                 G_max = Math.min(G_max, 1e10f);
 
@@ -289,51 +287,45 @@ class HFAdjustment implements NoiseTable {
                     float Q_div, Q_div2;
                     int S_index_mapped;
 
-
-                    /* check if m is on a noise band border */
+                    // check if m is on a noise band border
                     if ((m + sbr.kx) == sbr.f_table_noise[current_f_noise_band + 1]) {
-                        /* step to next noise band */
+                        // step to next noise band
                         current_f_noise_band++;
                     }
 
-
-                    /* check if m is on a resolution band border */
+                    // check if m is on a resolution band border
                     if ((m + sbr.kx) == sbr.f_table_res[ch.f[l]][current_res_band2 + 1]) {
-                        /* step to next resolution band */
+                        // step to next resolution band
                         current_res_band2++;
 
-                        /* if we move to a new resolution band, we should check if we are
-                         * going to add a sinusoid in this band
-                         */
+                        // if we move to a new resolution band, we should check if we are
+                        // going to add a sinusoid in this band
                         S_mapped = get_S_mapped(sbr, ch, l, current_res_band2);
                     }
 
-
-                    /* check if m is on a HI_RES band border */
+                    // check if m is on a HI_RES band border
                     if ((m + sbr.kx) == sbr.f_table_res[FBT.HI_RES][current_hi_res_band + 1]) {
-                        /* step to next HI_RES band */
+                        // step to next HI_RES band
                         current_hi_res_band++;
                     }
 
-
-                    /* find S_index_mapped
-                     * S_index_mapped can only be 1 for the m in the middle of the
-                     * current HI_RES band
-                     */
+                    // find S_index_mapped
+                    // S_index_mapped can only be 1 for the m in the middle of the
+                    // current HI_RES band
                     S_index_mapped = 0;
                     if ((l >= ch.l_A)
                             || (ch.bs_add_harmonic_prev[current_hi_res_band] != 0 && ch.bs_add_harmonic_flag_prev)) {
-                        /* find the middle subband of the HI_RES frequency band */
+                        // find the middle subband of the HI_RES frequency band
                         if ((m + sbr.kx) == (sbr.f_table_res[FBT.HI_RES][current_hi_res_band + 1] + sbr.f_table_res[FBT.HI_RES][current_hi_res_band]) >> 1)
                             S_index_mapped = ch.bs_add_harmonic[current_hi_res_band];
                     }
 
 
-                    /* Q_div: [0..1] (1/(1+Q_mapped)) */
+                    // Q_div: [0..1] (1/(1+Q_mapped))
                     Q_div = ch.Q_div[current_f_noise_band][current_t_noise_band];
 
 
-                    /* Q_div2: [0..1] (Q_mapped/(1+Q_mapped)) */
+                    // Q_div2: [0..1] (Q_mapped/(1+Q_mapped))
                     Q_div2 = ch.Q_div2[current_f_noise_band][current_t_noise_band];
 
 
@@ -352,24 +344,21 @@ class HFAdjustment implements NoiseTable {
                     } else {
                         S_M[m] = ch.E_orig[current_res_band2][l] * Q_div;
 
-                        /* accumulate sinusoid part of the total energy */
+                        // accumulate sinusoid part of the total energy
                         den += S_M[m];
                     }
 
-
-                    /* calculate gain */
-                    /* ratio of the energy of the original signal and the energy
-                     * of the HF generated signal
-                     */
+                    // calculate gain
+                    // ratio of the energy of the original signal and the energy
+                    // of the HF generated signal
                     G = ch.E_orig[current_res_band2][l] / (1.0f + ch.E_curr[m][l]);
                     if ((S_mapped == 0) && (delta == 1))
                         G *= Q_div;
                     else if (S_mapped == 1)
                         G *= Q_div2;
 
-
-                    /* limit the additional noise energy level */
-                    /* and apply the limiter */
+                    // limit the additional noise energy level
+                    // and apply the limiter
                     if (G_max > G) {
                         Q_M_lim[m] = Q_M;
                         G_lim[m] = G;
@@ -378,19 +367,18 @@ class HFAdjustment implements NoiseTable {
                         G_lim[m] = G_max;
                     }
 
-
-                    /* accumulate the total energy */
+                    // accumulate the total energy
                     den += ch.E_curr[m][l] * G_lim[m];
                     if ((S_index_mapped == 0) && (l != ch.l_A))
                         den += Q_M_lim[m];
                 }
 
-                /* G_boost: [0..2.51188643] */
+                // G_boost: [0..2.51188643]
                 G_boost = (acc1 + EPS) / (den + EPS);
                 G_boost = Math.min(G_boost, 2.51188643f /* 1.584893192 ^ 2 */);
 
                 for (int m = ml1; m < ml2; m++) {
-                    /* apply compensation to gain, noise floor sf's and sinusoid levels */
+                    // apply compensation to gain, noise floor sf's and sinusoid levels
                     this.G_lim_boost[l][m] = (float) Math.sqrt(G_lim[m] * G_boost);
                     this.Q_M_lim_boost[l][m] = (float) Math.sqrt(Q_M_lim[m] * G_boost);
 

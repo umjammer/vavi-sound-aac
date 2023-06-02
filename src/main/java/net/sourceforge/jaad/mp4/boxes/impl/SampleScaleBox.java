@@ -43,7 +43,7 @@ public class SampleScaleBox extends FullBox {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        //7 bits reserved, 1 bit flag
+        // 7 bits reserved, 1 bit flag
         constrained = (in.readByte() & 1) == 1;
 
         scaleMethod = in.readByte();

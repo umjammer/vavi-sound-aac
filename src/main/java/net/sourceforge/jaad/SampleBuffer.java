@@ -131,8 +131,8 @@ public class SampleBuffer implements Receiver {
             length = 0;
             bitrate = 0;
         } else {
-            int bytesPerSample = bitsPerSample / 8; //usually 2
-            int samplesPerChannel = data.length / (bytesPerSample * channels); //=1024
+            int bytesPerSample = bitsPerSample / 8; // usually 2
+            int samplesPerChannel = data.length / (bytesPerSample * channels); // =1024
             length = (double) samplesPerChannel / (double) sampleRate;
             bitrate = (double) (samplesPerChannel * bitsPerSample * channels) / length;
         }

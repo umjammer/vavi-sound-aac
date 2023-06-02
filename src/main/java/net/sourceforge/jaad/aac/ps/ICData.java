@@ -2,6 +2,7 @@ package net.sourceforge.jaad.aac.ps;
 
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -15,7 +16,7 @@ abstract public class ICData<Mode extends ICMode> extends EnvData<Mode> {
     }
 
     FBType fbType() {
-        return mode==null ? null : mode.fbType();
+        return mode == null ? null : mode.fbType();
     }
 
     Mode readMode(BitStream ld) {

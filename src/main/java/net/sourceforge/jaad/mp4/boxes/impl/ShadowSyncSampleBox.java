@@ -16,7 +16,7 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  * a shadow sync will be defined for. This should always be a non-sync sample
  * (e.g. a frame difference). The second sample number (sync-sample-number)
  * indicates the sample number of the sync sample (i.e. key frame) that can be
- * used when there is a random access at, or before, the shadowed-sample-number.
+ * used when there is random access at, or before, the shadowed-sample-number.
  * <p>
  * The entries in the ShadowSyncBox shall be sorted based on the
  * shadowed-sample-number field. The shadow sync samples are normally placed in
@@ -54,8 +54,8 @@ public class ShadowSyncSampleBox extends FullBox {
         sampleNumbers = new long[entryCount][2];
 
         for (int i = 0; i < entryCount; i++) {
-            sampleNumbers[i][0] = in.readBytes(4); //shadowedSampleNumber;
-            sampleNumbers[i][1] = in.readBytes(4); //syncSampleNumber;
+            sampleNumbers[i][0] = in.readBytes(4); // shadowedSampleNumber;
+            sampleNumbers[i][1] = in.readBytes(4); // syncSampleNumber;
         }
     }
 

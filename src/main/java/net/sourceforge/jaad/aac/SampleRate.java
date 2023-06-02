@@ -2,6 +2,7 @@ package net.sourceforge.jaad.aac;
 
 import net.sourceforge.jaad.aac.syntax.BitStream;
 
+
 /**
  * Created by IntelliJ IDEA.
  * User: stueken
@@ -24,7 +25,7 @@ public interface SampleRate {
     /**
      * Decode a frequency which may either an index to a nominal frequency
      * or an explicitly given frequency.
-     *
+     * <p>
      * See: 1.6.2.1 AudioSpecificConfig
      *
      * @param in input bit stream to decode.
@@ -34,7 +35,7 @@ public interface SampleRate {
         int index = in.readBits(4);
 
         // indexed nominal frequency
-        if(index != SampleFrequency.ESCAPE_INDEX)
+        if (index != SampleFrequency.ESCAPE_INDEX)
             return SampleFrequency.TABLE.get(index);
 
         // for explicit frequency

@@ -47,7 +47,7 @@ class FFT implements FFTTables {
 
     void process(float[][] in, boolean forward) {
 
-        //bit-reversal
+        // bit-reversal
         int ii = 0;
         for (int i = 0; i < length; i++) {
             rev[i][0] = in[ii][0];
@@ -65,44 +65,43 @@ class FFT implements FFTTables {
         }
 
         // bottom base-4 round
-        for(int i = 0; i<length; i += 4) {
+        for (int i = 0; i < length; i += 4) {
             // a = i0 + i1
-            float aRe = in[i][0]+in[i+1][0];
-            float aIm = in[i][1]+in[i+1][1];
+            float aRe = in[i][0] + in[i + 1][0];
+            float aIm = in[i][1] + in[i + 1][1];
             // b = i2 + i3
-            float bRe = in[i+2][0]+in[i+3][0];
-            float bIm = in[i+2][1]+in[i+3][1];
+            float bRe = in[i + 2][0] + in[i + 3][0];
+            float bIm = in[i + 2][1] + in[i + 3][1];
             // c = i0 - i1
-            float cRe = in[i][0]-in[i+1][0];
-            float cIm = in[i][1]-in[i+1][1];
+            float cRe = in[i][0] - in[i + 1][0];
+            float cIm = in[i][1] - in[i + 1][1];
             // d = i2 - i3
-            float dRe = in[i+2][0]-in[i+3][0];
-            float dIm = in[i+2][1]-in[i+3][1];
+            float dRe = in[i + 2][0] - in[i + 3][0];
+            float dIm = in[i + 2][1] - in[i + 3][1];
 
-            in[i][0] = aRe+bRe;
-            in[i][1] = aIm+bIm;
+            in[i][0] = aRe + bRe;
+            in[i][1] = aIm + bIm;
 
-            in[i+2][0] = aRe-bRe;
-            in[i+2][1] = aIm-bIm;
+            in[i + 2][0] = aRe - bRe;
+            in[i + 2][1] = aIm - bIm;
 
             // e1 = c + i*d
-            float e1Re = cRe-dIm;
-            float e1Im = cIm+dRe;
+            float e1Re = cRe - dIm;
+            float e1Im = cIm + dRe;
             // e2 = c - i*d
-            float e2Re = cRe+dIm;
-            float e2Im = cIm-dRe;
+            float e2Re = cRe + dIm;
+            float e2Im = cIm - dRe;
 
-            if(forward) {
-                in[i+1][0] = e2Re;
-                in[i+1][1] = e2Im;
-                in[i+3][0] = e1Re;
-                in[i+3][1] = e1Im;
-            }
-            else {
-                in[i+1][0] = e1Re;
-                in[i+1][1] = e1Im;
-                in[i+3][0] = e2Re;
-                in[i+3][1] = e2Im;
+            if (forward) {
+                in[i + 1][0] = e2Re;
+                in[i + 1][1] = e2Im;
+                in[i + 3][0] = e1Re;
+                in[i + 3][1] = e1Im;
+            } else {
+                in[i + 1][0] = e1Re;
+                in[i + 1][1] = e1Im;
+                in[i + 3][0] = e2Re;
+                in[i + 3][1] = e2Im;
             }
         }
 
@@ -121,13 +120,13 @@ class FFT implements FFTTables {
                     float[] v0 = in[j + k];
                     float[] v1 = in[i + k + j];
 
-                    float zRe = v1[0]*rootRe-v1[1]*rootIm;
-                    float zIm = v1[0]*rootIm+v1[1]*rootRe;
+                    float zRe = v1[0] * rootRe - v1[1] * rootIm;
+                    float zIm = v1[0] * rootIm + v1[1] * rootRe;
 
-                    v1[0] = v0[0]-zRe;
-                    v1[1] = v0[1]-zIm;
-                    v0[0] = v0[0]+zRe;
-                    v0[1] = v0[1]+zIm;
+                    v1[0] = v0[0] - zRe;
+                    v1[1] = v0[1] - zIm;
+                    v0[0] = v0[0] + zRe;
+                    v0[1] = v0[1] + zIm;
                 }
             }
         }
@@ -135,7 +134,7 @@ class FFT implements FFTTables {
 
     public static float[][] copyOf(float[][] array) {
         float[][] result = new float[array.length][2];
-        for(int i=0; i<array.length; ++i) {
+        for (int i = 0; i < array.length; ++i) {
             result[i] = Arrays.copyOf(array[i], array[i].length);
         }
 

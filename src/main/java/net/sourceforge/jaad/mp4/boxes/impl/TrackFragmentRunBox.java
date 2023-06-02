@@ -39,14 +39,14 @@ public class TrackFragmentRunBox extends FullBox {
 
         sampleCount = (int) in.readBytes(4);
 
-        //optional fields
+        // optional fields
         dataOffsetPresent = ((flags & 1) == 1);
         if (dataOffsetPresent) dataOffset = in.readBytes(4);
 
         firstSampleFlagsPresent = ((flags & 4) == 4);
         if (firstSampleFlagsPresent) firstSampleFlags = in.readBytes(4);
 
-        //all fields are optional
+        // all fields are optional
         sampleDurationPresent = ((flags & 0x100) == 0x100);
         if (sampleDurationPresent) sampleDuration = new long[sampleCount];
         sampleSizePresent = ((flags & 0x200) == 0x200);

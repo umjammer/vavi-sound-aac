@@ -19,9 +19,9 @@ public class OMAAccessUnitFormatBox extends FullBox {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        //1 bit selective encryption, 7 bits reserved
+        // 1 bit selective encryption, 7 bits reserved
         selectiveEncrypted = ((in.readByte() >> 7) & 1) == 1;
-        keyIndicatorLength = in.readByte(); //always zero?
+        keyIndicatorLength = in.readByte(); // always zero?
         initialVectorLength = in.readByte();
     }
 

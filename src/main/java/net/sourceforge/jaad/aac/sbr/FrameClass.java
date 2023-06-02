@@ -1,9 +1,10 @@
 package net.sourceforge.jaad.aac.sbr;
 
+import java.util.List;
+
 import net.sourceforge.jaad.aac.syntax.BitStream;
 import net.sourceforge.jaad.aac.tools.Utils;
 
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.

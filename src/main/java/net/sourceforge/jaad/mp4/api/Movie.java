@@ -24,7 +24,7 @@ public class Movie {
     public Movie(Box moov, MP4Input in) {
         this.in = in;
 
-        //create tracks
+        // create tracks
         mvhd = (MovieHeaderBox) moov.getChild(BoxTypes.MOVIE_HEADER_BOX);
         List<Box> trackBoxes = moov.getChildren(BoxTypes.TRACK_BOX);
         tracks = new ArrayList<>(trackBoxes.size());
@@ -34,7 +34,7 @@ public class Movie {
             if (track != null) tracks.add(track);
         }
 
-        //read metadata: moov.meta/moov.udta.meta
+        // read metadata: moov.meta/moov.udta.meta
         metaData = new MetaData();
         if (moov.hasChild(BoxTypes.META_BOX)) metaData.parse(null, moov.getChild(BoxTypes.META_BOX));
         else if (moov.hasChild(BoxTypes.USER_DATA_BOX)) {
@@ -42,7 +42,7 @@ public class Movie {
             if (udta.hasChild(BoxTypes.META_BOX)) metaData.parse(udta, udta.getChild(BoxTypes.META_BOX));
         }
 
-        //detect DRM
+        // detect DRM
         protections = new ArrayList<>();
         if (moov.hasChild(BoxTypes.ITEM_PROTECTION_BOX)) {
             Box ipro = moov.getChild(BoxTypes.ITEM_PROTECTION_BOX);
@@ -139,7 +139,7 @@ public class Movie {
         return Collections.unmodifiableList(protections);
     }
 
-    //mvhd
+    // mvhd
 
     /**
      * Returns the time this movie was created.

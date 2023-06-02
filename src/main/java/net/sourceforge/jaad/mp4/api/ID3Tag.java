@@ -9,29 +9,29 @@ import java.util.List;
 
 class ID3Tag {
 
-    private static final int ID3_TAG = 4801587; //'ID3'
-    private static final int SUPPORTED_VERSION = 4; //id3v2.4
+    private static final int ID3_TAG = 4801587; // 'ID3'
+    private static final int SUPPORTED_VERSION = 4; // id3v2.4
     private final List<ID3Frame> frames;
     private final int tag, flags, len;
 
     ID3Tag(DataInputStream in) throws IOException {
         frames = new ArrayList<>();
 
-        //id3v2 header
-        tag = (in.read() << 16) | (in.read() << 8) | in.read(); //'ID3'
+        // id3v2 header
+        tag = (in.read() << 16) | (in.read() << 8) | in.read(); // 'ID3'
         int majorVersion = in.read();
-        in.read(); //revision
+        in.read(); // revision
         flags = in.read();
         len = readSynch(in);
 
         if (tag == ID3_TAG && majorVersion <= SUPPORTED_VERSION) {
             if ((flags & 0x40) == 0x40) {
-                //extended header; TODO: parse
+                // extended header; TODO: parse
                 int extSize = readSynch(in);
                 in.skipBytes(extSize - 6);
             }
 
-            //read all id3 frames
+            // read all id3 frames
             int left = len;
             ID3Frame frame;
             while (left > 0) {

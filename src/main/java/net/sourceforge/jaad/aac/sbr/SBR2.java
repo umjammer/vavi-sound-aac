@@ -32,7 +32,8 @@ public class SBR2 extends SBR {
         qmfs1 = openFilterbank();
     }
 
-    /* table 6 */
+    /** table 6 */
+    @Override
     protected int sbr_data(BitStream ld) {
         int result;
 
@@ -52,7 +53,7 @@ public class SBR2 extends SBR {
             ch1.sbr_dtdf(ld);
             ch0.invf_mode(ld);
 
-            /* need to copy some data from left to right */
+            // need to copy some data from left to right
             ch1.couple(ch0, N_Q);
 
             ch0.sbr_envelope(ld, false);
@@ -88,7 +89,7 @@ public class SBR2 extends SBR {
                 return result;
 
             if ((result = ch1.sbr_grid(ld)) > 0) {
-                /* restore first channel data as well */
+                // restore first channel data as well
                 ch0.bs_frame_class = saved_frame_class;
                 ch0.L_E = saved_L_E;
                 ch0.L_Q = saved_L_Q;
@@ -134,15 +135,16 @@ public class SBR2 extends SBR {
         return 0;
     }
 
+    @Override
     public void process(float[] left_chan, float[] right_chan) {
         float[][][] X = new float[MAX_NTSR][64][2];
 
         ch0.process_channel(left_chan, X, this.reset);
-        /* subband synthesis */
+        // subband synthesis
         qmfs0.synthesis(numTimeSlotsRate, X, left_chan);
 
         ch1.process_channel(right_chan, X, false);
-        /* subband synthesis */
+        // subband synthesis
         qmfs1.synthesis(numTimeSlotsRate, X, right_chan);
 
         if (this.hdr != null) {

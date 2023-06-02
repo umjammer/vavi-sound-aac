@@ -1,6 +1,6 @@
 package net.sourceforge.jaad.aac.gain;
 
-//inverse polyphase quadrature filter
+// inverse polyphase quadrature filter
 class IPQF implements GCConstants, PQFTables {
 
     private final float[] buf;

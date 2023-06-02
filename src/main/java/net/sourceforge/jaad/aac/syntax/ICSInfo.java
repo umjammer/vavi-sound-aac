@@ -15,7 +15,7 @@ public class ICSInfo implements ScaleFactorBands {
 
     static final Logger LOGGER = Logger.getLogger(ICSInfo.class.getName());
 
-    //maximum numbers
+    // maximum numbers
     public static final int MAX_WINDOW_COUNT = 8;
     public static final int MAX_WINDOW_GROUP_COUNT = MAX_WINDOW_COUNT;
 
@@ -60,11 +60,11 @@ public class ICSInfo implements ScaleFactorBands {
     private WindowSequence windowSequence;
     private int[] windowShape;
     private int maxSFB;
-    //prediction
+    // prediction
     private boolean predictionDataPresent;
     private ICPrediction icPredict;
     LTPrediction ltPredict;
-    //windows/sfbs
+    // windows/sfbs
     private int windowCount;
     private int windowGroupCount;
     private int[] windowGroupLength;
@@ -83,9 +83,9 @@ public class ICSInfo implements ScaleFactorBands {
             this.ltPredict = new LTPrediction(frameLength);
     }
 
-    /* ========== decoding ========== */
+    /** decoding */
     public void decode(BitStream in, boolean commonWindow) throws AACException {
-        in.skipBit(); //reserved
+        in.skipBit(); // reserved
         windowSequence = WindowSequence.forInt(in.readBits(2));
         windowShape[PREVIOUS] = windowShape[CURRENT];
         windowShape[CURRENT] = in.readBit();
@@ -137,7 +137,7 @@ public class ICSInfo implements ScaleFactorBands {
         }
     }
 
-    /* =========== gets ============ */
+    // =========== gets ============
     public int getMaxSFB() {
         return maxSFB;
     }

@@ -13,7 +13,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.CodecSpecificBox;
 
 
 /**
- * The <code>DecoderInfo</code> object contains the neccessary data to
+ * The <code>DecoderInfo</code> object contains the necessary data to
  * initialize a decoder. A track either contains a <code>DecoderInfo</code> or a
  * byte-Array called the 'DecoderSpecificInfo', which is e.g. used for AAC.
  * <p>
@@ -46,5 +46,6 @@ public abstract class DecoderInfo {
     }
 
     private static class UnknownDecoderInfo extends DecoderInfo {
+
     }
 }

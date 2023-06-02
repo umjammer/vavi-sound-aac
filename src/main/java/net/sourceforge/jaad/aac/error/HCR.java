@@ -11,8 +11,9 @@ import net.sourceforge.jaad.aac.syntax.ICStream;
  * Huffman Codeword Reordering
  * Decodes spectral data for ICStreams if error resilience is used for
  * section data.
+ *
+ * TODO needs decodeSpectralDataER() in BitStream
  */
-//TODO: needs decodeSpectralDataER() in BitStream
 public class HCR {
 
     private static class Codeword {
@@ -37,11 +38,11 @@ public class HCR {
     private static final int[] PRE_SORT_CB_ER = {11, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 9, 7, 5, 3, 1};
     private static final int[] MAX_CW_LEN = {0, 11, 9, 20, 16, 13, 11, 14, 12, 17, 14, 49,
             0, 0, 0, 0, 14, 17, 21, 21, 25, 25, 29, 29, 29, 29, 33, 33, 33, 37, 37, 41};
-    //bit-twiddling helpers
+    // bit-twiddling helpers
     private static final int[] S = {1, 2, 4, 8, 16};
     private static final int[] B = {0x55555555, 0x33333333, 0x0F0F0F0F, 0x00FF00FF, 0x0000FFFF};
 
-    //32 bit rewind and reverse
+    // 32 bit rewind and reverse
     private static int rewindReverse(int v, int len) {
         v = ((v >> S[0]) & B[0]) | ((v << S[0]) & ~B[0]);
         v = ((v >> S[1]) & B[1]) | ((v << S[1]) & ~B[1]);
@@ -49,13 +50,13 @@ public class HCR {
         v = ((v >> S[3]) & B[3]) | ((v << S[3]) & ~B[3]);
         v = ((v >> S[4]) & B[4]) | ((v << S[4]) & ~B[4]);
 
-        //shift off low bits
+        // shift off low bits
         v >>= (32 - len);
 
         return v;
     }
 
-    //64 bit rewind and reverse
+    // 64 bit rewind and reverse
     static int[] rewindReverse64(int hi, int lo, int len) {
         int[] i = new int[2];
         if (len <= 32) {
@@ -73,7 +74,7 @@ public class HCR {
             lo = ((lo >> S[4]) & B[4]) | ((lo << S[4]) & ~B[4]);
             hi = ((hi >> S[4]) & B[4]) | ((hi << S[4]) & ~B[4]);
 
-            //shift off low bits
+            // shift off low bits
             i[1] = (hi >> (64 - len)) | (lo << (len - 32));
             i[1] = lo >> (64 - len);
         }
@@ -89,22 +90,22 @@ public class HCR {
         return b;
     }
 
-    //sectionDataResilience = hDecoder->aacSectionDataResilienceFlag
+    /** sectionDataResilience = hDecoder->aacSectionDataResilienceFlag */
     public static void decodeReorderedSpectralData(ICStream ics, BitStream in, short[] spectralData, boolean sectionDataResilience) {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
         int[] swbOffsets = info.getSWBOffsets();
         int swbOffsetMax = info.getSWBOffsetMax();
-        //TODO:
-        //final SectionData sectData = ics.getSectionData();
+        // TODO
+//        final SectionData sectData = ics.getSectionData();
         int[][] sectStart = null; //sectData.getSectStart();
         int[][] sectEnd = null; //sectData.getSectEnd();
         int[] numSec = null; //sectData.getNumSec();
         int[][] sectCB = null; //sectData.getSectCB();
         int[][] sectSFBOffsets = null; //info.getSectSFBOffsets();
 
-        //check parameter
+        // check parameter
         int spDataLen = ics.getReorderedSpectralDataLength();
         if (spDataLen == 0) return;
 
@@ -112,7 +113,7 @@ public class HCR {
         if (longestLen == 0 || longestLen >= spDataLen)
             throw new AACException("length of longest HCR codeword out of range");
 
-        //create spOffsets
+        // create spOffsets
         int[] spOffsets = new int[8];
         int shortFrameLen = spectralData.length / 8;
         spOffsets[0] = 0;
@@ -140,9 +141,9 @@ public class HCR {
         int bitsread = 0;
 
         int sfb, w_idx, i, thisCB, thisSectCB, cws;
-        //step 1: decode PCW's (set 0), and stuff data in easier-to-use format
+        // step 1: decode PCW's (set 0), and stuff data in easier-to-use format
         for (int sortloop = 0; sortloop < lastCB; sortloop++) {
-            //select codebook to process this pass
+            // select codebook to process this pass
             thisCB = preSortCB[sortloop];
 
             for (sfb = 0; sfb < maxSFB; sfb++) {
@@ -150,35 +151,35 @@ public class HCR {
                     for (g = 0; g < windowGroupCount; g++) {
                         for (i = 0; i < numSec[g]; i++) {
                             if ((sectStart[g][i] <= sfb) && (sectEnd[g][i] > sfb)) {
-                                /* check whether codebook used here is the one we want to process */
+                                // check whether codebook used here is the one we want to process
                                 thisSectCB = sectCB[g][i];
 
                                 if (isGoodCB(thisCB, thisSectCB)) {
-                                    //precalculation
+                                    // precalculation
                                     int sect_sfb_size = sectSFBOffsets[g][sfb + 1] - sectSFBOffsets[g][sfb];
                                     int inc = (thisSectCB < HCB.FIRST_PAIR_HCB) ? 4 : 2;
                                     int group_cws_count = (4 * info.getWindowGroupLength(g)) / inc;
                                     int segwidth = Math.min(MAX_CW_LEN[thisSectCB], longestLen);
 
-                                    //read codewords until end of sfb or end of window group
+                                    // read codewords until end of sfb or end of window group
                                     for (cws = 0; (cws < group_cws_count) && ((cws + w_idx * group_cws_count) < sect_sfb_size); cws++) {
                                         int sp = spOffsets[g] + sectSFBOffsets[g][sfb] + inc * (cws + w_idx * group_cws_count);
 
-                                        //read and decode PCW
+                                        // read and decode PCW
                                         if (PCWs_done == 0) {
-                                            //read in normal segments
+                                            // read in normal segments
                                             if (bitsread + segwidth <= spDataLen) {
                                                 segment[segmentsCount].readSegment(segwidth, in);
                                                 bitsread += segwidth;
 
-                                                //Huffman.decodeSpectralDataER(segment[segmentsCount], thisSectCB, spectralData, sp);
+                                                // Huffman.decodeSpectralDataER(segment[segmentsCount], thisSectCB, spectralData, sp);
 
-                                                //keep leftover bits
+                                                // keep leftover bits
                                                 segment[segmentsCount].rewindReverse();
 
                                                 segmentsCount++;
                                             } else {
-                                                //remaining after last segment
+                                                // remaining after last segment
                                                 if (bitsread < spDataLen) {
                                                     int additional_bits = spDataLen - bitsread;
 
@@ -220,7 +221,7 @@ public class HCR {
 
         int numberOfSets = numberOfCodewords / segmentsCount;
 
-        //step 2: decode nonPCWs
+        // step 2: decode nonPCWs
         int trial, codewordBase, segmentID, codewordID;
         for (int set = 1; set <= numberOfSets; set++) {
             for (trial = 0; trial < segmentsCount; trial++) {
@@ -228,7 +229,7 @@ public class HCR {
                     segmentID = (trial + codewordBase) % segmentsCount;
                     codewordID = codewordBase + set * segmentsCount - segmentsCount;
 
-                    //data up
+                    // data up
                     if (codewordID >= numberOfCodewords - segmentsCount) break;
 
                     if ((codeword[codewordID].decoded == 0) && (segment[segmentID].len > 0)) {
@@ -236,15 +237,14 @@ public class HCR {
                             segment[segmentID].concatBits(codeword[codewordID].bits);
 
                         int tmplen = segment[segmentID].len;
-						/*int ret = Huffman.decodeSpectralDataER(segment[segmentID], codeword[codewordID].cb,
-								spectralData, codeword[codewordID].sp_offset);
-
-						if(ret>=0) codeword[codewordID].decoded = 1;
-						else {
-							codeword[codewordID].bits = segment[segmentID];
-							codeword[codewordID].bits.len = tmplen;
-						}*/
-
+//                        int ret = Huffman.decodeSpectralDataER(segment[segmentID], codeword[codewordID].cb,
+//                                spectralData, codeword[codewordID].sp_offset);
+//
+//                        if (ret >= 0) codeword[codewordID].decoded = 1;
+//                        else {
+//                            codeword[codewordID].bits = segment[segmentID];
+//                            codeword[codewordID].bits.len = tmplen;
+//                        }
                     }
                 }
             }

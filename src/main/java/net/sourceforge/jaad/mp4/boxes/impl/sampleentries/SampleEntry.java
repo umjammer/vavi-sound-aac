@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library.
- *  If not, see <http://www.gnu.org/licenses/>.
+ *  If not, see <http:// www.gnu.org/licenses/>.
  */
 
 package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
@@ -36,7 +36,7 @@ public abstract class SampleEntry extends BoxImpl {
 
     @Override
     public void decode(MP4Input in) throws IOException {
-        in.skipBytes(6); //reserved
+        in.skipBytes(6); // reserved
         dataReferenceIndex = in.readBytes(2);
     }
 

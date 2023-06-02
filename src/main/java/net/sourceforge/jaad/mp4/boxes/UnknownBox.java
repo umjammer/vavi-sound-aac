@@ -18,6 +18,6 @@ class UnknownBox extends BoxImpl {
 
     @Override
     public void decode(MP4Input in) throws IOException {
-        //no need to read, box will be skipped
+        // no need to read, box will be skipped
     }
 }

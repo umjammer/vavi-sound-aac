@@ -239,7 +239,7 @@ public class GainControl implements GCConstants {
             else lev[i + 1] = (float) Math.pow(2, lngain);
         }
 
-        //s et start point values
+        // s et start point values
         loc[0] = 0;
         if (length == 0) lev[0] = 1.0f;
         else lev[0] = lev[1];
@@ -266,7 +266,7 @@ public class GainControl implements GCConstants {
     }
 
     /**
-     * transformes the exponent value of the gain to the id of the gain change
+     * transforms the exponent value of the gain to the id of the gain change
      * point
      */
     private int getGainChangePointID(int lngain) {

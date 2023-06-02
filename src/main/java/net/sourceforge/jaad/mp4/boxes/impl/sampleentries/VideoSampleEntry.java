@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU Lesser General Public
  *  License along with this library.
- *  If not, see <http://www.gnu.org/licenses/>.
+ *  If not, see <http:// www.gnu.org/licenses/>.
  */
 
 package net.sourceforge.jaad.mp4.boxes.impl.sampleentries;
@@ -40,18 +40,18 @@ public class VideoSampleEntry extends SampleEntry {
     public void decode(MP4Input in) throws IOException {
         super.decode(in);
 
-        in.skipBytes(2); //pre-defined: 0
-        in.skipBytes(2); //reserved
-        //3x32 pre_defined
-        in.skipBytes(4); //pre-defined: 0
-        in.skipBytes(4); //pre-defined: 0
-        in.skipBytes(4); //pre-defined: 0
+        in.skipBytes(2); // pre-defined: 0
+        in.skipBytes(2); // reserved
+        // 3x32 pre_defined
+        in.skipBytes(4); // pre-defined: 0
+        in.skipBytes(4); // pre-defined: 0
+        in.skipBytes(4); // pre-defined: 0
 
         width = (int) in.readBytes(2);
         height = (int) in.readBytes(2);
         horizontalResolution = in.readFixedPoint(16, 16);
         verticalResolution = in.readFixedPoint(16, 16);
-        in.skipBytes(4); //reserved
+        in.skipBytes(4); // reserved
         frameCount = (int) in.readBytes(2);
 
         int len = in.readByte();
@@ -59,7 +59,7 @@ public class VideoSampleEntry extends SampleEntry {
         in.skipBytes(31 - len);
 
         depth = (int) in.readBytes(2);
-        in.skipBytes(2); //pre-defined: -1
+        in.skipBytes(2); // pre-defined: -1
 
         readChildren(in);
     }

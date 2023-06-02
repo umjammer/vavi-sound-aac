@@ -2,8 +2,8 @@ package net.sourceforge.jaad.aac.ps;
 
 interface PSTables extends PSConstants {
 
-    /* type definitaions */
-    /* static data tables */
+    // type definitions
+    // static data tables
     int[] nr_iid_par_tab = {
             10, 20, 34, 10, 20, 34, 0, 0
     };
@@ -55,8 +55,8 @@ interface PSTables extends PSConstants {
 
     int[] delay_length_d = {3, 4, 5 /* d_48kHz */};
 
-    /* RE(ps->Phi_Fract_Qmf[j]) = (float)cos(M_PI*(j+0.5)*(0.39)); */
-    /* IM(ps->Phi_Fract_Qmf[j]) = (float)sin(M_PI*(j+0.5)*(0.39)); */
+    // RE(ps->Phi_Fract_Qmf[j]) = (float)cos(M_PI*(j+0.5)*(0.39));
+    // IM(ps->Phi_Fract_Qmf[j]) = (float)sin(M_PI*(j+0.5)*(0.39));
     float[][] Phi_Fract_Qmf = {
             {0.8181497455f, 0.5750052333f},
             {-0.2638730407f, 0.9645574093f},
@@ -124,8 +124,8 @@ interface PSTables extends PSConstants {
             {-0.7396311164f, 0.6730124950f}
     };
 
-    /* RE(Phi_Fract_SubQmf20[j]) = (float)cos(M_PI*f_center_20[j]*0.39); */
-    /* IM(Phi_Fract_SubQmf20[j]) = (float)sin(M_PI*f_center_20[j]*0.39); */
+    // RE(Phi_Fract_SubQmf20[j]) = (float)cos(M_PI*f_center_20[j]*0.39);
+    // IM(Phi_Fract_SubQmf20[j]) = (float)sin(M_PI*f_center_20[j]*0.39);
     float[][] Phi_Fract_SubQmf20 = {
             {0.9882950187f, 0.1525546312f},
             {0.8962930441f, 0.4434623122f},
@@ -141,8 +141,8 @@ interface PSTables extends PSConstants {
             {-0.9741733670f, -0.2258012742f}
     };
 
-    /* RE(Phi_Fract_SubQmf34[j]) = (float)cos(M_PI*f_center_34[j]*0.39); */
-    /* IM(Phi_Fract_SubQmf34[j]) = (float)sin(M_PI*f_center_34[j]*0.39); */
+    // RE(Phi_Fract_SubQmf34[j]) = (float)cos(M_PI*f_center_34[j]*0.39);
+    // IM(Phi_Fract_SubQmf34[j]) = (float)sin(M_PI*f_center_34[j]*0.39);
     float[][] Phi_Fract_SubQmf34 = {
             {1.0000000000f, 0.0000000000f},
             {1.0000000000f, 0.0000000000f},
@@ -178,8 +178,8 @@ interface PSTables extends PSConstants {
             {-0.8607420325f, -0.5090414286f}
     };
 
-    /* RE(Q_Fract_allpass_Qmf[j][i]) = (float)cos(M_PI*(j+0.5)*(frac_delay_q[i])); */
-    /* IM(Q_Fract_allpass_Qmf[j][i]) = (float)sin(M_PI*(j+0.5)*(frac_delay_q[i])); */
+    // RE(Q_Fract_allpass_Qmf[j][i]) = (float)cos(M_PI*(j+0.5)*(frac_delay_q[i]));
+    // IM(Q_Fract_allpass_Qmf[j][i]) = (float)sin(M_PI*(j+0.5)*(frac_delay_q[i]));
     float[][][] Q_Fract_allpass_Qmf = {
             {{0.7804303765f, 0.6252426505f}, {0.3826834261f, 0.9238795042f}, {0.8550928831f, 0.5184748173f}},
             {{-0.4399392009f, 0.8980275393f}, {-0.9238795042f, -0.3826834261f}, {-0.0643581524f, 0.9979268909f}},
@@ -247,8 +247,8 @@ interface PSTables extends PSConstants {
             {{-0.5750041008f, -0.8181505203f}, {0.3826834261f, -0.9238795042f}, {0.9941320419f, 0.1081734300f}}
     };
 
-    /* RE(Q_Fract_allpass_SubQmf20[j][i]) = (float)cos(M_PI*f_center_20[j]*frac_delay_q[i]); */
-    /* IM(Q_Fract_allpass_SubQmf20[j][i]) = (float)sin(M_PI*f_center_20[j]*frac_delay_q[i]); */
+    // RE(Q_Fract_allpass_SubQmf20[j][i]) = (float)cos(M_PI*f_center_20[j]*frac_delay_q[i]);
+    // IM(Q_Fract_allpass_SubQmf20[j][i]) = (float)sin(M_PI*f_center_20[j]*frac_delay_q[i]);
     float[][][] Q_Fract_allpass_SubQmf20 = {
             {{0.9857769012f, 0.1680592746f}, {0.9569403529f, 0.2902846634f}, {0.9907300472f, 0.1358452588f}},
             {{0.8744080663f, 0.4851911962f}, {0.6343932748f, 0.7730104327f}, {0.9175986052f, 0.3975082636f}},
@@ -264,8 +264,8 @@ interface PSTables extends PSConstants {
             {{-0.8400934935f, -0.5424416065f}, {0.9807852507f, 0.1950903237f}, {-0.9896889329f, 0.1432335079f}}
     };
 
-    /* RE(Q_Fract_allpass_SubQmf34[j][i]) = (float)cos(M_PI*f_center_34[j]*frac_delay_q[i]); */
-    /* IM(Q_Fract_allpass_SubQmf34[j][i]) = (float)sin(M_PI*f_center_34[j]*frac_delay_q[i]); */
+    // RE(Q_Fract_allpass_SubQmf34[j][i]) = (float)cos(M_PI*f_center_34[j]*frac_delay_q[i]);
+    // IM(Q_Fract_allpass_SubQmf34[j][i]) = (float)sin(M_PI*f_center_34[j]*frac_delay_q[i]);
     float[][][] Q_Fract_allpass_SubQmf34 = {
             {{1.0000000000f, 0.0000000000f}, {1.0000000000f, 0.0000000000f}, {1.0000000000f, 0.0000000000f}},
             {{1.0000000000f, 0.0000000000f}, {1.0000000000f, 0.0000000000f}, {1.0000000000f, 0.0000000000f}},

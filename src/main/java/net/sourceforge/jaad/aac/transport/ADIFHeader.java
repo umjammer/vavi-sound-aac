@@ -6,7 +6,7 @@ import net.sourceforge.jaad.aac.syntax.PCE;
 
 public final class ADIFHeader {
 
-    private static final long ADIF_ID = 0x41444946; //'ADIF'
+    private static final long ADIF_ID = 0x41444946; // 'ADIF'
     private long id;
     private boolean copyrightIDPresent;
     private byte[] copyrightID;
@@ -31,7 +31,7 @@ public final class ADIFHeader {
     }
 
     private void decode(BitStream in) {
-        id = in.readBits(32); //'ADIF'
+        id = in.readBits(32); // 'ADIF'
         copyrightIDPresent = in.readBool();
         if (copyrightIDPresent) {
             for (int i = 0; i < 9; i++) {

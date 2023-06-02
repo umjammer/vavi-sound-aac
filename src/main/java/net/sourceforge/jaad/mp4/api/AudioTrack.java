@@ -52,7 +52,7 @@ public class AudioTrack extends Track {
 
         Box stbl = minf.getChild(BoxTypes.SAMPLE_TABLE_BOX);
 
-        //sample descriptions: 'mp4a' and 'enca' have an ESDBox, all others have a CodecSpecificBox
+        // sample descriptions: 'mp4a' and 'enca' have an ESDBox, all others have a CodecSpecificBox
         SampleDescriptionBox stsd = (SampleDescriptionBox) stbl.getChild(BoxTypes.SAMPLE_DESCRIPTION_BOX);
         if (stsd.getChildren().get(0) instanceof AudioSampleEntry) {
             sampleEntry = (AudioSampleEntry) stsd.getChildren().get(0);

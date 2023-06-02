@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFormat;
 
-import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.SampleBuffer;
+import net.sourceforge.jaad.aac.Decoder;
 import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 
 
@@ -30,7 +30,7 @@ class PcmAudioInputStream extends AsynchronousAudioInputStream {
     @Override
     public AudioFormat getFormat() {
         if (audioFormat == null) {
-            //read first frame
+            // read first frame
             try {
                 decoder.decodeFrame(adts.readNextFrame(), sampleBuffer);
                 audioFormat = new AudioFormat(sampleBuffer.getSampleRate(), sampleBuffer.getBitsPerSample(), sampleBuffer.getChannels(), true, true);
@@ -43,6 +43,7 @@ class PcmAudioInputStream extends AsynchronousAudioInputStream {
         return audioFormat;
     }
 
+    @Override
     public void execute() {
         try {
             if (saved == null) {

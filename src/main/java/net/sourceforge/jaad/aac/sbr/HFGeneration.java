@@ -27,16 +27,16 @@ class HFGeneration {
         if (reset)
             patch_construction(ch.sbr);
 
-        /* calculate the prediction coefficients */
+        // calculate the prediction coefficients
 
-        /* actual HF generation */
+        // actual HF generation
         for (int i = 0; i < ch.sbr.noPatches; i++) {
             for (int x = 0; x < ch.sbr.patchNoSubbands[i]; x++) {
                 float a0_r, a0_i, a1_r, a1_i;
                 float bw, bw2;
                 int q, p, k, g;
 
-                /* find the low and high band for patching */
+                // find the low and high band for patching
                 k = ch.sbr.kx + x;
                 for (q = 0; q < i; q++) {
                     k += ch.sbr.patchNoSubbands[q];
@@ -48,8 +48,8 @@ class HFGeneration {
                 bw = ch.bwArray[g];
                 bw2 = bw * bw;
 
-                /* do the patching */
-                /* with or without filtering */
+                // do the patching
+                // with or without filtering
                 if (bw2 > 0) {
                     float temp1_r, temp2_r, temp3_r;
                     float temp1_i, temp2_i, temp3_i;
@@ -132,16 +132,16 @@ class HFGeneration {
         }
 
         // These are actual values in temporary variable at this point
-        // temp1_r = QMF_RE(buffer[len+offset-1-2][bd];
-        // temp1_i = QMF_IM(buffer[len+offset-1-2][bd];
-        // temp2_r = QMF_RE(buffer[len+offset-1-1][bd];
-        // temp2_i = QMF_IM(buffer[len+offset-1-1][bd];
-        // temp3_r = QMF_RE(buffer[len+offset-1][bd]);
-        // temp3_i = QMF_IM(buffer[len+offset-1][bd]);
-        // temp4_r = QMF_RE(buffer[offset-2][bd]);
-        // temp4_i = QMF_IM(buffer[offset-2][bd]);
-        // temp5_r = QMF_RE(buffer[offset-1][bd]);
-        // temp5_i = QMF_IM(buffer[offset-1][bd]);
+//        temp1_r = QMF_RE(buffer[len + offset - 1 - 2][bd];
+//        temp1_i = QMF_IM(buffer[len + offset - 1 - 2][bd];
+//        temp2_r = QMF_RE(buffer[len + offset - 1 - 1][bd];
+//        temp2_i = QMF_IM(buffer[len + offset - 1 - 1][bd];
+//        temp3_r = QMF_RE(buffer[len + offset - 1][bd]);
+//        temp3_i = QMF_IM(buffer[len + offset - 1][bd]);
+//        temp4_r = QMF_RE(buffer[offset - 2][bd]);
+//        temp4_i = QMF_IM(buffer[offset - 2][bd]);
+//        temp5_r = QMF_RE(buffer[offset - 1][bd]);
+//        temp5_i = QMF_IM(buffer[offset - 1][bd]);
         ac.r12[0] = r01r
                 - (temp3_r * temp2_r + temp3_i * temp2_i)
                 + (temp5_r * temp4_r + temp5_i * temp4_i);
@@ -161,7 +161,7 @@ class HFGeneration {
         ac.det = (ac.r11[0] * ac.r22[0]) - (rel * ((ac.r12[0] * ac.r12[0]) + (ac.r12[1] * ac.r12[1])));
     }
 
-    /* calculate linear prediction coefficients using the covariance method */
+    /** calculate linear prediction coefficients using the covariance method */
     private static void calc_prediction_coef(SBR sbr, float[][][] Xlow,
                                              float[][] alpha_0, float[][] alpha_1, int k) {
         float tmp;
@@ -196,38 +196,36 @@ class HFGeneration {
         }
     }
 
-    /* FIXED POINT: bwArray = COEF */
+    /** FIXED POINT: bwArray = COEF */
     private static float mapNewBw(int invf_mode, int invf_mode_prev) {
         switch (invf_mode) {
-        case 1: /* LOW */
+        case 1: // LOW
 
-            if (invf_mode_prev == 0) /* NONE */
+            if (invf_mode_prev == 0) // NONE
                 return 0.6f;
             else
                 return 0.75f;
 
-        case 2: /* MID */
+        case 2: // MID
 
             return 0.9f;
 
-        case 3: /* HIGH */
+        case 3: // HIGH
 
             return 0.98f;
 
-        default: /* NONE */
+        default: // NONE
 
-            if (invf_mode_prev == 1) /* LOW */
+            if (invf_mode_prev == 1) // LOW
                 return 0.6f;
             else
                 return 0.0f;
         }
     }
 
-    /* FIXED POINT: bwArray = COEF */
+    /** FIXED POINT: bwArray = COEF */
     private static void calc_chirp_factors(Channel ch) {
-        int i;
-
-        for (i = 0; i < ch.sbr.N_Q; i++) {
+        for (int i = 0; i < ch.sbr.N_Q; i++) {
             ch.bwArray[i] = mapNewBw(ch.bs_invf_mode[i], ch.bs_invf_mode_prev[i]);
 
             if (ch.bwArray[i] < ch.bwArray_prev[i])
@@ -249,7 +247,7 @@ class HFGeneration {
     private static void patch_construction(SBR sbr) {
         int msb = sbr.k0;
         int usb = sbr.kx;
-        /* (uint8_t)(2.048e6/sbr.sample_rate + 0.5); */
+        //(uint8_t)(2.048e6/sbr.sample_rate + 0.5);
         int goalSb = goalSbTab[sbr.sample_rate.getIndex()];
 
         sbr.noPatches = 0;

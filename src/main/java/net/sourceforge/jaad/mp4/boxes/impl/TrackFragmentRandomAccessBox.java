@@ -21,7 +21,7 @@ public class TrackFragmentRandomAccessBox extends FullBox {
         super.decode(in);
 
         trackID = in.readBytes(4);
-        //26 bits reserved, 2 bits trafSizeLen, 2 bits trunSizeLen, 2 bits sampleSizeLen
+        // 26 bits reserved, 2 bits trafSizeLen, 2 bits trunSizeLen, 2 bits sampleSizeLen
         long l = in.readBytes(4);
         int trafNumberLen = (int) ((l >> 4) & 0x3) + 1;
         int trunNumberLen = (int) ((l >> 2) & 0x3) + 1;

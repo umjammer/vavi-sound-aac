@@ -47,6 +47,7 @@ public enum Profile {
     /**
      * Returns a profile instance for the given index. If the index is not
      * between 1 and 23 inclusive, UNKNOWN is returned.
+     *
      * @return a profile with the given index
      */
     public static Profile forInt(int i) {

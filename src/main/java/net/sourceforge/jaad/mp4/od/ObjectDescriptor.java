@@ -29,8 +29,9 @@ public class ObjectDescriptor extends Descriptor {
     private boolean urlPresent;
     private String url;
 
+    @Override
     void decode(MP4Input in) throws IOException {
-        //10 bits objectDescriptorID, 1 bit url flag, 5 bits reserved
+        // 10 bits objectDescriptorID, 1 bit url flag, 5 bits reserved
         int x = (int) in.readBytes(2);
         objectDescriptorID = (x >> 6) & 0x3FF;
         urlPresent = ((x >> 5) & 1) == 1;

@@ -8,8 +8,8 @@ import net.sourceforge.jaad.mp4.MP4Input;
 /**
  * This box contains parameters for Extended AC-3 decoders. For more information
  * see the AC-3 specification "<code>ETSI TS 102 366 V1.2.1 (2008-08)</code>" at
- * <a href="http://www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf>
- * http://www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf</a>.
+ * <a href="http:// www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf>
+ * http:// www.etsi.org/deliver/etsi_ts/102300_102399/102366/01.02.01_60/ts_102366v010201p.pdf</a>.
  *
  * @author in-somnia
  */
@@ -26,32 +26,32 @@ public class EAC3SpecificBox extends CodecSpecificBox {
     @Override
     public void decode(MP4Input in) throws IOException {
         long l = in.readBytes(2);
-        //13 bits dataRate
+        // 13 bits dataRate
         dataRate = (int) ((l >> 3) & 0x1FFF);
-        //3 bits number of independent substreams
+        // 3 bits number of independent substreams
         independentSubstreamCount = (int) (l & 0x7);
 
         for (int i = 0; i < independentSubstreamCount; i++) {
             l = in.readBytes(3);
-            //2 bits fscod
+            // 2 bits fscod
             fscods[i] = (int) ((l >> 22) & 0x3);
-            //5 bits bsid
+            // 5 bits bsid
             bsids[i] = (int) ((l >> 17) & 0x1F);
-            //5 bits bsmod
+            // 5 bits bsmod
             bsmods[i] = (int) ((l >> 12) & 0x1F);
-            //3 bits acmod
+            // 3 bits acmod
             acmods[i] = (int) ((l >> 9) & 0x7);
-            //3 bits reserved
-            //1 bit lfeon
+            // 3 bits reserved
+            // 1 bit lfeon
             lfeons[i] = ((l >> 5) & 0x1) == 1;
-            //4 bits number of dependent substreams
+            // 4 bits number of dependent substreams
             dependentSubstreamCount[i] = (int) ((l >> 1) & 0xF);
             if (dependentSubstreamCount[i] > 0) {
-                //9 bits dependent substream location
+                // 9 bits dependent substream location
                 l = (l << 8) | in.readByte();
                 dependentSubstreamLocation[i] = (int) (l & 0x1FF);
             }
-            //else: 1 bit reserved
+            // else: 1 bit reserved
         }
     }
 

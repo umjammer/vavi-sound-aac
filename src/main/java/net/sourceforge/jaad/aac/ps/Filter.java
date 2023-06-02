@@ -11,6 +11,7 @@ public interface Filter {
     static float sind(float deg) {
         return (float) Math.sin(Math.toRadians(deg));
     }
+
     static float sqrt(float x) {
         return (float) Math.sqrt(Math.toRadians(x));
     }

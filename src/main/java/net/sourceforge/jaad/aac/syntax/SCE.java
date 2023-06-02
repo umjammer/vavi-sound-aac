@@ -12,7 +12,7 @@ import net.sourceforge.jaad.aac.sbr.SBR1;
 
 
 /**
- * single_channel_element: abbreviaton SCE.
+ * single_channel_element: abbreviation SCE.
  * <p>
  * Syntactic element of the bitstream containing coded
  * data for a single audio channel. A single_channel_element basically
@@ -58,10 +58,12 @@ class SCE extends ChannelElement {
         ics = new ICStream(config);
     }
 
+    @Override
     protected SBR openSBR() {
         return new SBR1(config);
     }
 
+    @Override
     public void decode(BitStream in) {
         super.decode(in);
         ics.decode(in, false, config);
@@ -79,13 +81,14 @@ class SCE extends ChannelElement {
     @Override
     public boolean isStereo() {
         if (sbr != null && config.isSBREnabled()) {
-            //if(sbr.isPSUsed())
+            // if(sbr.isPSUsed())
             return true;
         }
 
         return false;
     }
 
+    @Override
     public void process(FilterBank filterBank, List<CCE> cces, Consumer<float[]> target) {
 
         // inverse quantization

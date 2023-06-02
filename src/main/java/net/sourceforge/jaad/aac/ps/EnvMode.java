@@ -20,6 +20,7 @@ abstract public class EnvMode {
 
     /**
      * Reset calculated index to its regular range
+     *
      * @param idx to clip
      * @return clipped index
      */

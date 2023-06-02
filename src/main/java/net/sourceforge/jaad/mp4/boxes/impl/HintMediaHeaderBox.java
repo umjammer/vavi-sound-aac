@@ -30,7 +30,7 @@ public class HintMediaHeaderBox extends FullBox {
         maxBitrate = in.readBytes(4);
         avgBitrate = in.readBytes(4);
 
-        in.skipBytes(4); //reserved
+        in.skipBytes(4); // reserved
     }
 
     /**

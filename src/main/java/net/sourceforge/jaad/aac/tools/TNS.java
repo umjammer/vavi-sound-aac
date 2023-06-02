@@ -16,7 +16,7 @@ public class TNS implements TNSTables {
 
     private static final int TNS_MAX_ORDER = 20;
     private static final int[] SHORT_BITS = {1, 4, 3}, LONG_BITS = {2, 6, 5};
-    //bitstream
+    // bitstream
     private int[] nFilt;
     private int[][] length, order;
     private boolean[][] direction;
@@ -60,6 +60,6 @@ public class TNS implements TNSTables {
     }
 
     public void process(ICStream ics, float[] spec, SampleFrequency sf, boolean decode) {
-        //TODO...
+        // TODO...
     }
 }

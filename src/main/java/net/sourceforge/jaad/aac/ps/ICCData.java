@@ -11,6 +11,7 @@ public class ICCData extends ICData<ICCMode> {
     /**
      * ICCMode default is mode(1) ??
      */
+    @Override
     ICCMode mode() {
         return mode == null ? mode(1) : mode;
     }

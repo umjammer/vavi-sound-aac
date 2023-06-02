@@ -49,16 +49,16 @@ public class TrackHeaderBox extends FullBox {
         creationTime = in.readBytes(len);
         modificationTime = in.readBytes(len);
         trackID = (int) in.readBytes(4);
-        in.skipBytes(4); //reserved
+        in.skipBytes(4); // reserved
         duration = Utils.detectUndetermined(in.readBytes(len));
 
-        in.skipBytes(8); //reserved
+        in.skipBytes(8); // reserved
 
         layer = (int) in.readBytes(2);
         alternateGroup = (int) in.readBytes(2);
         volume = in.readFixedPoint(8, 8);
 
-        in.skipBytes(2); //reserved
+        in.skipBytes(2); // reserved
 
         for (int i = 0; i < 9; i++) {
             if (i < 6) matrix[i] = in.readFixedPoint(16, 16);

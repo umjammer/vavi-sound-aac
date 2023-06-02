@@ -340,15 +340,15 @@ class DCT {
             Imag[i2] = point1_imag - point2_imag;
         }
 
-        //FFTReorder(Real, Imag);
+        // FFTReorder(Real, Imag);
     }
 
-    /* size 64 only! */
+    /** size 64 only! */
     public static void dct4_kernel(float[] in_real, float[] in_imag, float[] out_real, float[] out_imag) {
         // Tables with bit reverse values for 5 bits, bit reverse of i at i-th position
         int i, i_rev;
 
-        /* Step 2: modulate */
+        // Step 2: modulate
         // 3*32=96 multiplications
         // 3*32=96 additions
         for (i = 0; i < 32; i++) {
@@ -360,10 +360,10 @@ class DCT {
             in_imag[i] = (x_re * dct4_64_tab[i + 32]) + tmp;
         }
 
-        /* Step 3: FFT, but with output in bit reverse order */
+        // Step 3: FFT, but with output in bit reverse order
         fft_dif(in_real, in_imag);
 
-        /* Step 4: modulate + bitreverse reordering */
+        // Step 4: modulate + bitreverse reordering
         // 3*31+2=95 multiplications
         // 3*31+2=95 additions
         for (i = 0; i < 16; i++) {

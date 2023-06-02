@@ -56,7 +56,7 @@ class MDCT implements MDCTTables {
         }
 
         // reordering
-        for (int  k = 0; k < N8; k += 2) {
+        for (int k = 0; k < N8; k += 2) {
             out[outOff + 2 * k] = buf[N8 + k][1];
             out[outOff + 2 + 2 * k] = buf[N8 + 1 + k][1];
 

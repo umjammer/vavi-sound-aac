@@ -3,12 +3,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>net.sourceforge.jaadec</groupId>
-  <artifactId>jaad</artifactId>
-  <version>0.8.9</version>
+  <groupId>vavi</groupId>
+  <artifactId>vavi-sound-aac</artifactId>
+  <version>0.8.10</version>
 
-  <description>JAAD is an AAC decoder and MP4 demultiplexer library written completely in Java. It uses no native libraries, is platform-independent and portable. It can read MP4 container from almost every input-stream (files, network sockets etc.) and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).</description>
-  <url>https://github.com/umjammer/JAADec</url>
+  <description>vavi-sound-aac is an AAC decoder and MP4 demultiplexer library written completely in Java. It uses no native libraries, is platform-independent and portable. It can read MP4 container from almost every input-stream (files, network sockets etc.) and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).</description>
+  <url>https://github.com/umjammer/vavi-sound-aac</url>
   <licenses>
     <license>
       <name>Public Domain</name>
@@ -33,9 +33,9 @@
     </developer>
   </developers>
   <scm>
-    <connection>scm:git:git@github.com:umjammer/JAADec.git</connection>
-    <developerConnection>scm:git:git@github.com:umjammer/JAADec.git</developerConnection>
-    <url>scm:git:git@github.com:umjammer/JAADec.git</url>
+    <connection>scm:git:git@github.com:umjammer/vavi-sound-aac.git</connection>
+    <developerConnection>scm:git:git@github.com:umjammer/vavi-sound-aac.git</developerConnection>
+    <url>scm:git:git@github.com:umjammer/vavi-sound-aac.git</url>
   </scm>
 
   <build>
@@ -77,7 +77,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.9.2</version>
+        <version>5.9.3</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -89,7 +89,6 @@
       <groupId>com.github.umjammer</groupId>
       <artifactId>vavi-sound</artifactId>
       <version>1.0.15</version>
-      <scope>test</scope>
       <exclusions>
         <exclusion>
           <groupId>commons-beanutils</groupId>

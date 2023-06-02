@@ -18,21 +18,21 @@ class Filterbank implements PSTables {
     void hybrid_analysis(float[][][] X, float[][][] X_hybrid, FBType fbt) {
 
         for (int band = 0, offset = 0; band < fbt.decay_cutoff; band++) {
-            /* build working buffer */
+            // build working buffer
             // memcpy(this.work, this.buffer[band], 12*sizeof(qmf_t));
             for (int i = 0; i < 12; i++) {
                 work[i][0] = buffer[band][i][0];
                 work[i][1] = buffer[band][i][1];
             }
 
-            /* add new samples */
+            // add new samples
             for (int n = 0; n < this.len; n++) {
                 this.work[12 + n][0] = X[n + 6 /*delay*/][band][0];
                 this.work[12 + n][0] = X[n + 6 /*delay*/][band][0];
             }
 
-            /* store samples */
-            //memcpy(this.buffer[band], this.work+this.frame_len, 12*sizeof(qmf_t));
+            // store samples
+            // memcpy(this.buffer[band], this.work+this.frame_len, 12*sizeof(qmf_t));
             for (int i = 0; i < 12; i++) {
                 buffer[band][i][0] = work[len + i][0];
                 buffer[band][i][1] = work[len + i][1];
@@ -51,7 +51,7 @@ class Filterbank implements PSTables {
             offset += resolution;
         }
 
-        /* group hybrid channels */
+        // group hybrid channels
         if (fbt != FBType.T34) {
             for (int n = 0; n < len; n++) {
                 X_hybrid[n][3][0] += X_hybrid[n][4][0];
