@@ -119,14 +119,10 @@ public class ItemInformationEntry extends FullBox {
         private static final int TYPE_FDEL = 1717855596; // fdel
 
         static Extension forType(int type) {
-            Extension ext;
-            switch (type) {
-            case Extension.TYPE_FDEL:
-                ext = new FDExtension();
-                break;
-            default:
-                ext = null;
-            }
+            Extension ext = switch (type) {
+                case Extension.TYPE_FDEL -> new FDExtension();
+                default -> null;
+            };
             return ext;
         }
 

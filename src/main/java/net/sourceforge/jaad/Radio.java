@@ -51,7 +51,7 @@ public class Radio {
             // send HTTP request
             PrintStream out = new PrintStream(sock.getOutputStream());
             String path = uri.getPath();
-            if (path == null || path.equals(""))
+            if (path == null || path.isEmpty())
                 path = "/";
             if (uri.getQuery() != null)
                 path += "?" + uri.getQuery();
@@ -64,7 +64,7 @@ public class Radio {
             String x;
             do {
                 x = in.readLine();
-            } while (x != null && !x.trim().equals(""));
+            } while (x != null && !x.trim().isEmpty());
 
             ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
             AudioFormat aufmt = new AudioFormat(adts.getSampleFrequency(), 16, adts.getChannelCount(), true, true);

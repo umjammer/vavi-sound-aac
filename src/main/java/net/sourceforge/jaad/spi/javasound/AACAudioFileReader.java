@@ -149,7 +149,7 @@ logger.fine("mark: " + whole);
 
             if (canHandle) {
                 AudioFileFormat.Type afft = type;
-                AudioFormat format = new AudioFormat(AAC_ENCODING, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, true, new HashMap<String, Object>() {{
+                AudioFormat format = new AudioFormat(AAC_ENCODING, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, true, new HashMap<>() {{
                     put("type", afft);
                 }});
                 logger.fine("DEFINED: " + type);

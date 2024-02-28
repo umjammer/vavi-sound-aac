@@ -55,17 +55,11 @@ public class Movie {
     // TODO: support hint and meta
     private Track createTrack(Box trak) {
         HandlerBox hdlr = (HandlerBox) trak.getChild(BoxTypes.MEDIA_BOX).getChild(BoxTypes.HANDLER_BOX);
-        Track track;
-        switch ((int) hdlr.getHandlerType()) {
-        case HandlerBox.TYPE_VIDEO:
-            track = new VideoTrack(trak, in);
-            break;
-        case HandlerBox.TYPE_SOUND:
-            track = new AudioTrack(trak, in);
-            break;
-        default:
-            track = null;
-        }
+        Track track = switch ((int) hdlr.getHandlerType()) {
+            case HandlerBox.TYPE_VIDEO -> new VideoTrack(trak, in);
+            case HandlerBox.TYPE_SOUND -> new AudioTrack(trak, in);
+            default -> null;
+        };
         return track;
     }
 

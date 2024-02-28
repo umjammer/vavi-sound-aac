@@ -126,7 +126,7 @@ class IMDCT implements GCConstants, IMDCTTables, Windows {
         }
     }
 
-    private void imdct(float[] in, float[] out, float[] window, int n) throws AACException {
+    private static void imdct(float[] in, float[] out, float[] window, int n) throws AACException {
         int n2 = n / 2;
         float[][] table, table2;
         if (n == 256) {

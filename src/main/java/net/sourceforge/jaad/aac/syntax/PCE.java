@@ -63,42 +63,12 @@ public class PCE implements Element, AudioDecoderInfo {
     private static final int MAX_ASSOC_DATA_ELEMENTS = 8;
     private static final int MAX_VALID_CC_ELEMENTS = 16;
 
-    public static class TaggedElement {
+    public record TaggedElement(boolean isCPE, int tag) {
 
-        private final boolean isCPE;
-        private final int tag;
-
-        public TaggedElement(boolean isCPE, int tag) {
-            this.isCPE = isCPE;
-            this.tag = tag;
-        }
-
-        public boolean isIsCPE() {
-            return isCPE;
-        }
-
-        public int getTag() {
-            return tag;
-        }
     }
 
-    public static class CCE {
+    public record CCE(boolean isIndSW, int tag) {
 
-        private final boolean isIndSW;
-        private final int tag;
-
-        public CCE(boolean isIndSW, int tag) {
-            this.isIndSW = isIndSW;
-            this.tag = tag;
-        }
-
-        public boolean isIsIndSW() {
-            return isIndSW;
-        }
-
-        public int getTag() {
-            return tag;
-        }
     }
 
     private Profile profile;
@@ -182,7 +152,7 @@ public class PCE implements Element, AudioDecoderInfo {
         }
     }
 
-    private void readTaggedElementArray(TaggedElement[] te, BitStream in, int len) throws AACException {
+    private static void readTaggedElementArray(TaggedElement[] te, BitStream in, int len) throws AACException {
         for (int i = 0; i < len; ++i) {
             te[i] = new TaggedElement(in.readBool(), in.readBits(4));
         }

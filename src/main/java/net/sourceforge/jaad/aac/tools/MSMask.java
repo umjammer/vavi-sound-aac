@@ -16,23 +16,13 @@ public enum MSMask {
     TYPE_RESERVED(3);
 
     public static MSMask forInt(int i) {
-        MSMask m;
-        switch (i) {
-        case 0:
-            m = TYPE_ALL_0;
-            break;
-        case 1:
-            m = TYPE_USED;
-            break;
-        case 2:
-            m = TYPE_ALL_1;
-            break;
-        case 3:
-            m = TYPE_RESERVED;
-            break;
-        default:
-            throw new AACException("unknown MS mask type");
-        }
+        MSMask m = switch (i) {
+            case 0 -> TYPE_ALL_0;
+            case 1 -> TYPE_USED;
+            case 2 -> TYPE_ALL_1;
+            case 3 -> TYPE_RESERVED;
+            default -> throw new AACException("unknown MS mask type");
+        };
         return m;
     }
 

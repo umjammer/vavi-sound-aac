@@ -20,23 +20,13 @@ public class Artwork {
         GIF, JPEG, PNG, BMP;
 
         static Type forDataType(DataType dataType) {
-            Type type;
-            switch (dataType) {
-            case GIF:
-                type = GIF;
-                break;
-            case JPEG:
-                type = JPEG;
-                break;
-            case PNG:
-                type = PNG;
-                break;
-            case BMP:
-                type = BMP;
-                break;
-            default:
-                type = null;
-            }
+            Type type = switch (dataType) {
+                case GIF -> GIF;
+                case JPEG -> JPEG;
+                case PNG -> PNG;
+                case BMP -> BMP;
+                default -> null;
+            };
             return type;
         }
     }

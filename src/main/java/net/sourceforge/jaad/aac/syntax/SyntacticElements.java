@@ -147,8 +147,7 @@ public class SyntacticElements {
             cces.add((CCE) element);
         }
 
-        if (element instanceof PCE) {
-            PCE pce = (PCE) element;
+        if (element instanceof PCE pce) {
             config.setAudioDecoderInfo(pce);
         }
 

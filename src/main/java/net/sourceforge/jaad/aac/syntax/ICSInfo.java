@@ -32,23 +32,13 @@ public class ICSInfo implements ScaleFactorBands {
         LONG_STOP_SEQUENCE;
 
         public static WindowSequence forInt(int i) throws AACException {
-            WindowSequence w;
-            switch (i) {
-            case 0:
-                w = ONLY_LONG_SEQUENCE;
-                break;
-            case 1:
-                w = LONG_START_SEQUENCE;
-                break;
-            case 2:
-                w = EIGHT_SHORT_SEQUENCE;
-                break;
-            case 3:
-                w = LONG_STOP_SEQUENCE;
-                break;
-            default:
-                throw new AACException("unknown window sequence type");
-            }
+            WindowSequence w = switch (i) {
+                case 0 -> ONLY_LONG_SEQUENCE;
+                case 1 -> LONG_START_SEQUENCE;
+                case 2 -> EIGHT_SHORT_SEQUENCE;
+                case 3 -> LONG_STOP_SEQUENCE;
+                default -> throw new AACException("unknown window sequence type");
+            };
             return w;
         }
     }

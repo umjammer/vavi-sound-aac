@@ -269,7 +269,7 @@ public class GainControl implements GCConstants {
      * transforms the exponent value of the gain to the id of the gain change
      * point
      */
-    private int getGainChangePointID(int lngain) {
+    private static int getGainChangePointID(int lngain) {
         for (int i = 0; i < ID_GAIN; i++) {
             if (lngain == LN_GAIN[i]) return i;
         }
@@ -282,7 +282,7 @@ public class GainControl implements GCConstants {
      * positions is calculated by the formula:
      * f(a,b,j) = 2^(((8-j)log2(a)+j*log2(b))/8)
      */
-    private float interpolateGain(float alev0, float alev1, int iloc) {
+    private static float interpolateGain(float alev0, float alev1, int iloc) {
         float a0 = (float) (Math.log(alev0) / Math.log(2));
         float a1 = (float) (Math.log(alev1) / Math.log(2));
         return (float) Math.pow(2.0f, (((8 - iloc) * a0 + iloc * a1) / 8));

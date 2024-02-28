@@ -121,17 +121,17 @@ public class ICPrediction {
         state.r0 = trunc(A * e0);
     }
 
-    private float round(float pf) {
+    private static float round(float pf) {
         return Float.intBitsToFloat((Float.floatToIntBits(pf) + 0x00008000) & 0xFFFF0000);
     }
 
-    private float even(float pf) {
+    private static float even(float pf) {
         int i = Float.floatToIntBits(pf);
         i = (i + 0x00007FFF + (i & 0x00010000 >> 16)) & 0xFFFF0000;
         return Float.intBitsToFloat(i);
     }
 
-    private float trunc(float pf) {
+    private static float trunc(float pf) {
         return Float.intBitsToFloat(Float.floatToIntBits(pf) & 0xFFFF0000);
     }
 }
