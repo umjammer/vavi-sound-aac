@@ -93,7 +93,7 @@ class SynthesisFilterbank32 extends SynthesisFilterbank {
         }
     }
 
-    private void DCT4_32(float[] y, float[] x) {
+    private static void DCT4_32(float[] y, float[] x) {
         float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10;
         float f11, f12, f13, f14, f15, f16, f17, f18, f19, f20;
         float f21, f22, f23, f24, f25, f26, f27, f28, f29, f30;
@@ -534,7 +534,7 @@ class SynthesisFilterbank32 extends SynthesisFilterbank {
         y[1] = f397 - f396;
     }
 
-    private void DST4_32(float[] y, float[] x) {
+    private static void DST4_32(float[] y, float[] x) {
         float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9;
         float f10, f11, f12, f13, f14, f15, f16, f17, f18, f19;
         float f20, f21, f22, f23, f24, f25, f26, f27, f28, f29;

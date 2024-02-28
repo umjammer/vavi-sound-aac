@@ -42,7 +42,7 @@ public interface Utils {
     @SafeVarargs
     static <E> List<E> listOf(E... elements) {
         if (elements.length == 0) return Collections.emptyList();
-        else return Collections.unmodifiableList(Arrays.asList(elements));
+        else return List.of(elements);
     }
 
     @SuppressWarnings("unchecked")

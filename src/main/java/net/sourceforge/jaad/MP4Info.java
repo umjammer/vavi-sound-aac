@@ -56,7 +56,7 @@ public class MP4Info {
                 }
 
                 List<Protection> protections = movie.getProtections();
-                if (protections.size() > 0) {
+                if (!protections.isEmpty()) {
                     System.out.println("\tprotections:");
                     for (Protection p : protections) {
                         System.out.println("\t\t" + p.getScheme());
@@ -84,9 +84,7 @@ public class MP4Info {
 
     private static void printBox(Box box, int level) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < level; i++) {
-            sb.append("  ");
-        }
+        sb.append("  ".repeat(Math.max(0, level)));
         sb.append(box.toString());
         System.out.println(sb);
 

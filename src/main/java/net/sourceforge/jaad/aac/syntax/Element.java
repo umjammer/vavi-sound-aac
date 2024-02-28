@@ -69,7 +69,7 @@ public interface Element {
 
     static <T extends InstanceTag> List<T>
     createTagList(int count, IntFunction<T> newTag) {
-        List<T> tags = new AbstractList<T>() {
+        List<T> tags = new AbstractList<>() {
 
             @Override
             public int size() {

@@ -33,7 +33,7 @@ class HFAdjustment implements NoiseTable {
                 ch.l_A = ch.L_E + 1 - ch.bs_pointer;
         }
 
-        adj.estimate_current_envelope(sbr, Xsbr, ch);
+        HFAdjustment.estimate_current_envelope(sbr, Xsbr, ch);
 
         adj.calculate_gain(sbr, ch);
 
@@ -75,7 +75,7 @@ class HFAdjustment implements NoiseTable {
         return 0;
     }
 
-    private void estimate_current_envelope(SBR sbr, float[][][] Xsbr, Channel ch) {
+    private static void estimate_current_envelope(SBR sbr, float[][][] Xsbr, Channel ch) {
         float nrg, div;
 
         if (sbr.hdr.bs_interpol_freq) {

@@ -63,31 +63,19 @@ public abstract class Descriptor {
     }
 
     private static Descriptor forTag(int tag) {
-        Descriptor desc;
-        switch (tag) {
-        case TYPE_OBJECT_DESCRIPTOR:
-            desc = new ObjectDescriptor();
-            break;
-        case TYPE_INITIAL_OBJECT_DESCRIPTOR:
-        case TYPE_MP4_INITIAL_OBJECT_DESCRIPTOR:
-            desc = new InitialObjectDescriptor();
-            break;
-        case TYPE_ES_DESCRIPTOR:
-            desc = new ESDescriptor();
-            break;
-        case TYPE_DECODER_CONFIG_DESCRIPTOR:
-            desc = new DecoderConfigDescriptor();
-            break;
-        case TYPE_DECODER_SPECIFIC_INFO:
-            desc = new DecoderSpecificInfo();
-            break;
-        case TYPE_SL_CONFIG_DESCRIPTOR:
+        Descriptor desc = switch (tag) {
+            case TYPE_OBJECT_DESCRIPTOR -> new ObjectDescriptor();
+            case TYPE_INITIAL_OBJECT_DESCRIPTOR, TYPE_MP4_INITIAL_OBJECT_DESCRIPTOR -> new InitialObjectDescriptor();
+            case TYPE_ES_DESCRIPTOR -> new ESDescriptor();
+            case TYPE_DECODER_CONFIG_DESCRIPTOR -> new DecoderConfigDescriptor();
+            case TYPE_DECODER_SPECIFIC_INFO -> new DecoderSpecificInfo();
 //            desc = new SLConfigDescriptor();
 //            break;
-        default:
-            Logger.getLogger("MP4 Boxes").log(Level.FINE, "Unknown descriptor type: {0}", tag);
-            desc = new UnknownDescriptor();
-        }
+            default -> {
+                Logger.getLogger("MP4 Boxes").log(Level.FINE, "Unknown descriptor type: {0}", tag);
+                yield new UnknownDescriptor();
+            }
+        };
         return desc;
     }
 

@@ -66,7 +66,7 @@ public class RVLC implements RVLCTables {
         if (in.readBool()) decodeEscapes(in, ics, scaleFactors);
     }
 
-    private void decodeEscapes(BitStream in, ICStream ics, int[][] scaleFactors) {
+    private static void decodeEscapes(BitStream in, ICStream ics, int[][] scaleFactors) {
         ICSInfo info = ics.getInfo();
         int windowGroupCount = info.getWindowGroupCount();
         int maxSFB = info.getMaxSFB();
@@ -89,7 +89,7 @@ public class RVLC implements RVLCTables {
         }
     }
 
-    private int decodeHuffman(BitStream in) {
+    private static int decodeHuffman(BitStream in) {
         int off = 0;
         int i = RVLC_BOOK[off][1];
         int cw = in.readBits(i);
@@ -106,7 +106,7 @@ public class RVLC implements RVLCTables {
         return RVLC_BOOK[off][0];
     }
 
-    private int decodeHuffmanEscape(BitStream in) {
+    private static int decodeHuffmanEscape(BitStream in) {
         int off = 0;
         int i = ESCAPE_BOOK[off][1];
         int cw = in.readBits(i);
