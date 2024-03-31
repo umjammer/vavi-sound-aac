@@ -120,9 +120,6 @@ logger.fine("mark: " + whole);
 
         } catch (IOException e) {
             if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
-            } else if (e.getMessage().equals("no ADTS header found")) {
-                logger.fine("no ADTS header found");
-                throw new UnsupportedAudioFileException(e.getMessage());
 logger.finer(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
 logger.log(Level.FINEST, e.toString(), e);
                 throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);

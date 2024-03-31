@@ -107,12 +107,14 @@ Debug.println(path);
     }
 
     @Test
-    @Disabled("couldn't find good sample")
     @DisplayName("a file consumes input stream all")
     public void test13() throws Exception {
         Path path = Paths.get(AacFormatConversionProviderTest.class.getResource(caf).toURI());
 Debug.println(path);
-        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(new BufferedInputStream(Files.newInputStream(path))));
+        InputStream is = new BufferedInputStream(Files.newInputStream(path));
+        int l = is.available();
+        assertThrows(UnsupportedAudioFileException.class, () -> new AACAudioFileReader().getAudioInputStream(is));
+        assertEquals(l, is.available());
     }
 
     @Test
