@@ -58,6 +58,8 @@ public class Test1 {
 
     static long time;
 
+    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
+
     static {
         time = System.getProperty("vavi.test", "").equals("ide") ? 1000 * 1000 : 9 * 1000;
     }
@@ -79,7 +81,7 @@ public class Test1 {
             track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
         line = AudioSystem.getSourceDataLine(aufmt);
         line.open();
-        volume(line, .1f);
+        volume(line, volume);
         line.start();
 
         // create AAC decoder
@@ -115,7 +117,7 @@ public class Test1 {
 Debug.println("IN: " + aufmt);
                     line = AudioSystem.getSourceDataLine(aufmt);
                     line.open();
-                    volume(line, .1f);
+                    volume(line, volume);
                     line.start();
                 }
                 b = buf.getData();
@@ -131,5 +133,3 @@ Debug.println("IN: " + aufmt);
         assertArrayEquals(new byte[4], "\0\0\0\0".getBytes());
     }
 }
-
-/* */

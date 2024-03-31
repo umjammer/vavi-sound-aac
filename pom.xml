@@ -5,7 +5,7 @@
 
   <groupId>vavi</groupId>
   <artifactId>vavi-sound-aac</artifactId>
-  <version>0.8.11</version>
+  <version>0.8.12</version>
 
   <description>vavi-sound-aac is an AAC decoder and MP4 demultiplexer library written completely in Java. It uses no native libraries, is platform-independent and portable. It can read MP4 container from almost every input-stream (files, network sockets etc.) and decode AAC-LC (Low Complexity) and HE-AAC (High Efficiency/AAC+).</description>
   <url>https://github.com/umjammer/vavi-sound-aac</url>
@@ -38,6 +38,44 @@
     <url>scm:git:git@github.com:umjammer/vavi-sound-aac.git</url>
   </scm>
 
+  <properties>
+    <vavi.test.volume>0.02</vavi.test.volume>
+  </properties>
+
+  <profiles>
+    <profile>
+      <id>local</id>
+      <activation>
+        <file>
+          <exists>${basedir}/local.properties</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>properties-maven-plugin</artifactId>
+            <version>1.1.0</version>
+            <executions>
+              <execution>
+                <id>read-properties</id>
+                <phase>initialize</phase>
+                <goals>
+                  <goal>read-project-properties</goal>
+                </goals>
+                <configuration>
+                  <files>
+                    <file>${basedir}/local.properties</file>
+                  </files>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
+
   <build>
     <plugins>
       <plugin>
@@ -55,6 +93,7 @@
         <configuration>
           <argLine>
             -Djava.util.logging.config.file=${project.build.testOutputDirectory}/logging.properties
+            -Dvavi.test.volume=${vavi.test.volume}
           </argLine>
           <trimStackTrace>false</trimStackTrace>
           <reuseForks>false</reuseForks>
@@ -75,7 +114,7 @@
       <dependency>
         <groupId>org.junit</groupId>
         <artifactId>junit-bom</artifactId>
-        <version>5.10.1</version>
+        <version>5.10.2</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -84,14 +123,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.github.umjammer</groupId>
-      <artifactId>vavi-commons</artifactId>
-      <version>1.1.10</version>
-    </dependency>
-    <dependency>
       <groupId>com.github.umjammer</groupId> <!-- vavi / com.github.umjammer -->
       <artifactId>vavi-sound</artifactId>
-      <version>1.0.16</version>
+      <version>1.0.18</version>
     </dependency>
 
     <dependency>

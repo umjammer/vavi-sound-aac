@@ -4,6 +4,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.util.stream.IntStream;
 
 import net.sourceforge.jaad.aac.AudioDecoderInfo;
 
@@ -16,11 +17,20 @@ public class ADTSDemultiplexer {
     private boolean first;
     private ADTSFrame frame;
 
+    /** @throws IllegalArgumentException no ADTS header found */
     public ADTSDemultiplexer(InputStream in) throws IOException {
         this.in = new PushbackInputStream(in);
         din = new DataInputStream(this.in);
         first = true;
-        if (!findNextFrame()) throw new IOException("no ADTS header found");
+        if (!validateADTS()) throw new IllegalArgumentException("no ADTS header found");
+    }
+
+    // need to find ADTS header 20 times // TODO is this not corner cut???
+    boolean validateADTS() throws IOException {
+        for (int i = 0; i < 20; i++) {
+            if (!findNextFrame()) return false;
+        }
+        return true;
     }
 
     public byte[] readNextFrame() throws IOException {

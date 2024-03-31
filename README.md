@@ -6,7 +6,7 @@
 
 # vavi-sound-aac
 
-<img src="https://github.com/umjammer/vavi-image-avif/assets/493908/58a132fd-ba3d-4309-9481-2b86fc885f14" width="120" alt="AAC logo"/><sub><a href="https://www.dolby.com/">© Dolby Laboratories, Inc.</a></sub>
+<img src="https://github.com/umjammer/vavi-image-avif/assets/493908/58a132fd-ba3d-4309-9481-2b86fc885f14" width="100" alt="AAC logo"/><sub><a href="https://www.dolby.com/">© Dolby Laboratories, Inc.</a></sub>
 
 Pure Java AAC decoder (Java Sound SPI) powered by [JAADec](https://github.com/DV8FromTheWorld/JAADec).
 
@@ -36,9 +36,9 @@ Pure Java AAC decoder (Java Sound SPI) powered by [JAADec](https://github.com/DV
 
 ---
 
-## Original
+# [Original](https://github.com/DV8FromTheWorld/JAADec)
 
-# JAADec
+## JAADec
 
 **This is a fork of https://sourceforge.net/projects/jaadec/ 
 containing fixes to make it play nice with other Java Sound Providers.**

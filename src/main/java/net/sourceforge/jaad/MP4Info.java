@@ -83,9 +83,8 @@ public class MP4Info {
     }
 
     private static void printBox(Box box, int level) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("  ".repeat(Math.max(0, level)));
-        sb.append(box.toString());
+        String sb = "  ".repeat(Math.max(0, level)) +
+                box.toString();
         System.out.println(sb);
 
         for (Box child : box.getChildren()) {

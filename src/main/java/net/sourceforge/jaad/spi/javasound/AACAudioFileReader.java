@@ -2,13 +2,13 @@ package net.sourceforge.jaad.spi.javasound;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
@@ -24,6 +24,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.api.AudioTrack;
 import net.sourceforge.jaad.mp4.api.Movie;
 import net.sourceforge.jaad.mp4.api.Track;
+import vavi.sound.LimitedInputStream;
 
 
 public class AACAudioFileReader extends AudioFileReader {
@@ -33,47 +34,6 @@ public class AACAudioFileReader extends AudioFileReader {
     public static final AudioFileFormat.Type AAC = new AudioFileFormat.Type("AAC", "aac");
     public static final AudioFileFormat.Type MP4 = new AudioFileFormat.Type("MP4", "mp4");
     public static final AudioFormat.Encoding AAC_ENCODING = new AudioFormat.Encoding("AAC");
-
-    private static class LimitedInputStream extends FilterInputStream {
-
-        static final String ERROR_MESSAGE_REACHED_TO_LIMIT = "stop reading, prevent form eof";
-
-        protected LimitedInputStream(InputStream in) throws IOException {
-            super(in);
-            logger.fine("limit: " + in.available());
-        }
-
-        private void check(int r) throws IOException {
-            if (in.available() < r) {
-                logger.fine("reached to limit");
-                throw new IOException(ERROR_MESSAGE_REACHED_TO_LIMIT);
-            }
-        }
-
-        @Override
-        public int read() throws IOException {
-            check(1);
-            return super.read();
-        }
-
-        @Override
-        public int read(byte[] b) throws IOException {
-            check(b.length);
-            return super.read(b);
-        }
-
-        @Override
-        public int read(byte[] b, int off, int len) throws IOException {
-            check(len);
-            return super.read(b, off, len);
-        }
-
-        @Override
-        public long skip(long n) throws IOException {
-            check((int) n);
-            return super.skip(n);
-        }
-    }
 
     @Override
     public AudioFileFormat getAudioFileFormat(InputStream in) throws UnsupportedAudioFileException, IOException {
@@ -95,6 +55,7 @@ public class AACAudioFileReader extends AudioFileReader {
     }
 
     private AudioFileFormat getAudioFileFormat(InputStream in, int mediaLength) throws UnsupportedAudioFileException, IOException {
+logger.finer("enter: " + in.available());
         try {
             if (!in.markSupported()) throw new IllegalArgumentException("mark not supported");
 
@@ -119,10 +80,11 @@ logger.fine("mark: " + whole);
                 MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
                 List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
-                if (tracks.isEmpty()) throw new UnsupportedAudioFileException("movie does not contain any AAC track");
+                if (tracks.isEmpty()) throw new IllegalArgumentException("movie does not contain any AAC track");
                 Track track = tracks.get(0);
                 Decoder.create(track.getDecoderSpecificInfo().getData());
 
+logger.fine("detect as mp4");
                 canHandle = true;
                 type = MP4;
                 // This code is pulled directly from MP3-SPI.
@@ -144,6 +106,7 @@ logger.fine("mark: " + whole);
                 ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
                 Decoder.create(adts.getDecoderInfo());
 
+logger.fine("detect as adts");
                 canHandle = true;
             }
 
@@ -155,27 +118,29 @@ logger.fine("mark: " + whole);
                 logger.fine("DEFINED: " + type);
                 return new AudioFileFormat(type, format, mediaLength);
             } else {
-                throw new UnsupportedAudioFileException("no match sequence");
+                throw new IllegalArgumentException("no match sequence");
             }
 
         } catch (IOException e) {
             if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
-                logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
-                throw new UnsupportedAudioFileException(e.getMessage());
-            } else if (e.getMessage().equals("no ADTS header found")) {
-                logger.fine("no ADTS header found");
-                throw new UnsupportedAudioFileException(e.getMessage());
+logger.finer(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
+logger.log(Level.FINEST, e.toString(), e);
+                throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
-                logger.fine(e.toString());
-                throw new UnsupportedAudioFileException(e.getMessage());
+logger.finer(e.toString());
+logger.log(Level.FINEST, e.toString(), e);
+                throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else {
-                logger.info(e.toString());
                 throw e;
             }
+        } catch (Exception e) {
+logger.finer(e.toString());
+logger.log(Level.FINEST, e.toString(), e);
+            throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
         } finally {
             try {
                 in.reset();
-logger.fine("reset");
+logger.finer("reset");
             } catch (IOException e) {
                 logger.info("FAIL TO RESET: " + e);
             } finally {
@@ -188,39 +153,11 @@ logger.fine("reset");
 
     @Override
     public AudioInputStream getAudioInputStream(InputStream in) throws UnsupportedAudioFileException, IOException {
-        try {
-            AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
+        AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
 logger.fine("format: " + aff);
 
-            int whole = in.available();
-            in.mark(whole);
-logger.fine("mark: " + whole);
-            in = new LimitedInputStream(in);
-
-            // in position should be zero
-            return new AudioInputStream(in, aff.getFormat(), aff.getFrameLength());
-
-        } catch (IOException e) {
-            if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
-                logger.fine(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
-                throw new UnsupportedAudioFileException(e.getMessage());
-            } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
-                logger.fine(e.toString());
-                throw new UnsupportedAudioFileException(e.getMessage());
-            } else {
-                logger.info(e.toString());
-                throw e;
-            }
-        } finally {
-            try {
-                in.reset();
-logger.fine("reset");
-            } catch (IOException e) {
-                logger.info("FAIL TO RESET: " + e);
-            } finally {
-                logger.fine("finally available: " + in.available());
-            }
-        }
+        // in position should be zero
+        return new AudioInputStream(in, aff.getFormat(), aff.getFrameLength());
     }
 
     @Override
