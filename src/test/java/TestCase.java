@@ -40,7 +40,7 @@ import static vavix.util.DelayedWorker.later;
  * @version 0.00 2022/02/19 umjammer initial version <br>
  */
 @PropsEntity(url = "file:local.properties")
-public class Test1 {
+public class TestCase {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
@@ -100,7 +100,7 @@ public class Test1 {
 
     @Test
     void decodeAAC() throws Exception {
-        InputStream in = Test1.class.getResourceAsStream("/test.aac");
+        InputStream in = TestCase.class.getResourceAsStream("/test.aac");
         SourceDataLine line = null;
         ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
         Decoder dec = Decoder.create(adts.getDecoderInfo());
