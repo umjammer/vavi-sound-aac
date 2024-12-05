@@ -12,8 +12,8 @@ import net.sourceforge.jaad.aac.AudioDecoderInfo;
 public class ADTSDemultiplexer {
 
     private static final int MAXIMUM_FRAME_SIZE = 6144;
-    private PushbackInputStream in;
-    private DataInputStream din;
+    private final PushbackInputStream in;
+    private final DataInputStream din;
     private boolean first;
     private ADTSFrame frame;
 

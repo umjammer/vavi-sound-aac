@@ -2,10 +2,11 @@ package net.sourceforge.jaad.mp4.boxes;
 
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.MP4InputStream;
@@ -57,7 +58,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.SMVSpecificBox;
 
 public class BoxFactory implements BoxTypes {
 
-    private static final Logger LOGGER = Logger.getLogger("MP4 Boxes");
+    private static final Logger logger = System.getLogger(BoxFactory.class.getName());
 
     private static final Map<Long, Class<? extends BoxImpl>> BOX_CLASSES = new HashMap<>();
     private static final Map<Long, Class<? extends BoxImpl>[]> BOX_MULTIPLE_CLASSES = new HashMap<>();
@@ -377,7 +378,7 @@ public class BoxFactory implements BoxTypes {
         if (type == EXTENDED_TYPE)
             in.skipBytes(16);
 
-        LOGGER.finest("type: " + typeToString(type) + ", " + size);
+        logger.log(Level.TRACE, "type: " + typeToString(type) + ", " + size);
 
         // error protection
         if (parent != null) {
@@ -386,7 +387,7 @@ public class BoxFactory implements BoxTypes {
                 throw new IOException("error while decoding box '" + typeToString(type) + "' at offset " + offset + ": box too large for parent");
         }
 
-        LOGGER.finest("type: " + typeToString(type));
+        logger.log(Level.TRACE, "type: " + typeToString(type));
         BoxImpl box = forType(type, in.getOffset());
         box.setParams(parent, size, type, offset);
         box.decode(in);
@@ -401,16 +402,16 @@ public class BoxFactory implements BoxTypes {
                 && !(box instanceof MediaDataBox)
                 && !(box instanceof UnknownBox)
                 && !(box instanceof FreeSpaceBox))
-            LOGGER.log(Level.FINE, "bytes left after reading box {0}: left: {1}, offset: {2}", new Object[] {typeToString(type), left, in.getOffset()});
+            logger.log(Level.DEBUG, "bytes left after reading box {0}: left: {1}, offset: {2}", typeToString(type), left, in.getOffset());
         else if (left < 0)
-            LOGGER.log(Level.SEVERE, "box {0} overread: {1} bytes, offset: {2}", new Object[] {typeToString(type), -left, in.getOffset()});
+            logger.log(Level.ERROR, "box {0} overread: {1} bytes, offset: {2}", typeToString(type), -left, in.getOffset());
 
         // if mdat found and no random access, don't skip
         if (box.getType() != MEDIA_DATA_BOX || in.hasRandomAccess()) in.skipBytes(left);
         return box;
     }
 
-    // TODO: remove usages
+    // TODO remove usages
     public static Box parseBox(MP4InputStream in, Class<? extends BoxImpl> boxClass) throws IOException {
         long offset = in.getOffset();
 
@@ -421,8 +422,8 @@ public class BoxFactory implements BoxTypes {
 
         BoxImpl box = null;
         try {
-            box = boxClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            box = boxClass.getDeclaredConstructor().newInstance();
+        } catch (InstantiationException | IllegalAccessException | NoSuchMethodException | InvocationTargetException e) {
         }
 
         if (box != null) {
@@ -446,20 +447,20 @@ public class BoxFactory implements BoxTypes {
                     Constructor<? extends BoxImpl> con = cl.getConstructor(String.class);
                     box = con.newInstance(s[0]);
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "BoxFactory: could not call constructor for " + typeToString(type), e);
+                    logger.log(Level.ERROR, "BoxFactory: could not call constructor for " + typeToString(type), e);
                     box = new UnknownBox();
                 }
             } else {
                 try {
-                    box = cl.newInstance();
+                    box = cl.getDeclaredConstructor().newInstance();
                 } catch (Exception e) {
-                    LOGGER.log(Level.SEVERE, "BoxFactory: could not instantiate box " + typeToString(type), e);
+                    logger.log(Level.ERROR, "BoxFactory: could not instantiate box " + typeToString(type), e);
                 }
             }
         }
 
         if (box == null) {
-            LOGGER.log(Level.FINE, "BoxFactory: unknown box type: {0}; position: {1}", new Object[] {typeToString(type), offset});
+            logger.log(Level.DEBUG, "BoxFactory: unknown box type: {0}; position: {1}", typeToString(type), offset);
             box = new UnknownBox();
         }
         return box;

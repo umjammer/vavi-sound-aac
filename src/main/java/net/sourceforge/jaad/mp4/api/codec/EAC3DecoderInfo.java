@@ -10,8 +10,8 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.EAC3SpecificBox;
 
 public class EAC3DecoderInfo extends DecoderInfo {
 
-    private EAC3SpecificBox box;
-    private IndependentSubstream[] is;
+    private final EAC3SpecificBox box;
+    private final IndependentSubstream[] is;
 
     public EAC3DecoderInfo(CodecSpecificBox box) {
         this.box = (EAC3SpecificBox) box;

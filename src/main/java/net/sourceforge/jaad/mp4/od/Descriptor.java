@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.mp4.MP4Input;
 
@@ -18,7 +18,7 @@ import net.sourceforge.jaad.mp4.MP4Input;
  */
 public abstract class Descriptor {
 
-    static final Logger LOGGER = Logger.getLogger(Descriptor.class.getName());
+    static final Logger logger = System.getLogger(Descriptor.class.getName());
 
     public static final int TYPE_OBJECT_DESCRIPTOR = 1;
     public static final int TYPE_INITIAL_OBJECT_DESCRIPTOR = 2;
@@ -54,7 +54,7 @@ public abstract class Descriptor {
         // skip remaining bytes
         long remaining = size - (in.getOffset() - desc.start);
         if (remaining > 0) {
-            Logger.getLogger("MP4 Boxes").log(Level.FINE, "Descriptor: bytes left: {0}, offset: {1}", new Long[] {remaining, in.getOffset()});
+            logger.log(Level.TRACE, "Descriptor: bytes left: %d, offset: %d".formatted(remaining, in.getOffset()));
             in.skipBytes(remaining);
         }
         desc.size += read; // include type and size fields
@@ -72,7 +72,7 @@ public abstract class Descriptor {
 //            desc = new SLConfigDescriptor();
 //            break;
             default -> {
-                Logger.getLogger("MP4 Boxes").log(Level.FINE, "Unknown descriptor type: {0}", tag);
+                logger.log(Level.DEBUG, "Unknown descriptor type: {0}", tag);
                 yield new UnknownDescriptor();
             }
         };
@@ -81,7 +81,7 @@ public abstract class Descriptor {
 
     protected int type, size;
     protected long start;
-    private List<Descriptor> children;
+    private final List<Descriptor> children;
 
     protected Descriptor() {
         children = new ArrayList<>();

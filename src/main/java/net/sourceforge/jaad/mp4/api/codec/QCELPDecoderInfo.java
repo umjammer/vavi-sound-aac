@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.QCELPSpecificBox;
 
 public class QCELPDecoderInfo extends DecoderInfo {
 
-    private QCELPSpecificBox box;
+    private final QCELPSpecificBox box;
 
     public QCELPDecoderInfo(CodecSpecificBox box) {
         this.box = (QCELPSpecificBox) box;

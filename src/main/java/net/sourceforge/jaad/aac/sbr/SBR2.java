@@ -20,7 +20,7 @@ public class SBR2 extends SBR {
     boolean bs_coupling;
 
     final SynthesisFilterbank qmfs0;
-    SynthesisFilterbank qmfs1;
+    final SynthesisFilterbank qmfs1;
 
     public SBR2(DecoderConfig config) {
         super(config);

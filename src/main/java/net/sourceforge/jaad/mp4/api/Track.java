@@ -2,6 +2,7 @@ package net.sourceforge.jaad.mp4.api;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -9,8 +10,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.mp4.MP4Input;
 import net.sourceforge.jaad.mp4.boxes.Box;
@@ -27,6 +28,8 @@ import net.sourceforge.jaad.mp4.boxes.impl.TrackHeaderBox;
 import net.sourceforge.jaad.mp4.od.DecoderSpecificInfo;
 import net.sourceforge.jaad.mp4.od.Descriptor;
 
+import static java.lang.System.getLogger;
+
 
 /**
  * This class represents a track in a movie.
@@ -35,10 +38,13 @@ import net.sourceforge.jaad.mp4.od.Descriptor;
  * <code>DecoderInfo</code> object that contains necessary information for the
  * decoder.
  *
+ * TODO: expand javadoc; use generics for subclasses?
+ *
  * @author in-somnia
  */
-// TODO: expand javadoc; use generics for subclasses?
 public abstract class Track {
+
+    private static final Logger logger = getLogger(Track.class.getName());
 
     public interface Codec {
         // TODO: currently only marker interface
@@ -67,7 +73,7 @@ public abstract class Track {
 
         Box dinf = minf.getChild(BoxTypes.DATA_INFORMATION_BOX);
         DataReferenceBox dref = (DataReferenceBox) dinf.getChild(BoxTypes.DATA_REFERENCE_BOX);
-        // TODO: support URNs
+        // TODO support URNs
         if (dref.hasChild(BoxTypes.DATA_ENTRY_URL_BOX)) {
             DataEntryUrlBox url = (DataEntryUrlBox) dref.getChild(BoxTypes.DATA_ENTRY_URL_BOX);
             inFile = url.isInFile();
@@ -75,16 +81,15 @@ public abstract class Track {
                 try {
                     location = new URL(url.getLocation());
                 } catch (MalformedURLException e) {
-                    Logger.getLogger("MP4 API").log(Level.WARNING, "Parsing URL-Box failed: {0}, url: {1}", new String[] {e.toString(), url.getLocation()});
+                    logger.log(Level.WARNING, "Parsing URL-Box failed: {0}, url: {1}", e.toString(), url.getLocation());
                     location = null;
                 }
             }
+//        } else if (dref.containsChild(BoxTypes.DATA_ENTRY_URN_BOX)) {
+//            DataEntryUrnBox urn = (DataEntryUrnBox) dref.getChild(BoxTypes.DATA_ENTRY_URN_BOX);
+//            inFile = urn.isInFile();
+//            location = urn.getLocation();
         }
-		/*else if(dref.containsChild(BoxTypes.DATA_ENTRY_URN_BOX)) {
-		DataEntryUrnBox urn = (DataEntryUrnBox) dref.getChild(BoxTypes.DATA_ENTRY_URN_BOX);
-		inFile = urn.isInFile();
-		location = urn.getLocation();
-		}*/
         else {
             inFile = true;
             location = null;
@@ -180,15 +185,15 @@ public abstract class Track {
         }
     }
 
-    protected <T> void parseSampleEntry(Box sampleEntry, Class<T> clazz) {
+    protected static <T> void parseSampleEntry(Box sampleEntry, Class<T> clazz) {
         T type;
         try {
-            type = clazz.newInstance();
+            type = clazz.getDeclaredConstructor().newInstance();
             if (sampleEntry.getClass().isInstance(type)) {
                 System.out.println("true");
             }
-        } catch (InstantiationException | IllegalAccessException ex) {
-            ex.printStackTrace();
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException ex) {
+            logger.log(Level.ERROR, ex.getMessage(), ex);
         }
     }
 
@@ -343,7 +348,7 @@ public abstract class Track {
             else if (diff < 0) {
                 if (in.hasRandomAccess()) in.seek(frame.getOffset());
                 else {
-                    Logger.getLogger("MP4 API").log(Level.WARNING, "readNextFrame failed: frame {0} already skipped, offset:{1}, stream:{2}", new Object[] {currentFrame, frame.getOffset(), in.getOffset()});
+                    logger.log(Level.WARNING, "readNextFrame failed: frame {0} already skipped, offset:{1}, stream:{2}", currentFrame, frame.getOffset(), in.getOffset());
                     throw new IOException("frame already skipped and no random access");
                 }
             }
@@ -352,7 +357,7 @@ public abstract class Track {
             try {
                 in.readBytes(b);
             } catch (EOFException e) {
-                Logger.getLogger("MP4 API").log(Level.WARNING, "readNextFrame failed: tried to read {0} bytes at {1}", new Long[] {frame.getSize(), in.getOffset()});
+                logger.log(Level.WARNING, "readNextFrame failed: tried to read {0} bytes at {1}", frame.getSize(), in.getOffset());
                 throw e;
             }
             frame.setData(b);

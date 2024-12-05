@@ -1,10 +1,11 @@
 package net.sourceforge.jaad.aac.syntax;
 
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.DecoderConfig;
@@ -13,23 +14,23 @@ import net.sourceforge.jaad.aac.filterbank.FilterBank;
 
 public class SyntacticElements {
 
-    static final Logger LOGGER = Logger.getLogger(SyntacticElements.class.getName());
+    static final Logger logger = System.getLogger(SyntacticElements.class.getName());
 
     // global properties
 
-    private DecoderConfig config;
+    private final DecoderConfig config;
 
     private final FilterBank filterBank;
 
     // elements
 
-    private List<CCE> cces = new ArrayList<>();
+    private final List<CCE> cces = new ArrayList<>();
 
     private final Map<Element.InstanceTag, Element> elements = new HashMap<>();
 
     private final List<ChannelElement> audioElements = new ArrayList<>(); // SCE, LFE and CPE
 
-    private List<float[]> channels = new ArrayList<>();
+    private final List<float[]> channels = new ArrayList<>();
 
     private Element newElement(Element.InstanceTag tag) {
         return tag.newElement(config);
@@ -125,7 +126,7 @@ public class SyntacticElements {
         }
         in.byteAlign();
 
-        LOGGER.finest("END");
+        logger.log(Level.TRACE, "END");
     }
 
     private Element decode(List<? extends Element.InstanceTag> tags, BitStream in) {
@@ -133,7 +134,7 @@ public class SyntacticElements {
         int id = in.readBits(4);
         Element.InstanceTag tag = tags.get(id);
 
-        LOGGER.finest(tag.toString());
+        logger.log(Level.TRACE, tag.toString());
 
         Element element = getElement(tag);
 
@@ -209,7 +210,7 @@ public class SyntacticElements {
             prev.decodeSBR(in, (type == EXT_SBR_DATA_CRC));
     }
 
-    // decoded but unused.
+    /** decoded but unused. */
     private DRC dri;
 
     private void decodeDynamicRangeInfo(BitStream in) {
@@ -219,13 +220,11 @@ public class SyntacticElements {
         dri.decode(in);
     }
 
-    // Spatial Audio Coding (ISO/IEC 23003-1)
+    /** Spatial Audio Coding (ISO/IEC 23003-1) */
     private void decodeSAC(BitStream in) {
-
     }
 
     private void decodeExtData(BitStream in) {
-
     }
 
     public List<float[]> process() {

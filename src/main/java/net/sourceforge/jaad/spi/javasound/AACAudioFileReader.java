@@ -8,8 +8,8 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -29,7 +29,7 @@ import vavi.sound.LimitedInputStream;
 
 public class AACAudioFileReader extends AudioFileReader {
 
-    private static Logger logger = Logger.getLogger(AACAudioFileReader.class.getName());
+    private static final Logger logger = System.getLogger(AACAudioFileReader.class.getName());
 
     public static final AudioFileFormat.Type AAC = new AudioFileFormat.Type("AAC", "aac");
     public static final AudioFileFormat.Type MP4 = new AudioFileFormat.Type("MP4", "mp4");
@@ -55,7 +55,7 @@ public class AACAudioFileReader extends AudioFileReader {
     }
 
     private AudioFileFormat getAudioFileFormat(InputStream in, int mediaLength) throws UnsupportedAudioFileException, IOException {
-logger.finer("enter: " + in.available());
+logger.log(Level.TRACE, "enter: " + in.available());
         try {
             if (!in.markSupported()) throw new IllegalArgumentException("mark not supported");
 
@@ -68,7 +68,7 @@ logger.finer("enter: " + in.available());
 
             int whole = in.available();
             in.mark(whole);
-logger.fine("mark: " + whole);
+logger.log(Level.DEBUG, "mark: " + whole);
             in = new LimitedInputStream(in);
 
             boolean canHandle;
@@ -84,7 +84,7 @@ logger.fine("mark: " + whole);
                 Track track = tracks.get(0);
                 Decoder.create(track.getDecoderSpecificInfo().getData());
 
-logger.fine("detect as mp4");
+logger.log(Level.DEBUG, "detect as mp4");
                 canHandle = true;
                 type = MP4;
                 // This code is pulled directly from MP3-SPI.
@@ -106,7 +106,7 @@ logger.fine("detect as mp4");
                 ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
                 Decoder.create(adts.getDecoderInfo());
 
-logger.fine("detect as adts");
+logger.log(Level.DEBUG, "detect as adts");
                 canHandle = true;
             }
 
@@ -115,7 +115,7 @@ logger.fine("detect as adts");
                 AudioFormat format = new AudioFormat(AAC_ENCODING, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, true, new HashMap<>() {{
                     put("type", afft);
                 }});
-                logger.fine("DEFINED: " + type);
+                logger.log(Level.DEBUG, "DEFINED: " + type);
                 return new AudioFileFormat(type, format, mediaLength);
             } else {
                 throw new IllegalArgumentException("no match sequence");
@@ -123,28 +123,28 @@ logger.fine("detect as adts");
 
         } catch (IOException e) {
             if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
-logger.finer(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
+logger.log(Level.TRACE, e.getMessage(), e);
                 throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
-logger.finer(e.toString());
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, e.toString());
+logger.log(Level.TRACE, e.getMessage(), e);
                 throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else {
                 throw e;
             }
         } catch (Exception e) {
-logger.finer(e.toString());
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, e.toString());
+logger.log(Level.TRACE, e.getMessage(), e);
             throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
         } finally {
             try {
                 in.reset();
-logger.finer("reset");
+logger.log(Level.TRACE, "reset");
             } catch (IOException e) {
-                logger.info("FAIL TO RESET: " + e);
+                logger.log(Level.INFO, "FAIL TO RESET: " + e);
             } finally {
-                logger.fine("finally available: " + in.available());
+                logger.log(Level.DEBUG, "finally available: " + in.available());
             }
         }
     }
@@ -154,7 +154,7 @@ logger.finer("reset");
     @Override
     public AudioInputStream getAudioInputStream(InputStream in) throws UnsupportedAudioFileException, IOException {
         AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
-logger.fine("format: " + aff);
+logger.log(Level.DEBUG, "format: " + aff);
 
         // in position should be zero
         return new AudioInputStream(in, aff.getFormat(), aff.getFrameLength());

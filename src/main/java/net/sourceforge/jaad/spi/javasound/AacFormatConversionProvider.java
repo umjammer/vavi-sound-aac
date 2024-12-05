@@ -7,7 +7,8 @@
 package net.sourceforge.jaad.spi.javasound;
 
 import java.io.IOException;
-import java.util.logging.Logger;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -22,7 +23,7 @@ import javax.sound.sampled.spi.FormatConversionProvider;
  */
 public class AacFormatConversionProvider extends FormatConversionProvider {
 
-    private static Logger logger = Logger.getLogger(AacFormatConversionProvider.class.getName());
+    private static final Logger logger = System.getLogger(AacFormatConversionProvider.class.getName());
 
     @Override
     public AudioFormat.Encoding[] getSourceEncodings() {
@@ -70,11 +71,11 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     AudioFormat targetFormat = formats[0];
                     if (sourceFormat.equals(targetFormat)) {
-                        logger.fine("same1: " + sourceFormat);
+                        logger.log(Level.DEBUG, "same1: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING && targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-                        logger.fine("convert1: " + type);
+                        logger.log(Level.DEBUG, "convert1: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {
@@ -104,12 +105,12 @@ public class AacFormatConversionProvider extends FormatConversionProvider {
                 if (formats != null && formats.length > 0) {
                     AudioFormat sourceFormat = sourceStream.getFormat();
                     if (sourceFormat.equals(targetFormat)) {
-                        logger.fine("same2: " + sourceFormat);
+                        logger.log(Level.DEBUG, "same2: " + sourceFormat);
                         return sourceStream;
                     } else if (sourceFormat.getEncoding() == AACAudioFileReader.AAC_ENCODING &&
                             targetFormat.getEncoding().equals(AudioFormat.Encoding.PCM_SIGNED)) {
                         Object type = sourceFormat.getProperty("type");
-                        logger.fine("convert2: " + type);
+                        logger.log(Level.DEBUG, "convert2: " + type);
                         if (type != null && type == AACAudioFileReader.MP4) {
                             return new MP4AudioInputStream(sourceStream, targetFormat, AudioSystem.NOT_SPECIFIED);
                         } else {

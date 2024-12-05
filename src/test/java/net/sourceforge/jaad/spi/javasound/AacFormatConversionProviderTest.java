@@ -24,10 +24,8 @@ import javax.sound.sampled.SourceDataLine;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import vavi.sound.SoundUtil;
 import vavi.util.Debug;
 import vavi.util.properties.annotation.Property;
 import vavi.util.properties.annotation.PropsEntity;
@@ -52,6 +50,10 @@ class AacFormatConversionProviderTest {
         return Files.exists(Paths.get("local.properties"));
     }
 
+    static {
+        java.lang.System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod", "org\\.tritonus\\.share\\.TDebug#out");
+    }
+
     @BeforeEach
     void setup() throws Exception {
         if (localPropertiesExists()) {
@@ -59,15 +61,11 @@ class AacFormatConversionProviderTest {
         }
     }
 
-    static long time;
+    static boolean onIde = System.getProperty("vavi.test", "").equals("ide");
+    static long time = onIde ? 1000 * 1000 : 9 * 1000;
 
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
-
-    static {
-        System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod", "org\\.tritonus\\.share\\.TDebug#out");
-
-        time = System.getProperty("vavi.test", "").equals("ide") ? 1000 * 1000 : 9 * 1000;
-    }
+    @Property(name = "vavi.test.volume")
+    double volume = 0.2;
 
     @Property
     String mp4 = "src/test/resources/test.m4a";
@@ -155,7 +153,7 @@ Debug.println("OUT: " + pcmAis.getFormat());
         volume(line, volume);
         line.start();
 
-        byte[] buf = new byte[8192];
+        byte[] buf = new byte[line.getBufferSize()];
         while (!later(time).come()) {
             int r = pcmAis.read(buf, 0, buf.length);
             if (r < 0) {
@@ -198,9 +196,9 @@ Debug.println("OUT: " + pcmAis.getFormat());
         line.start();
 
 
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[line.getBufferSize()];
         while (!later(time).come()) {
-            int r = pcmAis.read(buf, 0, 1024);
+            int r = pcmAis.read(buf, 0, buf.length);
             if (r < 0) {
                 break;
             }
@@ -237,23 +235,19 @@ Debug.println(file);
 Debug.println(ais.getFormat());
 
         Clip clip = AudioSystem.getClip();
-CountDownLatch cdl = new CountDownLatch(1);
-clip.addLineListener(ev -> {
- Debug.println(ev.getType());
- if (ev.getType() == LineEvent.Type.STOP)
-  cdl.countDown();
-});
+        CountDownLatch cdl = new CountDownLatch(1);
+        clip.addLineListener(ev -> {
+Debug.println(ev.getType());
+            if (ev.getType() == LineEvent.Type.STOP) cdl.countDown();
+        });
         clip.open(AudioSystem.getAudioInputStream(new AudioFormat(44100, 16, 2, true, false), ais));
-volume(clip, volume);
+        volume(clip, volume);
+
         clip.start();
-if (!System.getProperty("vavi.test", "").equals("ide")) {
- Thread.sleep(10 * 1000);
- clip.stop();
- Debug.println("Interrupt");
-} else {
- cdl.await();
-}
-        clip.drain();
+        if (!onIde) later(time, cdl::countDown);
+        cdl.await();
+
+        if (onIde) clip.drain(); // drain waits the clip done
         clip.stop();
         clip.close();
     }
@@ -263,26 +257,22 @@ if (!System.getProperty("vavi.test", "").equals("ide")) {
     void test5() throws Exception {
 
         AudioInputStream ais = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(aac));
-        Debug.println(ais.getFormat());
+Debug.println(ais.getFormat());
 
         Clip clip = AudioSystem.getClip();
         CountDownLatch cdl = new CountDownLatch(1);
-clip.addLineListener(ev -> {
+        clip.addLineListener(ev -> {
 Debug.println(ev.getType());
-if (ev.getType() == LineEvent.Type.STOP)
- cdl.countDown();
-});
+            if (ev.getType() == LineEvent.Type.STOP) cdl.countDown();
+        });
         clip.open(AudioSystem.getAudioInputStream(new AudioFormat(44100, 16, 2, true, false), ais));
         volume(clip, volume);
+
         clip.start();
-if (!System.getProperty("vavi.test", "").equals("ide")) {
- Thread.sleep(10 * 1000);
- clip.stop();
- Debug.println("Interrupt");
-} else {
- cdl.await();
-}
-        clip.drain();
+        if (!onIde) later(time, cdl::countDown);
+        cdl.await();
+
+        if (onIde) clip.drain(); // drain waits the clip done
         clip.stop();
         clip.close();
     }

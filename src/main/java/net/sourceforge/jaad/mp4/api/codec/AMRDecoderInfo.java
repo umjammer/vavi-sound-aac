@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.CodecSpecificBox;
 
 public class AMRDecoderInfo extends DecoderInfo {
 
-    private AMRSpecificBox box;
+    private final AMRSpecificBox box;
 
     public AMRDecoderInfo(CodecSpecificBox box) {
         this.box = (AMRSpecificBox) box;

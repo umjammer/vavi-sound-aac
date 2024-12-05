@@ -1,7 +1,7 @@
 package net.sourceforge.jaad.aac.tools;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.SampleFrequency;
@@ -16,7 +16,7 @@ import net.sourceforge.jaad.aac.syntax.ICSInfo;
  */
 public class ICPrediction {
 
-    static final Logger LOGGER = Logger.getLogger(ICPrediction.class.getName());
+    static final Logger logger = System.getLogger(ICPrediction.class.getName());
 
     private static final float SF_SCALE = 1.0f / -1024.0f;
     private static final float INV_SF_SCALE = 1.0f / SF_SCALE;
@@ -26,7 +26,7 @@ public class ICPrediction {
     private boolean predictorReset;
     private int predictorResetGroup;
     private boolean[] predictionUsed;
-    private PredictorState[] states;
+    private final PredictorState[] states;
 
     private static final class PredictorState {
 
@@ -54,7 +54,7 @@ public class ICPrediction {
         for (int sfb = 0; sfb < length; sfb++) {
             predictionUsed[sfb] = in.readBool();
         }
-        LOGGER.log(Level.WARNING, "ICPrediction: maxSFB={0}, maxPredSFB={1}", new int[] {maxSFB, maxPredSFB});
+        logger.log(Level.WARNING, "ICPrediction: maxSFB={0}, maxPredSFB={1}", maxSFB, maxPredSFB);
     }
 
     public void process(ICSInfo info, float[] data) {
@@ -75,7 +75,7 @@ public class ICPrediction {
     }
 
     private void resetPredictState(int index) {
-        if (states[index] == null) states[index] = new PredictorState();
+        if (states[index] == null) states[index] = new ICPrediction.PredictorState();
         states[index].r0 = 0;
         states[index].r1 = 0;
         states[index].cor0 = 0;

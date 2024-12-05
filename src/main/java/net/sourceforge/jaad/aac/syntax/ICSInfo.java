@@ -1,6 +1,7 @@
 package net.sourceforge.jaad.aac.syntax;
 
-import java.util.logging.Logger;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.DecoderConfig;
@@ -13,7 +14,7 @@ import net.sourceforge.jaad.aac.tools.Utils;
 
 public class ICSInfo implements ScaleFactorBands {
 
-    static final Logger LOGGER = Logger.getLogger(ICSInfo.class.getName());
+    private static final Logger logger = System.getLogger(ICSInfo.class.getName());
 
     // maximum numbers
     public static final int MAX_WINDOW_COUNT = 8;
@@ -48,7 +49,7 @@ public class ICSInfo implements ScaleFactorBands {
     final SampleFrequency sf;
     private final int frameLength;
     private WindowSequence windowSequence;
-    private int[] windowShape;
+    private final int[] windowShape;
     private int maxSFB;
     // prediction
     private boolean predictionDataPresent;
@@ -108,7 +109,7 @@ public class ICSInfo implements ScaleFactorBands {
     }
 
     private void readPredictionData(BitStream in, boolean commonWindow) throws AACException {
-        LOGGER.fine("prediction present");
+        logger.log(Level.DEBUG, "prediction present");
         Profile profile = config.getProfile();
 
         switch (profile) {

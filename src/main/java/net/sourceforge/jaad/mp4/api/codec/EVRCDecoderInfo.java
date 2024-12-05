@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.EVRCSpecificBox;
 
 public class EVRCDecoderInfo extends DecoderInfo {
 
-    private EVRCSpecificBox box;
+    private final EVRCSpecificBox box;
 
     public EVRCDecoderInfo(CodecSpecificBox box) {
         this.box = (EVRCSpecificBox) box;

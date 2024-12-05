@@ -2,7 +2,8 @@ package net.sourceforge.jaad.spi.javasound;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import javax.sound.sampled.AudioFormat;
 
 import net.sourceforge.jaad.SampleBuffer;
@@ -12,7 +13,7 @@ import net.sourceforge.jaad.adts.ADTSDemultiplexer;
 
 class PcmAudioInputStream extends AsynchronousAudioInputStream {
 
-    private static Logger logger = Logger.getLogger(PcmAudioInputStream.class.getName());
+    private static final Logger logger = System.getLogger(PcmAudioInputStream.class.getName());
 
     private final ADTSDemultiplexer adts;
     private final Decoder decoder;
@@ -34,7 +35,7 @@ class PcmAudioInputStream extends AsynchronousAudioInputStream {
             try {
                 decoder.decodeFrame(adts.readNextFrame(), sampleBuffer);
                 audioFormat = new AudioFormat(sampleBuffer.getSampleRate(), sampleBuffer.getBitsPerSample(), sampleBuffer.getChannels(), true, true);
-                logger.fine("format: " + audioFormat);
+                logger.log(Level.DEBUG, "format: " + audioFormat);
                 saved = sampleBuffer.getData();
             } catch (IOException e) {
                 return null;

@@ -6,11 +6,11 @@ class HFGeneration {
 
     private static class acorr_coef {
 
-        float[] r01 = new float[2];
-        float[] r02 = new float[2];
-        float[] r11 = new float[2];
-        float[] r12 = new float[2];
-        float[] r22 = new float[2];
+        final float[] r01 = new float[2];
+        final float[] r02 = new float[2];
+        final float[] r11 = new float[2];
+        final float[] r12 = new float[2];
+        final float[] r22 = new float[2];
         float det;
     }
 

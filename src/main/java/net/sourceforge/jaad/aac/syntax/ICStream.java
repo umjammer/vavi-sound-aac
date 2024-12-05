@@ -1,8 +1,8 @@
 package net.sourceforge.jaad.aac.syntax;
 
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.ChannelConfiguration;
@@ -18,7 +18,7 @@ import net.sourceforge.jaad.aac.tools.TNS;
 // TODO: apply pulse data
 public class ICStream implements HCB, ScaleFactorTable, IQTable {
 
-    static final Logger LOGGER = Logger.getLogger(ICStream.class.getName());
+    private static final Logger logger = System.getLogger(ICStream.class.getName());
 
     public static final int MAX_SECTIONS = 120;
 
@@ -45,7 +45,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
     private int reorderedSpectralDataLen, longestCodewordLen;
     private RVLC rvlc;
 
-    private float[] overlap;
+    private final float[] overlap;
 
     public ICStream(DecoderConfig config) {
         this.frameLength = config.getFrameLength();
@@ -68,14 +68,13 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
 
         decodeSectionData(in, conf.isSectionDataResilienceUsed());
 
-        // if(conf.isScalefactorResilienceUsed()) rvlc.decode(in, this, scaleFactors);
-        /*else*/
-        decodeScaleFactors(in);
+//        if (conf.isScalefactorResilienceUsed()) rvlc.decode(in, this, scaleFactors);
+        /* else */ decodeScaleFactors(in);
 
         pulseDataPresent = in.readBool();
         if (pulseDataPresent) {
             if (info.isEightShortFrame()) throw new AACException("pulse data not allowed for short frames");
-            LOGGER.log(Level.FINE, "PULSE");
+            logger.log(Level.DEBUG, "PULSE");
             decodePulseData(in);
         }
 
@@ -88,18 +87,18 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
         gainControlPresent = in.readBool();
         if (gainControlPresent) {
             if (gainControl == null) gainControl = new GainControl(frameLength);
-            LOGGER.log(Level.FINE, "GAIN");
+            logger.log(Level.DEBUG, "GAIN");
             gainControl.decode(in, info.getWindowSequence());
         }
 
         // RVLC spectral data
-        // if(conf.isScalefactorResilienceUsed()) rvlc.decodeScalefactors(this, in, scaleFactors);
+//        if(conf.isScalefactorResilienceUsed()) rvlc.decodeScalefactors(this, in, scaleFactors);
 
         if (conf.isSpectralDataResilienceUsed()) {
             int max = (conf.getChannelConfiguration() == ChannelConfiguration.STEREO) ? 6144 : 12288;
             reorderedSpectralDataLen = Math.max(in.readBits(14), max);
             longestCodewordLen = Math.max(in.readBits(6), 49);
-            // HCR.decodeReorderedSpectralData(this, in, data, conf.isSectionDataResilienceUsed());
+//            HCR.decodeReorderedSpectralData(this, in, data, conf.isSectionDataResilienceUsed());
         } else decodeSpectralData(in);
     }
 
@@ -258,7 +257,7 @@ public class ICStream implements HCB, ScaleFactorTable, IQTable {
         }
     }
 
-    // =========== gets ============
+    // getters
 
     /**
      * Does inverse quantization and applies the scale factors on the decoded

@@ -45,7 +45,7 @@ abstract public class SBR {
         return valid;
     }
 
-    int rate;
+    final int rate;
 
     int k0;
     int kx;
@@ -54,15 +54,15 @@ abstract public class SBR {
     int N_high;
     int N_low;
     int N_Q;
-    int[] N_L = new int[4];
-    int[] n = new int[2];
+    final int[] N_L = new int[4];
+    final int[] n = new int[2];
 
-    int[] f_master = new int[64];
-    int[][] f_table_res = new int[2][64];
-    int[] f_table_noise = new int[64];
-    int[][] f_table_lim = new int[4][64];
+    final int[] f_master = new int[64];
+    final int[][] f_table_res = new int[2][64];
+    final int[] f_table_noise = new int[64];
+    final int[][] f_table_lim = new int[4][64];
 
-    int[] table_map_k_to_g = new int[64];
+    final int[] table_map_k_to_g = new int[64];
 
     int kx_prev;
     int bsco;
@@ -73,14 +73,14 @@ abstract public class SBR {
     int frame;
 
     int noPatches;
-    int[] patchNoSubbands = new int[64];
-    int[] patchStartSubband = new int[64];
+    final int[] patchNoSubbands = new int[64];
+    final int[] patchStartSubband = new int[64];
 
     public final int numTimeSlotsRate;
     public final int numTimeSlots;
 
-    int tHFGen;
-    int tHFAdj;
+    final int tHFGen;
+    final int tHFAdj;
 
     /* to get it compiling
         /* we'll see during the coding of all the tools, whether these are all used or not.
@@ -90,7 +90,7 @@ abstract public class SBR {
     Header hdr = null;
     Header hdr_saved = null;
 
-    int bs_samplerate_mode;
+    final int bs_samplerate_mode;
 
     public SBR(DecoderConfig config) {
         this.config = config;
