@@ -50,10 +50,6 @@ class AacFormatConversionProviderTest {
         return Files.exists(Paths.get("local.properties"));
     }
 
-    static {
-        java.lang.System.setProperty("vavi.util.logging.VaviFormatter.extraClassMethod", "org\\.tritonus\\.share\\.TDebug#out");
-    }
-
     @BeforeEach
     void setup() throws Exception {
         if (localPropertiesExists()) {
