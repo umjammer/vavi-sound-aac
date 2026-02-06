@@ -55,6 +55,8 @@ class AacFormatConversionProviderTest {
         if (localPropertiesExists()) {
             PropsEntity.Util.bind(this);
         }
+
+Debug.print("volume: " + volume);
     }
 
     static boolean onIde = System.getProperty("vavi.test", "").equals("ide");

@@ -4,12 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
-import java.lang.System.Logger.Level;
-import java.lang.System.Logger;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -35,6 +35,9 @@ public class AACAudioFileReader extends AudioFileReader {
     public static final AudioFileFormat.Type MP4 = new AudioFileFormat.Type("MP4", "mp4");
     public static final AudioFormat.Encoding AAC_ENCODING = new AudioFormat.Encoding("AAC");
 
+    /**
+     * To avoid a buffer overflow, you should use {@link BufferedInputStream} with buffer size {@link Integer#MAX_VALUE - 8}.
+     */
     @Override
     public AudioFileFormat getAudioFileFormat(InputStream in) throws UnsupportedAudioFileException, IOException {
         return getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
@@ -62,7 +65,7 @@ logger.log(Level.TRACE, "enter: " + in.available());
             byte[] head = new byte[12];
             synchronized (this) {
                 in.mark(12);
-                in.read(head);
+                in.readNBytes(head, 0, head.length);
                 in.reset(); // (*a)
             }
 
@@ -75,7 +78,7 @@ logger.log(Level.DEBUG, "mark: " + whole);
             AudioFileFormat.Type type = AAC;
             if (new String(head, 4, 4).equals("ftyp")) {
 
-                // ⚠⚠⚠ in position must be zero ⚠⚠⚠
+                // ⚠️⚠️⚠️ in position must be zero ⚠️⚠️⚠️
                 MP4Input is = MP4Input.open(in);
                 MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
