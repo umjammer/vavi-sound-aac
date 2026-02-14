@@ -11,7 +11,7 @@ package net.sourceforge.jaad.aac.ps;
  */
 public class Filter2 implements Filter {
 
-    private static float[] p2_13_20 = {
+    private static final float[] p2_13_20 = {
             0.0f,
             0.01899487526049f,
             0.0f,

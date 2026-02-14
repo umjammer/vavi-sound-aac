@@ -26,7 +26,7 @@ import net.sourceforge.jaad.mp4.boxes.BoxImpl;
 public class TrackReferenceBox extends BoxImpl {
 
     private String referenceType;
-    private List<Long> trackIDs;
+    private final List<Long> trackIDs;
 
     public TrackReferenceBox() {
         super("Track Reference Box");

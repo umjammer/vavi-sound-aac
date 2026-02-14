@@ -3,8 +3,8 @@ package net.sourceforge.jaad.aac.syntax;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.DecoderConfig;
@@ -28,7 +28,7 @@ import net.sourceforge.jaad.aac.tools.MSMask;
  */
 public class CPE extends ChannelElement {
 
-    static final Logger LOGGER = Logger.getLogger(CPE.class.getName());
+    private static final Logger logger = System.getLogger(CPE.class.getName());
 
     public static final Type TYPE = Type.CPE;
 
@@ -59,9 +59,10 @@ public class CPE extends ChannelElement {
     public static final int MAX_MS_MASK = 128;
 
     private MSMask msMask;
-    private boolean[] msUsed;
+    private final boolean[] msUsed;
     private boolean commonWindow;
-    ICStream icsL, icsR;
+    final ICStream icsL;
+    final ICStream icsR;
 
     public CPE(DecoderConfig config, ChannelTag tag) {
         super(config, tag);
@@ -93,7 +94,7 @@ public class CPE extends ChannelElement {
         ICSInfo infoL = icsL.getInfo();
         ICSInfo infoR = icsR.getInfo();
 
-        LOGGER.log(Level.FINER, () -> String.format("CPE %s", commonWindow ? "common" : ""));
+        logger.log(Level.TRACE, () -> "CPE %s".formatted(commonWindow ? "common" : ""));
 
         if (commonWindow) {
             infoL.decode(in, commonWindow);
@@ -198,7 +199,7 @@ public class CPE extends ChannelElement {
         // SBR
         if (isSBRPresent() && config.isSBREnabled()) {
             if (dataL.length == config.getFrameLength())
-                LOGGER.log(Level.WARNING, "SBR data present, but buffer has normal size!");
+                logger.log(Level.WARNING, "SBR data present, but buffer has normal size!");
 
             getSBR().process(dataL, dataR);
         } else if (dataL.length != config.getFrameLength()) {

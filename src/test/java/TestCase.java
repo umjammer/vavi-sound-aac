@@ -40,11 +40,16 @@ import static vavix.util.DelayedWorker.later;
  * @version 0.00 2022/02/19 umjammer initial version <br>
  */
 @PropsEntity(url = "file:local.properties")
-public class Test1 {
+public class TestCase {
 
     static boolean localPropertiesExists() {
         return Files.exists(Paths.get("local.properties"));
     }
+
+    static long time = System.getProperty("vavi.test", "").equals("ide") ? 1000 * 1000 : 9 * 1000;
+
+    @Property(name = "vavi.test.volume")
+    double volume = 0.2;
 
     @Property
     String mp4 = "src/test/resources/test.m4a";
@@ -56,18 +61,9 @@ public class Test1 {
         }
     }
 
-    static long time;
-
-    static final double volume = Double.parseDouble(System.getProperty("vavi.test.volume",  "0.2"));
-
-    static {
-        time = System.getProperty("vavi.test", "").equals("ide") ? 1000 * 1000 : 9 * 1000;
-    }
-
     @Test
     void decodeMP4() throws Exception {
         InputStream in = Files.newInputStream(Paths.get(mp4));
-        SourceDataLine line = null;
         // create container
         MP4Input is = MP4Input.open(in);
         MP4Container cont = new MP4Container(is);
@@ -79,7 +75,7 @@ public class Test1 {
         // create audio format
         AudioFormat aufmt = new AudioFormat(
             track.getSampleRate(), track.getSampleSize(), track.getChannelCount(), true, true);
-        line = AudioSystem.getSourceDataLine(aufmt);
+        SourceDataLine line = AudioSystem.getSourceDataLine(aufmt);
         line.open();
         volume(line, volume);
         line.start();
@@ -88,10 +84,9 @@ public class Test1 {
         Decoder dec = Decoder.create(track.getDecoderSpecificInfo().getData());
 
         // decode
-        Frame frame;
         SampleBuffer buf = new SampleBuffer();
         while (track.hasMoreFrames() && !later(time).come()) {
-            frame = track.readNextFrame();
+            Frame frame = track.readNextFrame();
             dec.decodeFrame(frame.getData(), buf);
             byte[] b = buf.getData();
             line.write(b, 0, b.length);
@@ -100,7 +95,7 @@ public class Test1 {
 
     @Test
     void decodeAAC() throws Exception {
-        InputStream in = Test1.class.getResourceAsStream("/test.aac");
+        InputStream in = TestCase.class.getResourceAsStream("/test.aac");
         SourceDataLine line = null;
         ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
         Decoder dec = Decoder.create(adts.getDecoderInfo());

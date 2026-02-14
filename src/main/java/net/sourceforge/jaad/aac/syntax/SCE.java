@@ -2,8 +2,8 @@ package net.sourceforge.jaad.aac.syntax;
 
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.DecoderConfig;
 import net.sourceforge.jaad.aac.filterbank.FilterBank;
@@ -22,7 +22,7 @@ import net.sourceforge.jaad.aac.sbr.SBR1;
  */
 class SCE extends ChannelElement {
 
-    static final Logger LOGGER = Logger.getLogger(SCE.class.getName());
+    static final Logger logger = System.getLogger(SCE.class.getName());
 
     public static final Type TYPE = Type.SCE;
 
@@ -124,7 +124,7 @@ class SCE extends ChannelElement {
         // SBR
         if (isSBRPresent() && config.isSBREnabled()) {
             if (dataL.length != config.getSampleLength())
-                LOGGER.log(Level.WARNING, "SBR data present, but buffer has normal size!");
+                logger.log(Level.WARNING, "SBR data present, but buffer has normal size!");
 
             float[] dataR = getDataR();
             getSBR().process(dataL, dataR);

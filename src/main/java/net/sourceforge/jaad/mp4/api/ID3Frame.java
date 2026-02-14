@@ -97,9 +97,12 @@ class ID3Frame {
     private static final String[] TEXT_ENCODINGS = {"ISO-8859-1", "UTF-16"/*BOM*/, "UTF-16", "UTF-8"};
     private static final String[] VALID_TIMESTAMPS = {"yyyy, yyyy-MM", "yyyy-MM-dd", "yyyy-MM-ddTHH", "yyyy-MM-ddTHH:mm", "yyyy-MM-ddTHH:mm:ss"};
     private static final String UNKNOWN_LANGUAGE = "xxx";
-    private long size;
-    private int id, flags, groupID, encryptionMethod;
-    private byte[] data;
+    private final long size;
+    private final int id;
+    private final int flags;
+    private int groupID;
+    private int encryptionMethod;
+    private final byte[] data;
 
     ID3Frame(DataInputStream in) throws IOException {
         id = in.readInt();

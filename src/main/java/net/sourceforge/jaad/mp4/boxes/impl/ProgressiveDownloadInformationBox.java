@@ -22,7 +22,7 @@ import net.sourceforge.jaad.mp4.boxes.FullBox;
  */
 public class ProgressiveDownloadInformationBox extends FullBox {
 
-    private Map<Long, Long> pairs;
+    private final Map<Long, Long> pairs;
 
     public ProgressiveDownloadInformationBox() {
         super("Progressive Download Information Box");

@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.CodecSpecificBox;
 
 public class AVCDecoderInfo extends DecoderInfo {
 
-    private AVCSpecificBox box;
+    private final AVCSpecificBox box;
 
     public AVCDecoderInfo(CodecSpecificBox box) {
         this.box = (AVCSpecificBox) box;

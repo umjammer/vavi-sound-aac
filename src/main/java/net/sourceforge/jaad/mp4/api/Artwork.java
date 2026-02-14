@@ -3,8 +3,8 @@ package net.sourceforge.jaad.mp4.api;
 import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 import javax.imageio.ImageIO;
 
 import net.sourceforge.jaad.mp4.boxes.impl.meta.ITunesMetadataBox.DataType;
@@ -12,7 +12,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.meta.ITunesMetadataBox.DataType;
 
 public class Artwork {
 
-    static final Logger LOGGER = Logger.getLogger(Artwork.class.getName());
+    private static final Logger logger = System.getLogger(Artwork.class.getName());
 
     // TODO: need this enum? it just copies the DataType
     public enum Type {
@@ -31,8 +31,8 @@ public class Artwork {
         }
     }
 
-    private Type type;
-    private byte[] data;
+    private final Type type;
+    private final byte[] data;
     private Image image;
 
     Artwork(Type type, byte[] data) {
@@ -70,7 +70,7 @@ public class Artwork {
             if (image == null) image = ImageIO.read(new ByteArrayInputStream(data));
             return image;
         } catch (IOException e) {
-            Logger.getLogger("MP4 API").log(Level.SEVERE, "Artwork.getImage failed: {0}", e.toString());
+            logger.log(Level.ERROR, "Artwork.getImage failed: " + e.getMessage(), e);
             throw e;
         }
     }

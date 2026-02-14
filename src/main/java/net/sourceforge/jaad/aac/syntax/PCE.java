@@ -1,7 +1,8 @@
 package net.sourceforge.jaad.aac.syntax;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.List;
-import java.util.logging.Logger;
 
 import net.sourceforge.jaad.aac.AACException;
 import net.sourceforge.jaad.aac.AudioDecoderInfo;
@@ -13,7 +14,7 @@ import net.sourceforge.jaad.aac.SampleFrequency;
 
 public class PCE implements Element, AudioDecoderInfo {
 
-    static final Logger LOGGER = Logger.getLogger(PCE.class.getName());
+    static final Logger logger = System.getLogger(PCE.class.getName());
 
     public static final Type TYPE = Type.PCE;
 
@@ -112,15 +113,15 @@ public class PCE implements Element, AudioDecoderInfo {
         validCCElementsCount = in.readBits(4);
 
         if (monoMixdown = in.readBool()) {
-            LOGGER.warning("mono mixdown present, but not yet supported");
+            logger.log(Level.WARNING, "mono mixdown present, but not yet supported");
             monoMixdownElementNumber = in.readBits(4);
         }
         if (stereoMixdown = in.readBool()) {
-            LOGGER.warning("stereo mixdown present, but not yet supported");
+            logger.log(Level.WARNING, "stereo mixdown present, but not yet supported");
             stereoMixdownElementNumber = in.readBits(4);
         }
         if (matrixMixdownIDXPresent = in.readBool()) {
-            LOGGER.warning("matrix mixdown present, but not yet supported");
+            logger.log(Level.WARNING, "matrix mixdown present, but not yet supported");
             matrixMixdownIDX = in.readBits(2);
             pseudoSurround = in.readBool();
         }

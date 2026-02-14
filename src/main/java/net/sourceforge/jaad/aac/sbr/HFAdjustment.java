@@ -12,9 +12,9 @@ class HFAdjustment implements NoiseTable {
     private static final float[] limGain = {0.5f, 1.0f, 2.0f, 1e10f};
     private static final float EPS = 1e-12f;
 
-    private float[][] G_lim_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
-    private float[][] Q_M_lim_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
-    private float[][] S_M_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
+    private final float[][] G_lim_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
+    private final float[][] Q_M_lim_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
+    private final float[][] S_M_boost = new float[SBR.MAX_L_E][SBR.MAX_M];
 
     public static void hf_adjustment(SBR sbr, float[][][] Xsbr, Channel ch) {
         HFAdjustment adj = new HFAdjustment();

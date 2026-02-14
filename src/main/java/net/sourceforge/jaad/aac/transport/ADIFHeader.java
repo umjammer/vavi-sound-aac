@@ -9,11 +9,11 @@ public final class ADIFHeader {
     private static final long ADIF_ID = 0x41444946; // 'ADIF'
     private long id;
     private boolean copyrightIDPresent;
-    private byte[] copyrightID;
     private boolean originalCopy, home, bitstreamType;
     private int bitrate;
     private int pceCount;
     private int[] adifBufferFullness;
+    private final byte[] copyrightID;
     private PCE[] pces;
 
     public static boolean isPresent(BitStream in) {

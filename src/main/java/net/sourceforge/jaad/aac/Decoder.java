@@ -1,8 +1,8 @@
 package net.sourceforge.jaad.aac;
 
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 import javax.sound.sampled.AudioFormat;
 
 import net.sourceforge.jaad.SampleBuffer;
@@ -19,7 +19,7 @@ import net.sourceforge.jaad.aac.transport.ADIFHeader;
  */
 public class Decoder {
 
-    static final Logger LOGGER = Logger.getLogger(Decoder.class.getName());
+    static final Logger logger = System.getLogger(Decoder.class.getName());
 
     private final DecoderConfig config;
     private final SyntacticElements syntacticElements;
@@ -73,9 +73,9 @@ public class Decoder {
 
         syntacticElements = new SyntacticElements(config);
 
-        LOGGER.log(Level.FINER, "profile: {0}", config.getProfile());
-        LOGGER.log(Level.FINER, "sf: {0}", config.getSampleFrequency() != null ? config.getSampleFrequency().getFrequency() : null);
-        LOGGER.log(Level.FINER, "channels: {0}", config.getChannelConfiguration().getDescription());
+        logger.log(Level.TRACE, "profile: {0}", config.getProfile());
+        logger.log(Level.TRACE, "sf: {0}", config.getSampleFrequency() != null ? config.getSampleFrequency().getFrequency() : null);
+        logger.log(Level.TRACE, "channels: {0}", config.getChannelConfiguration().getDescription());
     }
 
     public DecoderConfig getConfig() {
@@ -95,11 +95,11 @@ public class Decoder {
         BitStream in = BitStream.open(frame);
 
         try {
-            LOGGER.log(Level.FINER, () -> String.format("frame %d @%d", frames, 8 * frame.length));
+            logger.log(Level.TRACE, () -> "frame %d @%d".formatted(frames, 8 * frame.length));
             decode(in, buffer);
-            LOGGER.log(Level.FINEST, () -> String.format("left %d", in.getBitsLeft()));
+            logger.log(Level.TRACE, () -> "left %d".formatted(in.getBitsLeft()));
         } catch (EOSException e) {
-            LOGGER.log(Level.WARNING, "unexpected end of frame", e);
+            logger.log(Level.WARNING, "unexpected end of frame", e);
         } finally {
             ++frames;
         }

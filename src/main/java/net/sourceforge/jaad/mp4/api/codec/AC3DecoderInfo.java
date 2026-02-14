@@ -7,7 +7,7 @@ import net.sourceforge.jaad.mp4.boxes.impl.sampleentries.codec.CodecSpecificBox;
 
 public class AC3DecoderInfo extends DecoderInfo {
 
-    private AC3SpecificBox box;
+    private final AC3SpecificBox box;
 
     public AC3DecoderInfo(CodecSpecificBox box) {
         this.box = (AC3SpecificBox) box;

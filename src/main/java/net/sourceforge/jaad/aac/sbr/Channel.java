@@ -35,33 +35,33 @@ class Channel {
     int L_E_prev;
     int L_Q;
 
-    int[] t_E = new int[SBR.MAX_L_E + 1];
-    int[] t_Q = new int[3];
-    int[] f = new int[SBR.MAX_L_E + 1];
+    final int[] t_E = new int[SBR.MAX_L_E + 1];
+    final int[] t_Q = new int[3];
+    final int[] f = new int[SBR.MAX_L_E + 1];
     int f_prev;
 
-    float[][] G_temp_prev = new float[5][64];
-    float[][] Q_temp_prev = new float[5][64];
+    final float[][] G_temp_prev = new float[5][64];
+    final float[][] Q_temp_prev = new float[5][64];
     int GQ_ringbuf_index = 0;
 
-    int[][] E = new int[64][SBR.MAX_L_E];
-    int[] E_prev = new int[64];
-    float[][] E_orig = new float[64][SBR.MAX_L_E];
-    float[][] E_curr = new float[64][SBR.MAX_L_E];
-    int[][] Q = new int[64][2];
-    float[][] Q_div = new float[64][2];
-    float[][] Q_div2 = new float[64][2];
-    int[] Q_prev = new int[64];
+    final int[][] E = new int[64][SBR.MAX_L_E];
+    final int[] E_prev = new int[64];
+    final float[][] E_orig = new float[64][SBR.MAX_L_E];
+    final float[][] E_curr = new float[64][SBR.MAX_L_E];
+    final int[][] Q = new int[64][2];
+    final float[][] Q_div = new float[64][2];
+    final float[][] Q_div2 = new float[64][2];
+    final int[] Q_prev = new int[64];
 
     int l_A;
 
-    int[] bs_invf_mode = new int[SBR.MAX_L_E];
-    int[] bs_invf_mode_prev = new int[SBR.MAX_L_E];
-    float[] bwArray = new float[64];
-    float[] bwArray_prev = new float[64];
+    final int[] bs_invf_mode = new int[SBR.MAX_L_E];
+    final int[] bs_invf_mode_prev = new int[SBR.MAX_L_E];
+    final float[] bwArray = new float[64];
+    final float[] bwArray_prev = new float[64];
 
-    int[] bs_add_harmonic = new int[64];
-    int[] bs_add_harmonic_prev = new int[64];
+    final int[] bs_add_harmonic = new int[64];
+    final int[] bs_add_harmonic_prev = new int[64];
 
     int index_noise_prev;
     int psi_is_prev;
@@ -71,17 +71,17 @@ class Channel {
     final AnalysisFilterbank qmfa;
 
     public static final int MAX_NTSRHFG = 40; // maximum of number_time_slots * rate + HFGen. 16*2+8
-    float[][][] Xsbr = new float[MAX_NTSRHFG][64][2];
+    final float[][][] Xsbr = new float[MAX_NTSRHFG][64][2];
 
     FrameClass bs_frame_class;
-    int[] bs_rel_bord = new int[9];
-    int[] bs_rel_bord_0 = new int[9];
-    int[] bs_rel_bord_1 = new int[9];
+    final int[] bs_rel_bord = new int[9];
+    final int[] bs_rel_bord_0 = new int[9];
+    final int[] bs_rel_bord_1 = new int[9];
     int bs_pointer;
     int bs_num_rel_0;
     int bs_num_rel_1;
-    int[] bs_df_env = new int[9];
-    int[] bs_df_noise = new int[3];
+    final int[] bs_df_env = new int[9];
+    final int[] bs_df_noise = new int[3];
 
     boolean bs_add_harmonic_flag;
     boolean bs_add_harmonic_flag_prev;

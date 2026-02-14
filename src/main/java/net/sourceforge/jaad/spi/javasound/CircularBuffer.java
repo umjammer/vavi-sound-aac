@@ -65,7 +65,7 @@ class CircularBuffer {
                 while (availableRead() == 0) {
                     try {
                         wait();
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignore) {
                     }
                 }
                 int available = Math.min(availableRead(), remaining);
@@ -95,7 +95,7 @@ class CircularBuffer {
                 while (availableWrite() == 0) {
                     try {
                         wait();
-                    } catch (InterruptedException e) {
+                    } catch (InterruptedException ignore) {
                     }
                 }
                 int available = Math.min(availableWrite(), remaining);

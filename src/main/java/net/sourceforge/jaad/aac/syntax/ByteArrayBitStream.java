@@ -1,14 +1,14 @@
 package net.sourceforge.jaad.aac.syntax;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.lang.System.Logger.Level;
+import java.lang.System.Logger;
 
 import net.sourceforge.jaad.aac.EOSException;
 
 
 public class ByteArrayBitStream implements BitStream {
 
-    static final Logger LOGGER = Logger.getLogger(ByteArrayBitStream.class.getName());
+    static final Logger logger = System.getLogger(ByteArrayBitStream.class.getName());
 
     private static final int WORD_BITS = 32;
     private static final int WORD_BYTES = 4;
@@ -102,7 +102,7 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public void byteAlign() {
-        LOGGER.log(Level.FINER, "@%d byteAlign: %d", position);
+//        logger.log(Level.TRACE, "@%1$d byteAlign: %1$d".formatted(position));
         int toFlush = bitsCached & 7;
         if (toFlush > 0)
             skipBits(toFlush);
@@ -147,7 +147,7 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public int readBits(int n) {
-        LOGGER.log(n == 0 ? Level.FINEST : Level.FINER, "@%d readBits: %d", n);
+        logger.log(Level.TRACE, () -> "@%d readBits: %d".formatted(position, n));
 
         if (getBitsLeft() < n)
             throw new EOSException("stream overrun");
@@ -170,7 +170,7 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public int readBit() {
-        LOGGER.log(Level.FINER, "@%d readBit: %d", 1);
+        logger.log(Level.TRACE, () -> "@%d readBit: %d".formatted(position, 1));
 
         if (getBitsLeft() < 1)
             throw new EOSException("stream overrun");
@@ -196,7 +196,8 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public int peekBits(int n) {
-        LOGGER.log(Level.FINER, "@%d peekBits: %d", n);
+        int nn = n;
+        logger.log(Level.TRACE, () -> "@%d peekBits: %d".formatted(position, nn));
 
         if (getBitsLeft() < n)
             throw new EOSException("stream overrun");
@@ -215,7 +216,7 @@ public class ByteArrayBitStream implements BitStream {
     }
 
     public int peekBit() {
-        LOGGER.log(Level.FINER, "@%d peekBit: %d", 1);
+        logger.log(Level.TRACE, () -> "@%d peekBit: %d".formatted(position, 1));
 
         if (getBitsLeft() < 1)
             throw new EOSException("stream overrun");
@@ -232,7 +233,8 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public void skipBits(int n) {
-        LOGGER.log(Level.FINER, "@%d skipBits: %d", n);
+        int nn = n;
+        logger.log(Level.TRACE, () -> "@%d skipBits: %d".formatted(position, nn));
 
         if (getBitsLeft() < n)
             throw new EOSException("stream overrun");
@@ -258,7 +260,7 @@ public class ByteArrayBitStream implements BitStream {
 
     @Override
     public void skipBit() {
-        LOGGER.log(Level.FINER, "@%d skipBit: %d", 1);
+        logger.log(Level.TRACE, () -> "@%d skipBit: %d".formatted(position, 1));
 
         if (getBitsLeft() < 1)
             throw new EOSException("end of stream");

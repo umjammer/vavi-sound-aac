@@ -25,14 +25,14 @@ public class PSImpl implements PS {
 
     final IIDData iid = new IIDData();
     final ICCData icc = new ICCData();
-    Extension ext = new Extension(iid);
+    final Extension ext = new Extension(iid);
 
     FBType fbt = FBType.T20;
 
     // bitstream parameters
     boolean var_borders;
     int num_env;
-    int[] border_position = new int[MAX_PS_ENVELOPES + 1];
+    final int[] border_position = new int[MAX_PS_ENVELOPES + 1];
 
     /** ps data was correctly read */
     boolean ps_data_available;
@@ -46,33 +46,33 @@ public class PSImpl implements PS {
 
     // filter delay handling
     int saved_delay;
-    int[] delay_buf_index_ser = new int[NO_ALLPASS_LINKS];
-    int[] num_sample_delay_ser = new int[NO_ALLPASS_LINKS];
+    final int[] delay_buf_index_ser = new int[NO_ALLPASS_LINKS];
+    final int[] num_sample_delay_ser = new int[NO_ALLPASS_LINKS];
     static final int SHORT_DELAY_BAND = 35;
 
-    int[] delay_D = new int[64];
-    int[] delay_buf_index_delay = new int[64];
+    final int[] delay_D = new int[64];
+    final int[] delay_buf_index_delay = new int[64];
     /** 14 samples delay max, 64 QMF channels */
-    float[][][] delay_Qmf = new float[14][64][2];
+    final float[][][] delay_Qmf = new float[14][64][2];
     /** 2 samples delay max (SubQmf is always allpass filtered) */
-    float[][][] delay_SubQmf = new float[2][32][2];
+    final float[][][] delay_SubQmf = new float[2][32][2];
     /** 5 samples delay max (table 8.34), 64 QMF channels */
-    float[][][][] delay_Qmf_ser = new float[NO_ALLPASS_LINKS][5][64][2];
+    final float[][][][] delay_Qmf_ser = new float[NO_ALLPASS_LINKS][5][64][2];
     /** 5 samples delay max (table 8.34) */
-    float[][][][] delay_SubQmf_ser = new float[NO_ALLPASS_LINKS][5][32][2];
+    final float[][][][] delay_SubQmf_ser = new float[NO_ALLPASS_LINKS][5][32][2];
 
     // transients
     static final float ALPHA_DECAY = 0.76592833836465f;
     static final float ALPHA_SMOOTH = 0.25f;
-    float[] P_PeakDecayNrg = new float[34];
-    float[] P_prev = new float[34];
-    float[] P_SmoothPeakDecayDiffNrg_prev = new float[34];
+    final float[] P_PeakDecayNrg = new float[34];
+    final float[] P_prev = new float[34];
+    final float[] P_SmoothPeakDecayDiffNrg_prev = new float[34];
 
     // mixing and phase
-    float[][] h11_prev = new float[50][2];
-    float[][] h12_prev = new float[50][2];
-    float[][] h21_prev = new float[50][2];
-    float[][] h22_prev = new float[50][2];
+    final float[][] h11_prev = new float[50][2];
+    final float[][] h12_prev = new float[50][2];
+    final float[][] h21_prev = new float[50][2];
+    final float[][] h22_prev = new float[50][2];
     int phase_hist;
 
     public PSImpl(int frameLen) {

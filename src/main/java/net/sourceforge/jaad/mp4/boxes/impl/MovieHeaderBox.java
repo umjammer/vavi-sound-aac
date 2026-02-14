@@ -17,7 +17,7 @@ public class MovieHeaderBox extends FullBox {
 
     private long creationTime, modificationTime, timeScale, duration;
     private double rate, volume;
-    private double[] matrix;
+    private final double[] matrix;
     private long nextTrackID;
 
     public MovieHeaderBox() {

@@ -3,6 +3,8 @@ package net.sourceforge.jaad.mp4.api;
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -11,8 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sourceforge.jaad.mp4.boxes.Box;
 import net.sourceforge.jaad.mp4.boxes.BoxTypes;
@@ -24,6 +24,8 @@ import net.sourceforge.jaad.mp4.boxes.impl.meta.ThreeGPPAlbumBox;
 import net.sourceforge.jaad.mp4.boxes.impl.meta.ThreeGPPLocationBox;
 import net.sourceforge.jaad.mp4.boxes.impl.meta.ThreeGPPMetadataBox;
 
+import static java.lang.System.getLogger;
+
 
 /**
  * This class contains the metadata for a movie. It parses different metadata
@@ -34,6 +36,8 @@ import net.sourceforge.jaad.mp4.boxes.impl.meta.ThreeGPPMetadataBox;
  * @author in-somnia
  */
 public class MetaData {
+
+    private static final Logger logger = getLogger(MetaData.class.getName());
 
     public static class Field<T> {
 
@@ -82,7 +86,7 @@ public class MetaData {
         public static final Field<String> ARTIST_SORT_TEXT = new Field<>("Artist Sort Text");
         public static final Field<String> TITLE_SORT_TEXT = new Field<>("Title Sort Text");
         public static final Field<String> ALBUM_SORT_TEXT = new Field<>("Album Sort Text");
-        private String name;
+        private final String name;
 
         private Field(String name) {
             this.name = name;
@@ -229,13 +233,15 @@ public class MetaData {
             "disc", "totaldiscs", "url", "copyright", "comment", "lyrics",
             "credits", "rating", "label", "composer", "isrc", "mood", "tempo"
     };
-    private Map<Field<?>, Object> contents;
+    private final Map<Field<?>, Object> contents;
 
     MetaData() {
         contents = new HashMap<>();
     }
 
-    /*moov.udta:
+    /**
+     * <pre>
+     * moov.udta:
      * -3gpp boxes
      * -meta
      * --ilst
@@ -243,6 +249,7 @@ public class MetaData {
      * --meta (no container!)
      * --tseg
      * ---tshd
+     * </pre>
      */
     void parse(Box udta, Box meta) {
         // standard boxes
@@ -263,8 +270,10 @@ public class MetaData {
             parseNeroTags((NeroMetadataTagsBox) meta.getChild(BoxTypes.NERO_METADATA_TAGS_BOX));
     }
 
-    // parses specific children of 'udta': 3GPP
-    // TODO: handle language codes
+    /**
+     * Parses specific children of 'udta': 3GPP
+     * TODO: handle language codes
+     */
     private void parse3GPPData(Box udta) {
         if (udta.hasChild(BoxTypes.THREE_GPP_ALBUM_BOX)) {
             ThreeGPPAlbumBox albm = (ThreeGPPAlbumBox) udta.getChild(BoxTypes.THREE_GPP_ALBUM_BOX);
@@ -286,14 +295,14 @@ public class MetaData {
             try {
                 put(Field.RELEASE_DATE, new Date(Integer.parseInt(value)));
             } catch (NumberFormatException e) {
-                Logger.getLogger("MP4 API").log(Level.FINE, "unable to parse 3GPP metadata: recording year value: {0}", value);
+                logger.log(Level.DEBUG, "unable to parse 3GPP metadata: recording year value: {0}", value);
             }
         }
         if (udta.hasChild(BoxTypes.THREE_GPP_TITLE_BOX))
             put(Field.TITLE, ((ThreeGPPMetadataBox) udta.getChild(BoxTypes.THREE_GPP_TITLE_BOX)).getData());
     }
 
-    // parses children of 'ilst': iTunes
+    /** Parses children of 'ilst': iTunes */
     private void parseITunesMetaData(Box ilst) {
         List<Box> boxes = ilst.getChildren();
         long l;
@@ -358,7 +367,7 @@ public class MetaData {
         }
     }
 
-    // parses children of ID3
+    /** parses children of ID3 */
     private void parseID3(ID3TagBox box) {
         try {
             DataInputStream in = new DataInputStream(new ByteArrayInputStream(box.getID3Data()));
@@ -422,11 +431,11 @@ public class MetaData {
                 }
             }
         } catch (IOException e) {
-            Logger.getLogger("MP4 API").log(Level.SEVERE, "Exception in MetaData.parseID3: {0}", e.toString());
+            logger.log(Level.ERROR, "Exception in MetaData.parseID3: ", e.getMessage(), e);
         }
     }
 
-    // parses children of 'tags': Nero
+    /** Parses children of 'tags': Nero */
     private void parseNeroTags(NeroMetadataTagsBox tags) {
         Map<String, String> pairs = tags.getPairs();
         String val;
@@ -458,7 +467,7 @@ public class MetaData {
                 if (key.equals(NERO_TAGS[18])) ; // mood
                 if (key.equals(NERO_TAGS[19])) put(Field.TEMPO, Integer.parseInt(val));
             } catch (NumberFormatException e) {
-                Logger.getLogger("MP4 API").log(Level.SEVERE, "Exception in MetaData.parseNeroTags: {0}", e.toString());
+                logger.log(Level.ERROR, "Exception in MetaData.parseNeroTags: " + e.getMessage(), e);
             }
         }
     }

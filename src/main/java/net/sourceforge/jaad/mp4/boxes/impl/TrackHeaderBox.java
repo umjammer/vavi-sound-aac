@@ -30,7 +30,7 @@ public class TrackHeaderBox extends FullBox {
     private long creationTime, modificationTime, duration;
     private int trackID, layer, alternateGroup;
     private double volume, width, height;
-    private double[] matrix;
+    private final double[] matrix;
 
     public TrackHeaderBox() {
         super("Track Header Box");

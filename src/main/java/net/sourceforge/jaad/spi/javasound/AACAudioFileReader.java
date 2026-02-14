@@ -4,12 +4,12 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -27,14 +27,25 @@ import net.sourceforge.jaad.mp4.api.Track;
 import vavi.sound.LimitedInputStream;
 
 
+/**
+ * system property
+ * <li>{@code net.sourceforge.jaad.bufferSize} ... max buffer size for parse, default 20MiB</li>
+ */
 public class AACAudioFileReader extends AudioFileReader {
 
-    private static Logger logger = Logger.getLogger(AACAudioFileReader.class.getName());
+    private static final Logger logger = System.getLogger(AACAudioFileReader.class.getName());
 
     public static final AudioFileFormat.Type AAC = new AudioFileFormat.Type("AAC", "aac");
     public static final AudioFileFormat.Type MP4 = new AudioFileFormat.Type("MP4", "mp4");
     public static final AudioFormat.Encoding AAC_ENCODING = new AudioFormat.Encoding("AAC");
 
+    /** max buffer size for parsing aac */
+    public static final int MAX_BUFFER_SIZE = Integer.parseInt(System.getProperty("net.sourceforge.jaad.bufferSize", "20971520"));
+
+    /**
+     * To avoid a buffer overflow, you should use {@link BufferedInputStream} with enough buffer size.
+     * @see #MAX_BUFFER_SIZE
+     */
     @Override
     public AudioFileFormat getAudioFileFormat(InputStream in) throws UnsupportedAudioFileException, IOException {
         return getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
@@ -43,48 +54,54 @@ public class AACAudioFileReader extends AudioFileReader {
     @Override
     public AudioFileFormat getAudioFileFormat(URL url) throws UnsupportedAudioFileException, IOException {
         try (InputStream in = url.openStream()) {
-            return getAudioFileFormat(in instanceof BufferedInputStream ? in : new BufferedInputStream(in, Integer.MAX_VALUE - 8));
+            return getAudioFileFormat(in instanceof BufferedInputStream ? in : new BufferedInputStream(in, MAX_BUFFER_SIZE));
         }
     }
 
     @Override
     public AudioFileFormat getAudioFileFormat(File file) throws UnsupportedAudioFileException, IOException {
         try (InputStream in = Files.newInputStream(file.toPath())) {
-            return getAudioFileFormat(new BufferedInputStream(in, Integer.MAX_VALUE - 8), (int) file.length());
+            return getAudioFileFormat(new BufferedInputStream(in, Math.min(MAX_BUFFER_SIZE, (int) file.length())), (int) file.length());
         }
     }
 
     private AudioFileFormat getAudioFileFormat(InputStream in, int mediaLength) throws UnsupportedAudioFileException, IOException {
-logger.finer("enter: " + in.available());
+logger.log(Level.TRACE, "enter: " + in.available());
         try {
             if (!in.markSupported()) throw new IllegalArgumentException("mark not supported");
 
             byte[] head = new byte[12];
             synchronized (this) {
                 in.mark(12);
-                in.read(head);
+                in.readNBytes(head, 0, head.length);
                 in.reset(); // (*a)
             }
 
             int whole = in.available();
             in.mark(whole);
-logger.fine("mark: " + whole);
+logger.log(Level.DEBUG, "mark: " + whole);
             in = new LimitedInputStream(in);
 
             boolean canHandle;
             AudioFileFormat.Type type = AAC;
+            float sampleRate = AudioSystem.NOT_SPECIFIED;
+            int channels = AudioSystem.NOT_SPECIFIED;
+            int sampleSizeInBits = AudioSystem.NOT_SPECIFIED;
             if (new String(head, 4, 4).equals("ftyp")) {
 
-                // ⚠⚠⚠ in position must be zero ⚠⚠⚠
+                // ⚠️⚠️⚠️ in position must be zero ⚠️⚠️⚠️
                 MP4Input is = MP4Input.open(in);
                 MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
                 List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
-                if (tracks.isEmpty()) throw new IllegalArgumentException("movie does not contain any AAC track");
-                Track track = tracks.get(0);
+                if (tracks.isEmpty()) throw new net.sourceforge.jaad.mp4.MP4Exception("movie does not contain any AAC track");
+                AudioTrack track = (AudioTrack) tracks.get(0);
+                sampleRate = track.getSampleRate();
+                channels = track.getChannelCount();
+                sampleSizeInBits = track.getSampleSize();
                 Decoder.create(track.getDecoderSpecificInfo().getData());
 
-logger.fine("detect as mp4");
+logger.log(Level.DEBUG, "detect as mp4");
                 canHandle = true;
                 type = MP4;
                 // This code is pulled directly from MP3-SPI.
@@ -104,18 +121,20 @@ logger.fine("detect as mp4");
                 canHandle = false;    // Ogg stream ?
             } else {
                 ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
+                sampleRate = adts.getSampleFrequency();
+                channels = adts.getChannelCount();
                 Decoder.create(adts.getDecoderInfo());
 
-logger.fine("detect as adts");
+logger.log(Level.DEBUG, "detect as adts");
                 canHandle = true;
             }
 
             if (canHandle) {
                 AudioFileFormat.Type afft = type;
-                AudioFormat format = new AudioFormat(AAC_ENCODING, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, true, new HashMap<>() {{
+                AudioFormat format = new AudioFormat(AAC_ENCODING, sampleRate, sampleSizeInBits, channels, AudioSystem.NOT_SPECIFIED, sampleRate, true, new HashMap<>() {{
                     put("type", afft);
                 }});
-                logger.fine("DEFINED: " + type);
+                logger.log(Level.DEBUG, "DEFINED: " + type);
                 return new AudioFileFormat(type, format, mediaLength);
             } else {
                 throw new IllegalArgumentException("no match sequence");
@@ -123,38 +142,42 @@ logger.fine("detect as adts");
 
         } catch (IOException e) {
             if (e.getMessage().equals(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT)) {
-logger.finer(LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, LimitedInputStream.ERROR_MESSAGE_REACHED_TO_LIMIT);
+logger.log(Level.TRACE, e.getMessage(), e);
                 throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else if (e instanceof net.sourceforge.jaad.mp4.MP4Exception) {
-logger.finer(e.toString());
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, e.toString());
+logger.log(Level.TRACE, e.getMessage(), e);
                 throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
             } else {
                 throw e;
             }
         } catch (Exception e) {
-logger.finer(e.toString());
-logger.log(Level.FINEST, e.toString(), e);
+logger.log(Level.DEBUG, e.toString());
+logger.log(Level.TRACE, e.getMessage(), e);
             throw (UnsupportedAudioFileException) new UnsupportedAudioFileException(e.getMessage()).initCause(e);
         } finally {
             try {
                 in.reset();
-logger.finer("reset");
+logger.log(Level.TRACE, "reset");
             } catch (IOException e) {
-                logger.info("FAIL TO RESET: " + e);
+                logger.log(Level.INFO, "FAIL TO RESET: " + e);
             } finally {
-                logger.fine("finally available: " + in.available());
+                logger.log(Level.DEBUG, "finally available: " + in.available());
             }
         }
     }
 
     // ----
 
+    /**
+     * To avoid a buffer overflow, you should use {@link BufferedInputStream} with enough buffer size.
+     * @see #MAX_BUFFER_SIZE
+     */
     @Override
     public AudioInputStream getAudioInputStream(InputStream in) throws UnsupportedAudioFileException, IOException {
         AudioFileFormat aff = getAudioFileFormat(in, AudioSystem.NOT_SPECIFIED);
-logger.fine("format: " + aff);
+logger.log(Level.DEBUG, "format: " + aff);
 
         // in position should be zero
         return new AudioInputStream(in, aff.getFormat(), aff.getFrameLength());
@@ -164,7 +187,7 @@ logger.fine("format: " + aff);
     public AudioInputStream getAudioInputStream(URL url) throws UnsupportedAudioFileException, IOException {
         InputStream inputStream = url.openStream();
         try {
-            return getAudioInputStream(inputStream instanceof BufferedInputStream ? inputStream : new BufferedInputStream(inputStream, Integer.MAX_VALUE - 8));
+            return getAudioInputStream(inputStream instanceof BufferedInputStream ? inputStream : new BufferedInputStream(inputStream, MAX_BUFFER_SIZE));
         } catch (UnsupportedAudioFileException | IOException e) {
             inputStream.close();
             throw e;
@@ -175,7 +198,7 @@ logger.fine("format: " + aff);
     public AudioInputStream getAudioInputStream(File file) throws UnsupportedAudioFileException, IOException {
         InputStream inputStream = Files.newInputStream(file.toPath());
         try {
-            return getAudioInputStream(new BufferedInputStream(inputStream, Integer.MAX_VALUE - 8));
+            return getAudioInputStream(new BufferedInputStream(inputStream, Math.min(MAX_BUFFER_SIZE, (int) file.length())));
         } catch (UnsupportedAudioFileException | IOException e) {
             inputStream.close();
             throw e;
