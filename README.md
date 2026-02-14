@@ -23,6 +23,16 @@ Pure Java AAC decoder (Java Sound SPI) powered by [JAADec](https://github.com/DV
     clip.loop(Clip.LOOP_CONTINUOUSLY);
 ```
 
+### system property
+
+ * `net.sourceforge.jaad.bufferSize` ... max buffer size for parse aac. default is 20MiB 
+
+### note
+
+ * when you use `AudioSystem#getInputStream(InputStream)` not for only aac, you should use BufferedInputStream with enough buffer size referring to `net.sourceforge.jaad.bufferSize`
+   because given InputStream has smaller buffer, spi cannot enlarge it.
+ * as for `AudioSystem#getInputStream(URL)`, `AudioSystem#getInputStream(File)`, buffer is set automatically
+
 ## References
 
  * [jpcsp](https://github.com/jpcsp/jpcsp/tree/master/src/jpcsp/media/codec/aac)
