@@ -134,9 +134,9 @@ Debug.println("INS: " + aacAis);
         AudioFormat inAudioFormat = aacAis.getFormat();
 Debug.println("INF: " + inAudioFormat);
         AudioFormat outAudioFormat = new AudioFormat(
-            AudioSystem.NOT_SPECIFIED,
+            inAudioFormat.getSampleRate(),
             16,
-            AudioSystem.NOT_SPECIFIED,
+            inAudioFormat.getChannels(),
             true,
             false);
 

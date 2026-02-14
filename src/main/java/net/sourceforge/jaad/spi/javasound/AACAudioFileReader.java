@@ -76,6 +76,9 @@ logger.log(Level.DEBUG, "mark: " + whole);
 
             boolean canHandle;
             AudioFileFormat.Type type = AAC;
+            float sampleRate = AudioSystem.NOT_SPECIFIED;
+            int channels = AudioSystem.NOT_SPECIFIED;
+            int sampleSizeInBits = AudioSystem.NOT_SPECIFIED;
             if (new String(head, 4, 4).equals("ftyp")) {
 
                 // ⚠️⚠️⚠️ in position must be zero ⚠️⚠️⚠️
@@ -84,7 +87,10 @@ logger.log(Level.DEBUG, "mark: " + whole);
                 Movie movie = cont.getMovie();
                 List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
                 if (tracks.isEmpty()) throw new IllegalArgumentException("movie does not contain any AAC track");
-                Track track = tracks.get(0);
+                AudioTrack track = (AudioTrack) tracks.get(0);
+                sampleRate = track.getSampleRate();
+                channels = track.getChannelCount();
+                sampleSizeInBits = track.getSampleSize();
                 Decoder.create(track.getDecoderSpecificInfo().getData());
 
 logger.log(Level.DEBUG, "detect as mp4");
@@ -107,6 +113,8 @@ logger.log(Level.DEBUG, "detect as mp4");
                 canHandle = false;    // Ogg stream ?
             } else {
                 ADTSDemultiplexer adts = new ADTSDemultiplexer(in);
+                sampleRate = adts.getSampleFrequency();
+                channels = adts.getChannelCount();
                 Decoder.create(adts.getDecoderInfo());
 
 logger.log(Level.DEBUG, "detect as adts");
@@ -115,7 +123,7 @@ logger.log(Level.DEBUG, "detect as adts");
 
             if (canHandle) {
                 AudioFileFormat.Type afft = type;
-                AudioFormat format = new AudioFormat(AAC_ENCODING, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, AudioSystem.NOT_SPECIFIED, true, new HashMap<>() {{
+                AudioFormat format = new AudioFormat(AAC_ENCODING, sampleRate, sampleSizeInBits, channels, AudioSystem.NOT_SPECIFIED, sampleRate, true, new HashMap<>() {{
                     put("type", afft);
                 }});
                 logger.log(Level.DEBUG, "DEFINED: " + type);
