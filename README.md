@@ -17,7 +17,7 @@ Pure Java AAC decoder (Java Sound SPI) powered by [JAADec](https://github.com/DV
 ## Usage
 
 ```java
-    AudioInputStream ais = AudioSystem.getAudioInputStream(Files.newInputStream(Paths.get(m4a)));
+    AudioInputStream ais = AudioSystem.getAudioInputStream(Paths.get(m4a).toFile());
     Clip clip = AudioSystem.getClip();
     clip.open(AudioSystem.getAudioInputStream(new AudioFormat(44100, 16, 2, true, false), ais));
     clip.loop(Clip.LOOP_CONTINUOUSLY);
