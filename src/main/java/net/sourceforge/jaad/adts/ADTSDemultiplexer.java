@@ -21,7 +21,7 @@ public class ADTSDemultiplexer {
         this.in = new PushbackInputStream(in);
         din = new DataInputStream(this.in);
         first = true;
-        if (!validateADTS()) throw new IllegalArgumentException("no ADTS header found");
+        if (!validateADTS()) throw new net.sourceforge.jaad.mp4.MP4Exception("no ADTS header found");
     }
 
     // need to find ADTS header 20 times // TODO is this not corner cut???

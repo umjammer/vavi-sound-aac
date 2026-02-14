@@ -86,7 +86,7 @@ logger.log(Level.DEBUG, "mark: " + whole);
                 MP4Container cont = new MP4Container(is);
                 Movie movie = cont.getMovie();
                 List<Track> tracks = movie.getTracks(AudioTrack.AudioCodec.AAC);
-                if (tracks.isEmpty()) throw new IllegalArgumentException("movie does not contain any AAC track");
+                if (tracks.isEmpty()) throw new net.sourceforge.jaad.mp4.MP4Exception("movie does not contain any AAC track");
                 AudioTrack track = (AudioTrack) tracks.get(0);
                 sampleRate = track.getSampleRate();
                 channels = track.getChannelCount();
